@@ -267,3 +267,9 @@ body{background:#fcfaf6;color:#262433}
 .v8-guide p,.v8-worked-example p{margin:11px 0 3px}
 .v8-independent{border-left:4px solid var(--teal);padding:12px 16px;background:#eff6f3;border-radius:5px;margin:20px 0}
 @media(max-width:800px){.v8-intro{grid-template-columns:1fr}.welcome-v8-banner{min-height:330px}.v8-side-note{gap:15px}.v8-intro-main{padding:22px}}
+
+/* Keep the branching exercise's continue action hidden until both decisions are made. */
+#labContinue[hidden]{display:none!important}
+.v8-training-lab .decision-lab{margin:0;border:0;padding:4px;background:transparent}
+.v8-training-lab .decision-lab>summary{display:none}
+.v8-training-lab .lab-instruction{margin-top:0}
