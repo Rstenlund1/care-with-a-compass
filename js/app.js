@@ -124,20 +124,21 @@ window.addEventListener('scroll',()=>{
  const g=document.getElementById('glossary');
  if(g&&!g.hidden)positionGloss();
 },{passive:true});
-function lensHtml(ch){const items=(DATA.lensCases||[]).filter(x=>(x.chapter||0)===ch);const item=items[0]||DATA.lensCases?.[ch-1];if(!item)return '';return `<details class="lens"><summary>Try another angle: ${esc(item.title)}</summary><p>${esc(item.situation)}</p><p><strong>What would you ask first?</strong> ${esc(item.question)}</p><button class="action secondary" type="button" onclick="showLens(this,${ch})">Consider both perspectives</button><div class="lenscompare" hidden></div></details>`}
+function lensHtml(ch){if(ch===1)return '';const items=(DATA.lensCases||[]).filter(x=>(x.chapter||0)===ch);const item=items[0]||DATA.lensCases?.[ch-1];if(!item)return '';return `<details class="lens"><summary>Try another angle: ${esc(item.title)}</summary><p>${esc(item.situation)}</p><p><strong>What would you ask first?</strong> ${esc(item.question)}</p><button class="action secondary" type="button" onclick="showLens(this,${ch})">Consider both perspectives</button><div class="lenscompare" hidden></div></details>`}
 function extraLensesHtml(){return (DATA.lensCases||[]).slice(5).map((item,idx)=>`<details class="lens"><summary>Try another angle: ${esc(item.title)}</summary><p>${esc(item.situation)}</p><p><strong>What would you ask first?</strong> ${esc(item.question)}</p><button class="action secondary" type="button" aria-expanded="false" onclick="showLens(this,${6+idx})">Consider both perspectives</button><div class="lenscompare" hidden></div></details>`).join('')}
 function showLens(btn,ch){let item=DATA.lensCases?.[ch-1],el=btn.nextElementSibling;if(!item||!el)return;let expanded=!el.hidden;el.hidden=expanded;btn.textContent=expanded?'Consider both perspectives':'Hide the perspectives';btn.setAttribute('aria-expanded',String(!expanded));if(!expanded){el.innerHTML=`<div class="perspectives"><div><strong>Staff, child, or family perspective</strong><p>${esc(item.employee)}</p></div><div><strong>Leadership or program perspective</strong><p>${esc(item.supervisor)}</p></div></div><p class="meta">Ask questions and check the facts before making a decision.</p>`}}
 
 
 // Version 8: support before the decision, then gradual fading across chapters.
 const CHAPTER_GUIDES={
- 1:{example:'A caregiver makes a troubling remark. First ensure that children are safe and appropriately supervised. Next gather facts without assuming that one statement proves misconduct. Then document what you know and decide what follow-up is fair.',prompt:'Before choosing, ask: Who could be at risk right now? What facts are missing? Can I protect children without jumping to conclusions?'},
+ 1:{example:'A caregiver makes a troubling remark. First ensure that children are safe and appropriately supervised. Next gather facts without assuming that one statement proves misconduct. Then document what you know and decide what follow-up is fair.',prompt:'What do you know for certain? What needs immediate attention? What facts are still missing?'},
  2:{example:'A child discloses a concern. Separate immediate protection from your reporting duties. Record the child\'s words accurately; do not conduct your own investigative interview. Follow applicable reporting requirements.',prompt:'What must happen promptly? Which information should be documented, and what belongs to the appropriate authorities rather than your own investigation?'},
  3:{example:'A staff member arrives late. Confirm actual coverage and supervision first, keep truthful records, and then make a workable plan to prevent a repeat. A paper schedule does not replace a qualified adult.',prompt:'What is actually happening in the room? What do the records show? Who is authorized to act?'},
  4:{example:'During an emergency, act on immediate safety needs, use the child\'s documented plan where applicable, coordinate roles and keep accurate records. After the immediate danger, address the next problem.',prompt:'What takes priority in the next minute? What must be verified before you delegate?'},
  5:{example:'A repeated near miss points to a system problem. Find the pattern, involve the people affected, test a correction, and check whether the change actually works.',prompt:'What pattern is emerging, and how would you know your response prevented a repeat?'}
 };
 function workedExampleHtml(ch){
+ if(ch===1)return '';
  const g=CHAPTER_GUIDES[ch];if(!g)return '';
  return `<details class="v8-worked-example" ${ch<=2?'open':''}><summary>A director's approach</summary><p>${esc(g.example)}</p><p class="meta">Check current rules and the child's care plan.</p></details>`;
 }
