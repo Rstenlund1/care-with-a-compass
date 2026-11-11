@@ -7,7 +7,7 @@ const CHAPTERS=DATA.lessons.length, Q=DATA.questions;
 const BRANCHING=window.COMPASS_BRANCHING; if(!BRANCHING||BRANCHING.schemaVersion!=='7.2.0')throw Error('Branching data missing: ensure branch data loads before the application'); const FOLLOWUPS=window.COMPASS_QUESTION_FOLLOWUPS||{};
 let state=null,storageWorks=true,lastGlossBtn=null;
 const ABC='ABCDE';
-function fresh(){return {chapter:1,phase:'welcome',history:{},pendingGap:{},wrongTags:{},needsWorkshop:{},maxProgress:{},lab:{},current:null,order:[0,1,2,3,4],lastAnswer:null,reflection:{},refReviewed:{},done:[],capstone:{step:0,choices:[],reflection:'',completed:false},certificateName:'',completedAt:null,streak:{},support:{},guided:false,branchPending:null,branchDone:{},seenConcepts:{},currentConcept:null}}
+function fresh(){return {chapter:1,phase:'welcome',history:{},pendingGap:{},wrongTags:{},needsWorkshop:{},maxProgress:{},lab:{},current:null,order:[0,1,2,3,4],lastAnswer:null,reflection:{},refReviewed:{},done:[],capstone:{step:0,choices:[],reflection:'',completed:false},certificateName:'',completedAt:null,streak:{},support:{},guided:false,branchPending:null,branchDone:{},seenConcepts:{},currentConcept:null,labSchedule:{}}}
 function load(){try{let a=localStorage.getItem(STORAGE)||sessionStorage.getItem(STORAGE);return a?JSON.parse(a):null}catch(e){try{let a=sessionStorage.getItem(STORAGE)||sessionStorage.getItem(LEGACY);return a?JSON.parse(a):null}catch(_){storageWorks=false;return null}}}
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state));storageWorks=true}catch(e){try{sessionStorage.setItem(STORAGE,JSON.stringify(state));storageWorks=true}catch(_){storageWorks=false}}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -76,7 +76,8 @@ function resume(){
   state.current=null;state.lastAnswer=null;
  }
  if(previous==='followup'&&state.branchPending?.chapter===state.chapter)return branchQuestion();
- if(previous==='lab'&&state.lab?.[state.chapter])return trainingLab();
+ if(previous==='lab'&&state.lab?.[state.chapter]?.second===undefined)return trainingLab();
+ if(labDue(state.chapter))return trainingLab();
  if(previous==='reflection'||state.phase==='reflection'||chapterReady(state.chapter))return reflection();
  if(state.current&&Q.some(q=>q.id===state.current&&q.chapter===state.chapter))return showQuestion();
  return lesson();
@@ -186,7 +187,16 @@ function labChoose(ch,step,i){const t=TRAILS[ch];if(!t||ch!==state.chapter)retur
 
 function lesson(){const ch=state.chapter,l=DATA.lessons[ch-1];state.phase='lesson';render(`<div class="eyebrow">Chapter ${ch} of ${CHAPTERS} · Lesson</div><h1 id="focushead">${esc(l.title)}</h1><p class="lede">${esc(l.subtitle)}</p>${progressHtml(ch)}<section class="card lesson"><div class="lesson-mark" aria-hidden="true">${['✦','☼','✚','⚖','♡'][ch-1]}</div>${glossary(l.html)}${workedExampleHtml(ch)}${lensHtml(ch)}${ch===5?extraLensesHtml():''}<div class="glossbox" id="glossary" role="region" aria-label="Glossary definition" tabindex="-1" hidden></div></section><div class="actions"><button class="action" onclick="continueFromLesson()">${history(ch).length||state.current?'Continue supervisory decisions':'Try a supervisory situation'}</button></div>${sourcesHtml()}`)}
 
-function continueFromLesson(){if(state.current)return showQuestion();return state.lab?.[state.chapter]?.second!==undefined?question():trainingLab()}
+function labDue(ch){
+ state.labSchedule??={};
+ if(state.lab?.[ch]?.second!==undefined)return false;
+ if(!Number.isInteger(state.labSchedule[ch])){
+  // Put each chapter's connected lab after a few randomly ordered decisions.
+  state.labSchedule[ch]=Math.min(chItems(ch).length-2,3+Math.floor(Math.random()*5));
+ }
+ return unique(ch)>=state.labSchedule[ch];
+}
+function continueFromLesson(){if(state.current)return showQuestion();return question()}
 function trainingLab(){const ch=state.chapter,t=TRAILS[ch];if(!t)return question();state.phase='lab';render(`<div class="eyebrow">Chapter ${ch} of ${CHAPTERS} · Branching exercise</div><h1 id="focushead">${esc(t.title)}</h1><p class="lede">Make a decision. See what happens next. Then decide again.</p><section class="card v8-training-lab">${decisionLabHtml(ch)}<div class="actions" id="labContinue" ${state.lab?.[ch]?.second===undefined?'hidden':''}><button class="action" type="button" onclick="question()">Continue to chapter questions →</button></div></section><div class="actions"><button class="action ghost" type="button" onclick="lesson()">Back to chapter lesson</button></div>`);const d=document.querySelector('.v8-training-lab .decision-lab');if(d)d.open=true}
 // Random order within each chapter. Revisit a topic after a weak response.
 function shuffle(items){let a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -213,7 +223,7 @@ function pick(ch){
 }
 function question(){
  state.selectedMulti=[];state.currentConcept=null;
- const ch=state.chapter;if(chapterReady(ch))return reflection();
+ const ch=state.chapter;if(labDue(ch))return trainingLab();if(chapterReady(ch))return reflection();
  const q=pick(ch);state.current=q.id;state.lastAnswer=null;state.phase='question';
  if(CONCEPTS[q.family]&&!state.seenConcepts[q.family]){state.currentConcept=q.family;state.seenConcepts[q.family]=true;}
  state.guided=!!supportState(ch).active&&!q.multi;
@@ -243,7 +253,7 @@ function answer(letter){if(state.phase!=='question'||state.lastAnswer!==null)ret
 function toggleMulti(letter){if(state.phase!=='question'||state.lastAnswer!==null)return;state.selectedMulti??=[];state.selectedMulti=state.selectedMulti.includes(letter)?state.selectedMulti.filter(x=>x!==letter):[...state.selectedMulti,letter].sort();document.querySelectorAll('.choice').forEach(el=>{let sel=state.selectedMulti.includes(el.dataset.letter);el.setAttribute('aria-pressed',sel?'true':'false');el.classList.toggle('chosen',sel);el.querySelector('.letter').textContent=sel?'✓':'□'});save()}
 function submitMulti(){if(state.phase!=='question'||state.lastAnswer!==null)return;if(!state.selectedMulti?.length){let r=document.getElementById('response');r.innerHTML='<p class="note" role="alert">Choose one or more actions before evaluating.</p>';return}recordResponse(Q.find(x=>x.id===state.current),state.selectedMulti.join('|'))}
 function showFeedback(q,selection){let quality=gradeResponse(q,selection),ch=state.chapter,multi=!!q.multi,sel=multi?selection.split('|'): [selection],gold=multi?q.answerSet:[q.answer];document.querySelectorAll('.choice').forEach(el=>{el.disabled=true;let v=el.dataset.letter;el.classList.toggle('chosen',sel.includes(v));el.classList.toggle('preferred',gold.includes(v));});let text='';if(multi){let missing=gold.filter(x=>!sel.includes(x)),extras=sel.filter(x=>!gold.includes(x));let lines=gold.map(k=>`<li><strong>${k}.</strong> ${esc(q.choices[ABC.indexOf(k)])}</li>`).join('');let reasons=sel.map(k=>`<li><strong>${k}.</strong> ${esc(q.feedback?.[k]?.text||'Review the option against the stated duties.')}</li>`).join('');text=`<p>${quality===2?'You selected every supported action and avoided the harmful alternatives.':quality===1?'Your choices are defensible, but incomplete. A director needs the whole response.':'Some selections are unsafe or unnecessary, or key actions are missing.'}</p>${missing.length?`<p><strong>Missing:</strong> ${missing.join(', ')}</p>`:''}${extras.length?`<p><strong>Reconsider:</strong> ${extras.join(', ')}</p>`:''}<p><strong>Your selected actions, explained:</strong></p><ul>${reasons}</ul><p><strong>Supported actions:</strong></p><ul>${lines}</ul><p>${esc(q.rationale)}</p>`}else{text=quality===2?`<p>${esc(q.rationale)}</p>`:quality===1?`<p><strong>Your choice:</strong> ${esc(q.choices[ABC.indexOf(selection)])}</p><p>${esc(q.acceptable[selection])}</p><p><strong>More complete response:</strong> ${esc(q.choices[ABC.indexOf(q.answer)])}</p><p>${esc(q.rationale)}</p>`:`<p><strong>Your choice:</strong> ${esc(q.choices[ABC.indexOf(selection)])}</p><p>${esc(q.feedback[selection]?.text||'This approach leaves a critical gap.')}</p><p><strong>Stronger response:</strong> ${esc(q.choices[ABC.indexOf(q.answer)])}</p><p>${esc(q.rationale)}</p>`}let refHtml=citeQ(q);document.getElementById('response').innerHTML=`<div class="feedback ${quality===2?'':quality===1?'acceptable':'review'}" role="status" tabindex="-1"><h3>${quality===2?'A well-supported decision':quality===1?'Defensible, with conditions':'Consider the consequences'}</h3>${text}${refHtml}</div><div class="actions"><button class="action" onclick="nextDecision()">${chapterReady(ch)?'Continue':'Next supervisory decision'}</button></div>`;document.querySelector('#response .feedback')?.focus({preventScroll:true});save()}
-function nextDecision(){if(state.branchPending&&state.branchPending.chapter===state.chapter)return branchQuestion();return chapterReady(state.chapter)?reflection():question()}
+function nextDecision(){if(state.branchPending&&state.branchPending.chapter===state.chapter)return branchQuestion();return question()}
 function branchQuestion(){
  const pending=state.branchPending;if(!pending)return chapterReady(state.chapter)?reflection():question();
  const node=FOLLOWUPS[pending.id];if(!node){state.branchPending=null;return question()}
@@ -261,7 +271,7 @@ function chooseQuestionBranch(i){
 function continueAfterBranch(){
  const p=state.branchPending;if(!p||p.selected===null)return;
  state.branchPending=null;
- return chapterReady(state.chapter)?reflection():question();
+ return question();
 }
 const samples=[["“I hear what you said. While I arrange coverage, I need to understand what you meant, what has happened during supervision, and whether every child can be cared for safely.”","Do not substitute either automatic dismissal or casual reassurance for a documented safety and personnel review."],["“We will respond to what was observed, keep the child safe, make any required report and preserve records. We will not treat poverty as proof of abuse.”","Avoid private detective work before reporting and avoid assuming homelessness alone is neglect."],["“Our actual roster has to meet the rule right now. I will cover or adjust intake, then correct the schedule and document that we are compliant.”","Never confuse a posted staff schedule with physically present qualified coverage."],["“Here is the factual timeline and the child’s care plan. Who at the hospital is coordinating a safe discharge, and who are our authorized contacts?”","Do not assume that a parent’s refusal automatically proves neglect, or that the director gains parental medical authority."],["“We need to observe the real process, assign corrective ownership, and verify the change; signing another checklist is not proof of safety.”","A quiz or training attendance record is not evidence of reliable skill transfer."]];
 
@@ -323,5 +333,5 @@ function downloadProgress(){
  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='Care_with_a_Compass_Learning_Summary.txt';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);
 }
-state=load()||fresh();if(!state.history||!state.done)state=fresh();state.needsWorkshop??={};state.maxProgress??={};state.lab??={};state.reflection??={};state.refReviewed??={};state.capstone??={step:0,choices:[],reflection:'',completed:false};state.certificateName??='';state.completedAt??=null;state.wrongTags??={};state.pendingGap??={};state.selectedMulti??=[];state.streak??={};state.support??={};state.guided??=false;state.branchDone??={};state.branchPending??=null;state.seenConcepts??={};state.currentConcept??=null;
+state=load()||fresh();if(!state.history||!state.done)state=fresh();state.needsWorkshop??={};state.maxProgress??={};state.lab??={};state.reflection??={};state.refReviewed??={};state.capstone??={step:0,choices:[],reflection:'',completed:false};state.certificateName??='';state.completedAt??=null;state.wrongTags??={};state.pendingGap??={};state.selectedMulti??=[];state.streak??={};state.support??={};state.guided??=false;state.branchDone??={};state.branchPending??=null;state.seenConcepts??={};state.currentConcept??=null;state.labSchedule??={};
 if(state.phase==='certificate'&&allChaptersComplete())certificateView();else if(state.phase==='capstone'&&allChaptersComplete())capstone();else if(state.phase==='lab')trainingLab();else if(state.phase==='followup')branchQuestion();else if(state.phase==='finished'&&allChaptersComplete())finish();else if(state.phase==='lesson')lesson();else if(state.phase==='question'||state.phase==='answered')showQuestion();else if(state.phase==='reflection')reflection();else welcome();
