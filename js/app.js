@@ -220,7 +220,7 @@ function question(){
   const preferred=ABC.indexOf(q.answer);
   const other=shuffle(all.filter(i=>i!==preferred)).slice(0,2);
   state.order=shuffle([preferred,...other]);
- }else state.order=all;
+ }else state.order=q.multi?all:shuffle(all);
  showQuestion();
 }
 function citeQ(q){return `<div class="scenario-references"><strong>Why this guidance?</strong> ${q.refs.map(k=>{const r=DATA.sourceMap[k];if(!r)return '';const label=r.short+(r.chaptersByChapter?`, ${r.chaptersByChapter[String(q.chapter)]||'chs. 8–9'}`:'');return r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`:`<span>${esc(label)}</span>`}).filter(Boolean).join(' · ')}</div>`}
