@@ -62,7 +62,7 @@ function welcome(){state.phase='welcome';bannerIndex=0;render(`
 <p class="v8-meta">5 chapters · ${Q.length} applied questions · branching decisions · guided practice · final challenge</p></div>
 <div class="v8-side-note"><div class="v8-side-head">What to expect</div><div class="v8-step"><strong>01</strong><span>Look at the situation, not just the rule.</span></div><div class="v8-step"><strong>02</strong><span>Choose what you would do as director.</span></div><div class="v8-step"><strong>03</strong><span>Deal with what happens after your decision.</span></div><div class="v8-step"><strong>04</strong><span>Use coaching when you need it. Work toward independence.</span></div></div>
 </section>
-<section class="v8-footer-note"><strong>Built from real administrative experience.</strong> Scenarios are fictionalized for training. Review current local policies and legal requirements before using a response at work. <span>Version 8 · Works offline</span></section>
+<section class="v8-footer-note"><strong>Built from real administrative experience.</strong> Scenarios are fictionalized for training. Review current local policies and legal requirements before using a response at work. <span>Version 8.6.0 · Works offline</span></section>
 ${sourcesHtml()}`)}
 function resume(){
  const previous=state.homeFrom;state.homeFrom=null;
