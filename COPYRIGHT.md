@@ -1,0 +1,1 @@
+All embedded program photographs are supplied by the project owner and should not be reused without authorization. Training content and third-party references remain subject to their respective rights.
