@@ -2,13 +2,14 @@
 "use strict";
 const D=window.CWC_V92_DATA;
 const L=window.CWC_V94_LESSONS||{modules:{},glossary:{}};
+const R=window.CWC_V96_REFERENCES||{sources:{},stages:{},lab:{}};
 if(!D){document.body.innerHTML="<p>The scenario data could not be loaded.</p>";return;}
 const KEY="cwc-v92-directors-day-state";
 const pages=["overview","chapters","cases","staff","evidence","assessment","facilitator"];
 const navLabels={overview:"Program overview",chapters:"Learning chapters",cases:"Applied simulations",staff:"Staffing Lab",evidence:"Evidence Journal",assessment:"Competency assessment",facilitator:"Facilitator review"};
 const navIcons={overview:"⌂",chapters:"◫",cases:"◈",staff:"♟",evidence:"▤",assessment:"◉",facilitator:"▣"};
-function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false}};}
-function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},introSeen:raw.introSeen||{},sequence:{...z.sequence,...raw.sequence},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
+function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false},orderSeed:Math.floor(Math.random()*2147483647)};}
+function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},orderSeed:Number.isFinite(raw.orderSeed)?raw.orderSeed:z.orderSeed,introSeen:raw.introSeen||{},sequence:{...z.sequence,...raw.sequence},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
 let state=restore();
 try{const direct=new URLSearchParams(window.location.search);const requested=direct.get("case");if(requested&&D.cases.some(c=>c.id===requested)){state.caseId=requested;state.page="cases";}const page=direct.get("page");if(page&&pages.includes(page))state.page=page;}catch(e){}
 const $=sel=>document.querySelector(sel);
@@ -58,7 +59,7 @@ function introductoryLesson(key){
 function realCaseAfterword(c){
  const info=L.modules?.["case:"+c.id]?.afterword;
  if(!info)return "";
- return '<section class="afterword" aria-label="Origin of this training scenario"><div class="afterword-kicker">AFTER THE SCENARIO · THE REAL-WORLD FOUNDATION</div><h3>'+esc(info.label)+'</h3><p>'+termHtml(info.text)+'</p><p class="tiny muted">Real people are not identified in this exercise. All consequences and optional branches are instructional, not findings about an actual person.</p></section>';
+ return '<section class="afterword" aria-label="Origin of this training scenario"><div class="afterword-kicker">AFTER THE SCENARIO · THE REAL-WORLD FOUNDATION</div><h3>'+esc(info.label)+'</h3><div class="afterword-paragraphs">'+(info.paragraphs||[info.text]).map(p=>"<p>"+termHtml(p)+"</p>").join("")+'</div><p class="tiny muted">Real people are not identified in this exercise. All consequences and optional branches are instructional, not findings about an actual person.</p></section>';
 }
 
 function hideDefinitions(){
@@ -66,6 +67,15 @@ function hideDefinitions(){
   btn.setAttribute("aria-expanded","false");
   const panel=btn.nextElementSibling;if(panel)panel.hidden=true;
  });
+}
+function sourceHtml(topic,stageIndex){
+ const keys=Number.isInteger(stageIndex)?(R.stages?.[topic]?.[stageIndex]||[]):(R.lab?.[topic]||[]);
+ if(!keys.length)return "";
+ const links=keys.map(key=>{
+  const r=R.sources?.[key];if(!r)return "";
+  return '<li><a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">'+esc(r.label)+'</a><span class="source-kind">'+esc(r.kind)+'</span><p>'+esc(r.note)+'</p></li>';
+ }).filter(Boolean).join("");
+ return '<details class="scenario-sources" open><summary>Why this decision? Laws, standards, and sources</summary><ul>'+links+'</ul><p class="tiny muted">Sources explain the governing requirements or professional rationale. A recommended practice is not automatically a legal mandate; check current rules for the program’s license type.</p></details>';
 }
 function getCase(id){return D.cases.find(c=>c.id===id)||D.cases[0];}
 function work(id){return state.caseWork[id]||(state.caseWork[id]={step:0,chosen:[]});}
