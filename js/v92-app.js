@@ -191,8 +191,21 @@ function facilitatorView(){
 function render(){
  const app=$("#app"),views={overview,chapters:chaptersView,cases:casesView,staff:staffView,evidence:evidenceView,assessment:assessmentView,facilitator:facilitatorView};
  const key=moduleKey(),content=state.page!=="cases"&&L.modules?.[key]&&!state.introSeen[key]?introductoryLesson(key):views[state.page]();
- app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.5.0</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Progress is saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><span class="tiny muted">LOCAL DEMONSTRATION</span><span class="avatar" aria-hidden="true">C</span></div></header><main id="main" tabindex="-1">${content}</main><footer><span>Care with a Compass · Supervisor Leadership Program · v9.5.0</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
+ app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.5.0</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Progress is saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button></div></div></header><main id="main" tabindex="-1">${content}</main><footer><span>Care with a Compass · Supervisor Leadership Program · v9.5.0</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
  document.title="Care with a Compass | Supervisor Leadership Program v9.5";
+}
+function returnHome(){go("overview");}
+function startOverTraining(){
+ if(!window.confirm("Start the ENTIRE training over? This will permanently clear your saved chapter answers, reflections, completed case decisions, lab progress, assessment responses, and facilitator review from this browser. Continue?"))return;
+ try {
+  for(const store of [localStorage,sessionStorage]){
+   store.removeItem(KEY);
+   store.removeItem("care-with-a-compass-supervisor-v72-72q");
+  }
+ }catch(err){window.alert("Could not clear your saved progress in this browser. Your training has not been restarted.");return;}
+ state=initial();
+ render();
+ window.scrollTo({top:0,behavior:"auto"});
 }
 function go(page){if(!canOpen(page))return; if(page==="cases"&&!canOpenCase(state.caseId)){const next=nextRequired();if(next.caseId)state.caseId=next.caseId;else state.caseId=D.cases[0].id;}state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
 function download(name,body,type){const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -207,6 +220,8 @@ document.addEventListener("click",e=>{
  if(action==="term"){const panel=btn.nextElementSibling;if(!panel)return;const wasOpen=btn.getAttribute("aria-expanded")==="true";hideDefinitions();if(!wasOpen){btn.setAttribute("aria-expanded","true");panel.hidden=false;}return;}
  if(action==="complete-lesson"){const key=moduleKey();if(!L.modules?.[key])return;state.introSeen[key]=true;save();return render();}
  if(action==="start-training")return resumeLinear();
+ if(action==="home")return returnHome();
+ if(action==="start-over")return startOverTraining();
  if(action==="journey-next")return continueJourney();
  if(action==="review-lesson"){const key=moduleKey();delete state.introSeen[key];save();return render();}
  if(action==="nav")return go(btn.dataset.page);
