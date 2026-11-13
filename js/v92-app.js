@@ -18,14 +18,14 @@ function termHtml(raw){
  const source=esc(raw);
  const words=Object.keys(L.glossary||{}).sort((a,b)=>b.length-a.length);
  if(!words.length)return source;
- const re=new RegExp("\\b("+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\function getCase(id){")).join("|")+")\\b","gi");
+ const pattern=String.raw`\b(${words.join("|")})\b`;
+ const re=new RegExp(pattern,"gi");
  return source.replace(re,(matched)=>{
    const key=words.find(w=>w.toLowerCase()===matched.toLowerCase());
    const info=L.glossary[key]||"";
    return '<span class="term-wrap"><button type="button" class="term-button" data-action="term" aria-expanded="false" aria-label="'+esc(matched)+', show definition">'+esc(matched)+'<span aria-hidden="true"> ⓘ</span></button><span class="term-definition" role="note" hidden>'+esc(info)+'</span></span>';
  });
 }
-
 function moduleKey(){if(state.page==="cases")return "case:"+state.caseId;return state.page;}
 
 function introductoryLesson(key){
