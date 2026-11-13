@@ -85,17 +85,12 @@ function nextRequired(){
  return {page:"facilitator"};
 }
 function canOpen(page){
- if(page==="overview"||page==="chapters")return true;
- if(page==="cases")return courseReady();
- if(page==="staff")return staffReady();
- if(page==="evidence")return staffingDone();
- if(page==="assessment")return state.evidenceReviewed;
- if(page==="facilitator")return state.assessment.submitted;
- return false;
+ // All sidebar sections are available for review; the guided Continue path
+ // still uses nextRequired() to resume actual unfinished work.
+ return pages.includes(page);
 }
 function canOpenCase(id){
- const i=D.cases.findIndex(c=>c.id===id);
- return courseReady()&&i>=0&&(i===0||D.cases.slice(0,i).every(c=>work(c.id).step>=c.stages.length));
+ return D.cases.some(c=>c.id===id);
 }
 function resumeLinear(){
  const next=nextRequired();
@@ -104,7 +99,7 @@ function resumeLinear(){
 }
 function hButton(action,label,kind="secondary",extra=""){return `<button type="button" data-action="${esc(action)}" class="btn ${kind}" ${extra}>${label}</button>`;}
 function label(title,body){return `<div class="kicker">${esc(title)}</div>${body}`;}
-function nav(){return pages.map(p=>{const permitted=canOpen(p),active=state.page===p;return `<button data-action="nav" data-page="${p}" class="navbtn ${active?"active":""} ${!permitted?"locked":""}" aria-current="${active?"page":"false"}" ${permitted?"":"disabled aria-label='"+esc(navLabels[p])+", upcoming section'"}><span class="navicon" aria-hidden="true">${navIcons[p]}</span><span>${esc(navLabels[p])}</span>${!permitted?'<span class="lock-mark" aria-hidden="true">⌁</span>':""}</button>`}).join("");}
+function nav(){return pages.map(p=>`<button data-action="nav" data-page="${p}" class="navbtn ${state.page===p?"active":""}" aria-current="${state.page===p?"page":"false"}"><span class="navicon" aria-hidden="true">${navIcons[p]}</span><span>${esc(navLabels[p])}</span></button>`).join("");}
 function iconCard(value,name,small=""){return `<div class="metric"><strong>${esc(value)}</strong><span>${esc(name)}</span>${small?`<small>${esc(small)}</small>`:""}</div>`;}
 function overview(){
  const chapters=courseProgress();
@@ -115,7 +110,7 @@ function overview(){
  <div class="section-top"><div><div class="kicker">01 · Scenario studio</div><h2>The director does not get to reset the day.</h2></div><p>Each response changes the recorded conditions, evidence trail, and next development.</p></div>
  <div class="case-grid">${cards}</div>
  <div class="feature-grid"><article class="feature-card"><span class="feature-glyph">♟</span><h3>Staffing resilience</h3><p>Test relief staffing, overlapping shifts, and the real cost of predictable disruptions.</p><span class="roadmap-desc">Included in the guided training</span></article><article class="feature-card"><span class="feature-glyph">▤</span><h3>Evidence before assumption</h3><p>Separate directly observed events, recordings, allegations, inferences, and predictions.</p><span class="roadmap-desc">Included in the guided training</span></article><article class="feature-card"><span class="feature-glyph">◉</span><h3>Demonstrate judgment</h3><p>Try a separately scored assessment with a facilitator-reviewed transfer plan.</p><span class="roadmap-desc">Included in the guided training</span></article></div>
- <div class="note"><strong>About this build.</strong> The five learning chapters and applied simulations form one supervisor/director curriculum. The assessment remains a demonstration; it is not a licensing course or independently validated certification.</div>`;
+ <div class="note"><strong>How to explore.</strong> Use the sidebar to preview any section in any order. The single Start/Continue Training button still follows the intended learning sequence, and browsing ahead does not automatically complete earlier activities. This remains a prototype, not a state licensing or validated certification course.</div>`;
 }
 function chaptersView(){
  const p=courseProgress();
@@ -191,7 +186,7 @@ function facilitatorView(){
 function render(){
  const app=$("#app"),views={overview,chapters:chaptersView,cases:casesView,staff:staffView,evidence:evidenceView,assessment:assessmentView,facilitator:facilitatorView};
  const key=moduleKey(),content=state.page!=="cases"&&L.modules?.[key]&&!state.introSeen[key]?introductoryLesson(key):views[state.page]();
- app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.5.1</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Progress is saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button></div></div></header><main id="main" tabindex="-1">${content}</main><footer><span>Care with a Compass · Supervisor Leadership Program · v9.5.1</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
+ app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.5.1</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button></div></div></header><main id="main" tabindex="-1">${content}</main><footer><span>Care with a Compass · Supervisor Leadership Program · v9.5.1</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
  document.title="Care with a Compass | Supervisor Leadership Program v9.5.1";
 }
 function returnHome(){go("overview");}
@@ -207,7 +202,7 @@ function startOverTraining(){
  render();
  window.scrollTo({top:0,behavior:"auto"});
 }
-function go(page){if(!canOpen(page))return; if(page==="cases"&&!canOpenCase(state.caseId)){const next=nextRequired();if(next.caseId)state.caseId=next.caseId;else state.caseId=D.cases[0].id;}state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
+function go(page){if(!canOpen(page))return;if(page==="cases"&&!canOpenCase(state.caseId))state.caseId=D.cases[0].id;state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
 function download(name,body,type){const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function report(){
  const a=state.assessment,r=assessScores();
@@ -271,8 +266,7 @@ document.addEventListener("input",e=>{
  if(e.target?.dataset?.change==="assess-transfer"){state.assessment.transfer=e.target.value;save();const button=$('button[data-action="submit-assessment"]');if(button)button.disabled=!assessmentReady();}
 });
 window.addEventListener("message",e=>{const frame=document.getElementById("chaptersFrame");if(!frame||e.source!==frame.contentWindow)return;const data=e.data;if(data?.app==="care-with-a-compass"&&data.kind==="course-height"&&Number.isFinite(Number(data.height))){frame.style.height=Math.max(650,Math.min(25000,Number(data.height)+25))+"px";}});
-const first=nextRequired();
- if(!canOpen(state.page))state.page=first.page;
- if(state.page==="cases"&&!canOpenCase(state.caseId)){if(first.caseId)state.caseId=first.caseId;else state.caseId=D.cases[0].id;}
+if(!canOpen(state.page))state.page="overview";
+ if(state.page==="cases"&&!canOpenCase(state.caseId))state.caseId=D.cases[0].id;
  render();
 })();
