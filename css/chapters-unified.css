@@ -1,0 +1,89 @@
+
+/* Care with a Compass v9.6 shared design vocabulary for the original chapter engine.
+   This CSS intentionally overrides visual rules only; the established chapter engine remains unchanged. */
+:root{
+ --plum:#44305d;
+ --plumdeep:#261d39;
+ --teal:#715198;
+ --paper:#f5f3f0;
+ --ink:#1e2532;
+ --muted:#626b7b;
+ --border:#e3dfdc;
+ --gold:#e2af62;
+ --surface:#fff;
+}
+body{background:transparent;color:var(--ink);font:15px/1.65 "Aptos","Segoe UI",system-ui,-apple-system,sans-serif}
+h1,h2,h3{font-family:Georgia,serif;color:#282334;letter-spacing:-.025em}
+h1{font-size:clamp(30px,3.6vw,43px);line-height:1.19}
+h2{font-size:clamp(24px,3vw,33px)}
+h3{font-size:20px}
+.lede{color:#626b7b;line-height:1.73;font-size:16px}
+.eyebrow{color:#715198;font-size:10px;letter-spacing:.15em;font-weight:800}
+.card,.lens,.feedback{background:#fff;border:1px solid #e3dfdc;border-radius:17px;box-shadow:0 8px 30px rgba(38,29,57,.055)}
+.card{padding:clamp(21px,3vw,34px)}
+.card.lesson{border-top:4px solid #9676b0}
+.card.lesson p{line-height:1.85}
+.action,.action.secondary,.action.ghost,.action:not(.secondary){
+ border-radius:10px;
+ min-height:43px;
+ padding:11px 18px;
+ border:1px solid #c7b7d3;
+ font-size:13px;
+ font-weight:750;
+ text-decoration:none;
+}
+.action:not(.secondary):not(.ghost){background:#44305d;color:#fff;border-color:#44305d}
+.action:not(.secondary):not(.ghost):hover{background:#332341;border-color:#332341}
+.action.secondary{background:#f3eef8;color:#44305d;border-color:#e4d9ed}
+.action.ghost{background:transparent;color:#44305d;border-color:#c7b7d3}
+.action:hover{box-shadow:0 4px 13px rgba(38,29,57,.08)}
+.choice{border:1px solid #dcd6de;border-radius:11px;background:#fff;color:#1e2532;padding:13px 15px;font-size:13px;line-height:1.67}
+.choice:hover:not(:disabled){background:#faf6fd;border-color:#9478ab}
+.choice.chosen,.choice[aria-pressed="true"]{background:#f4ecfa;border-color:#715198}
+.choice .letter{background:#f0edf3;color:#44305d;border-radius:7px}
+.choice.preferred{border-color:#2e896b}
+.feedback{box-shadow:none}
+.feedback h3{font-size:20px}
+.feedback:not(.review):not(.acceptable){border-left:4px solid #4c8c75}
+.feedback.review{background:#fff0f1;border-left:4px solid #b84b63}
+.feedback.acceptable{background:#fff6e7;border-left:4px solid #c69b4f}
+.tag{border-radius:6px;background:#eee7f3;color:#54366a}
+.chapterprogress .bar,.bar{background:#eee8f3;border-color:#e3dfdc}
+.chapterprogress .fill,.bar>span,.navfill{background:#715198}
+.side .navitem{border-radius:10px;background:#faf6fc!important;border:1px solid #e5dcec!important;color:#49345d!important}
+.side .navitem.current{background:#f1e7f9!important;border-color:#8f72aa!important}
+.side .navitem.done{border-color:#4a927a!important}
+.side .navitem .round{border-color:#a998bf!important}
+.concept-card{background:#f5f0f9;border:1px solid #ded0e9;border-left:5px solid #8462a3;color:#342642}
+.concept-heading{color:#553472}
+.lens{background:#fcf9ff}
+.lens summary,.scenario-references a{color:#604184}
+.lenscompare .perspectives>div{background:#f5eff8;border-left-color:#8663a9}
+.glossbtn{position:relative;display:inline;background:#f4edfa;color:#5c3682;border:0;border-bottom:1px dotted #715198;border-radius:3px;padding:0 2px;cursor:help;white-space:normal}
+.glossbtn:hover,.glossbtn:focus-visible{background:#e9dbf2;color:#35214a}
+.glossbtn:hover::after,.glossbtn:focus-visible::after{
+ position:absolute;
+ display:block;
+ left:0;
+ bottom:calc(100% + 9px);
+ width:min(330px,78vw);
+ background:#291f39;
+ color:white;
+ border:1px solid #ae92c7;
+ border-radius:10px;
+ padding:12px 15px;
+ font:normal 13px/1.65 system-ui,sans-serif;
+ z-index:100;
+ white-space:normal;
+ text-align:left;
+ text-decoration:none;
+ box-shadow:0 14px 32px rgba(36,25,52,.2);
+ pointer-events:none;
+}
+.glosshint{border-color:#715198;color:#715198}
+.glossbox.gloss-popover{border:2px solid #9679ae;background:#f4effa;color:#33243f}
+@media(max-width:680px){
+ .card{padding:20px 16px}
+ .choice{padding:12px}
+ .glossbtn:hover::after,.glossbtn:focus-visible::after{width:min(270px,72vw)}
+}
