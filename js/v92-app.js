@@ -81,11 +81,11 @@ function inlineTerms(raw){
  const source=esc(raw);
  const words=Object.keys(L.glossary||{}).sort((a,b)=>b.length-a.length);
  if(!words.length)return source;
- const re=new RegExp("\\b("+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\function getCase(id){")).join("|")+")\\b","gi");
+ const re=new RegExp("\\b("+words.join("|")+")\\b","gi");
  return source.replace(re,(matched)=>{
    const key=words.find(w=>w.toLowerCase()===matched.toLowerCase());
    const definition=L.glossary[key]||"";
-   return '<span class="hover-term" tabindex="0" title="'+esc(definition)+'" aria-label="'+esc(matched)+': '+esc(definition)+'">'+esc(matched)+'<span class="hover-definition" role="note">'+esc(definition)+'</span></span>';
+   return '<span class="hover-term" title="'+esc(definition)+'" aria-label="'+esc(matched)+': '+esc(definition)+'">'+esc(matched)+'<span class="hover-definition" role="note">'+esc(definition)+'</span></span>';
  });
 }
 function orderedOptions(options,key){
