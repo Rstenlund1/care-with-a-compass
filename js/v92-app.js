@@ -8,7 +8,7 @@ const KEY="cwc-v92-directors-day-state";
 const pages=["overview","chapters","cases","staff","evidence","assessment","facilitator"];
 const navLabels={overview:"Program overview",chapters:"Learning chapters",cases:"Applied simulations",staff:"Staffing Lab",evidence:"Evidence Journal",assessment:"Competency assessment",facilitator:"Facilitator review"};
 const navIcons={overview:"⌂",chapters:"◫",cases:"◈",staff:"♟",evidence:"▤",assessment:"◉",facilitator:"▣"};
-function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false},orderSeed:Math.floor(Math.random()*2147483647)};}
+function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23,attendance:12,qualifiedTeachers:1,window:"during",support:"routine"},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false},orderSeed:Math.floor(Math.random()*2147483647)};}
 function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},orderSeed:Number.isFinite(raw.orderSeed)?raw.orderSeed:z.orderSeed,introSeen:raw.introSeen||{},sequence:{...z.sequence,...raw.sequence},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
 let state=restore();
 try{const direct=new URLSearchParams(window.location.search);const requested=direct.get("case");if(requested&&D.cases.some(c=>c.id===requested)){state.caseId=requested;state.page="cases";}const page=direct.get("page");if(page&&pages.includes(page))state.page=page;}catch(e){}
@@ -175,12 +175,66 @@ function casesView(){
  const options=orderedOptions(s.options,c.id+":"+w.step).map((o,i)=>`<button type="button" class="answer ${selectedId===o.id?"selected":""}" data-action="case-answer" data-option="${o.id}" ${selected?"disabled":""}><span class="answer-letter">${String.fromCharCode(65+i)}</span><span>${inlineTerms(o.text)}</span></button>`).join("");
  return `${header}<div class="layout-main"><div class="panel"><div class="progress-heading"><span>DECISION ${w.step+1} OF ${c.stages.length}</span><strong>${Math.round((w.step/c.stages.length)*100)}% explored</strong></div><div class="progress-track"><span style="width:${(w.step/c.stages.length)*100}%"></span></div><div class="stage-eyebrow">Your next decision</div><h3>${esc(s.title)}</h3><p class="scenario-lead">${termHtml(scenarioText)}</p>${branch?`<div class="branch-note"><strong>Because of your previous decision:</strong> ${esc(branch)}</div>`:""}${priorCritical?'<p class="safety-warning">An earlier critical safety concern remains in the record, even if later choices are stronger.</p>':""}<h4>${termHtml(s.question)}</h4><div class="answers">${options}</div>${selected?`<div class="feedback ${selected.critical?"unsafe":selected.quality===2?"strong":"partial"}"><strong>${selected.critical?"Critical safety concern":selected.quality===2?"Defensible response":selected.quality===1?"Partly defensible":"Response needs correction"}</strong><p>${termHtml(selected.feedback)}</p><div class="consequence"><span>WHAT HAPPENS NEXT</span><p>${termHtml(selected.consequence)}</p></div>${sourceHtml(c.id,w.step)}</div><div class="actions">${hButton("case-next",w.step===c.stages.length-1?"Open after-action review →":"Continue the incident →","primary")}</div>`:""}</div><div><div class="sticky">${signalsPanel(c,w)}<div class="sidepanel"><h3>Incident timeline</h3>${caseTrail(c,w)}</div></div></div></div>`;
 }
-function staffModel(){const s=state.staffing;const slots={minimum:0,overlap:1,relief:1,combined:2}[s.plan];const hours={minimum:0,overlap:3,relief:6,combined:9}[s.plan];const req={break:1,sick:1,double:2,emergency:2}[s.disruption];return {slots,hours,req,ok:slots>=req,cost:hours*s.wage};}
+function staffModel(){
+ const s=state.staffing;
+ const attendance=Math.max(1,Math.min(36,Math.round(Number(s.attendance)||12)));
+ const scheduled=Math.max(1,Math.min(4,Math.round(Number(s.qualifiedTeachers)||1)));
+ const floor=Math.ceil(attendance/12);
+ const extra={minimum:0,overlap:1,relief:1,combined:2}[s.plan]??0;
+ const overlapActive=s.window!=="outside";
+ const backup=extra-(overlapActive?0:((s.plan==="overlap"||s.plan==="combined")?1:0));
+ const lost={break:1,sick:1,double:2,emergency:2}[s.disruption]??1;
+ const available=Math.max(0,scheduled+backup-lost);
+ const gap=Math.max(0,floor-available);
+ const hours={minimum:0,overlap:3,relief:6,combined:9}[s.plan]??0;
+ const wage=Math.max(18,Math.min(45,Number(s.wage)||23));
+ const cost=hours*wage;
+ return {attendance,scheduled,floor,backup,lost,available,gap,ok:gap===0,cost,weekCost:cost*5,monthCost:cost*22,extraPerChild:cost/attendance,enhanced:s.support==="enhanced",overlapActive};
+}
 function staffView(){
  const m=staffModel(),s=state.staffing;
- const plans=[["minimum","Minimum-only schedule","No reserve coverage"],["overlap","Overlapping shifts","One qualified relief interval"],["relief","Qualified relief employee","One qualified coverage position"],["combined","Overlap and relief","Two modeled backup positions"]];
- const shocks=[["break","Routine restroom break"],["sick","Unexpected employee illness"],["double","Two competing interruptions"],["emergency","Emergency transport plus an absence"]];
- return `<div class="section-top"><div><div class="kicker">03 · Organizational resilience</div><h2>When the staffing plan can't bend.</h2><p>Build a coverage response that works when employees are human and emergencies are real.</p></div></div><div class="actions lesson-revisit">${hButton("review-lesson","Review the staffing lesson","outline")}</div><div class="layout-main"><section class="panel"><h3>Design the day</h3><p class="muted">Choose a sample plan, labor cost, and disruption. This models backup capacity, not age-specific California staffing ratios or legal compliance.</p><label for="staffPlan">Staffing design</label><select id="staffPlan" data-change="staff-plan">${plans.map(([id,t,detail])=>`<option value="${id}" ${s.plan===id?"selected":""}>${t}: ${detail}</option>`).join("")}</select><label for="staffShock">What happens today?</label><select id="staffShock" data-change="staff-shock">${shocks.map(([id,t])=>`<option value="${id}" ${s.disruption===id?"selected":""}>${t}</option>`).join("")}</select><label for="staffWage">Illustrative total hourly employer cost: <strong>$${s.wage}/hour</strong></label><input id="staffWage" type="range" min="18" max="45" step="1" value="${s.wage}" data-change="staff-wage"><div class="lab-results"><div><span>Added daily labor cost</span><strong>$${m.cost}</strong></div><div><span>Modeled relief positions</span><strong>${m.slots}</strong></div><div><span>Simultaneous needs</span><strong>${m.req}</strong></div></div><div class="status-banner ${m.ok?"good":"bad"}">${m.ok?"This plan has enough modeled backup capacity for the selected disruption.":"This plan has a modeled coverage gap. Restore actual qualified supervision before proceeding."}</div><p class="tiny muted">Choose a staffing plan or disruption to activate the next step.</p><p><strong>Director's next action:</strong> ${m.ok?"Verify the relief employee is eligible, present, available, and appropriately assigned.":"Arrange additional qualified relief, reorganize rooms only when permitted, or limit admission/operations until real supervision can be maintained."}</p><div class="actions journey-next">${journeyButton()}</div><div class="callout"><strong>Remember the budget.</strong><p>Relief staffing has a cost, but operating without qualified coverage is not a cost-saving strategy. Verify the legal requirements for the actual ages, license type, and attendance.</p></div></section><aside class="sidepanel"><h3>What this model tests</h3><p><strong>Technical:</strong> Who is actually qualified, cleared, and present?</p><p><strong>Human:</strong> Can employees attend to ordinary needs without coercion or burnout?</p><p><strong>Conceptual:</strong> Does the budget fund a response when a predictable interruption occurs?</p><p class="muted tiny">The example assumes that a designated backup can address one simultaneous assignment. Real facilities must assess room configuration, age groups, children with individualized support needs, and supervision quality.</p></aside></div>`;
+ const plans=[["minimum","Minimum-only schedule","No reserved qualified relief"],["overlap","Overlapping shifts","One relief teacher during planned overlap"],["relief","Qualified relief employee","One eligible relief teacher available"],["combined","Overlap and relief","Two during overlap; one outside it"]];
+ const shocks=[["break","Routine restroom break (1 unavailable)"],["sick","Unexpected sick call (1 unavailable)"],["double","Two competing interruptions (2 unavailable)"],["emergency","Emergency transport plus absence (2 unavailable)"]];
+ return `<div class="section-top"><div><div class="kicker">03 · Staffing, finance, and continuity</div><h2>When the staffing plan can't bend.</h2><p>Explore how attendance, real employee presence, funding, and predictable interruptions affect supervisory decisions.</p></div></div>
+ <div class="actions lesson-revisit">${hButton("review-lesson","Review the staffing lesson","outline")}</div>
+ <div class="layout-main">
+ <section class="panel staff-panel">
+ <div class="kicker">Applied operations laboratory</div><h3>Build a coverage plan, then stress-test it.</h3>
+ <p class="muted">The worked example assumes a licensed California preschool center using a simplified 1:12 teacher-child floor. Other age groups, Title 5 arrangements, room configurations, and individualized support needs require separate analysis. This model does not certify compliance.</p>
+ <div class="staff-section"><h4>1. Who is actually present?</h4>
+ <div class="staff-controls">
+ <div><label for="staffAttendance">Children attending: <strong>${m.attendance}</strong></label><input id="staffAttendance" type="range" min="6" max="36" step="1" value="${m.attendance}" data-change="staff-attendance"></div>
+ <div><label for="staffTeachers">Qualified teachers scheduled onsite: <strong>${m.scheduled}</strong></label><input id="staffTeachers" type="range" min="1" max="4" step="1" value="${m.scheduled}" data-change="staff-teachers"></div>
+ </div><div class="staff-summary"><strong>Illustrative teacher floor: ${m.floor}</strong><span>Based only on ${m.attendance} preschool children ÷ 12, rounded up. Each person counted must be eligible, physically available, and supervising appropriately.</span></div></div>
+ <div class="staff-section"><h4>2. How will you handle interruptions?</h4>
+ <div class="staff-controls">
+ <div><label for="staffPlan">Reserve staffing design</label><select id="staffPlan" data-change="staff-plan">${plans.map(([id,name,note])=>`<option value="${id}" ${s.plan===id?"selected":""}>${name}: ${note}</option>`).join("")}</select></div>
+ <div><label for="staffShock">Incident that removes staff from coverage</label><select id="staffShock" data-change="staff-shock">${shocks.map(([id,label])=>`<option value="${id}" ${s.disruption===id?"selected":""}>${label}</option>`).join("")}</select></div>
+ <div><label for="staffWindow">When does the incident occur?</label><select id="staffWindow" data-change="staff-window"><option value="during" ${s.window!=="outside"?"selected":""}>During scheduled overlap</option><option value="outside" ${s.window==="outside"?"selected":""}>Outside the overlap window</option></select></div>
+ <div><label for="staffSupport">Individualized supervision considerations</label><select id="staffSupport" data-change="staff-support"><option value="routine" ${s.support!=="enhanced"?"selected":""}>Routine group needs</option><option value="enhanced" ${s.support==="enhanced"?"selected":""}>Child needs intensive individualized support</option></select></div>
+ </div></div>
+ <div class="staff-section"><h4>3. Budget for the relief arrangement</h4><label for="staffWage">Illustrative fully loaded cost per staff-hour: <strong>$${s.wage}</strong></label><input id="staffWage" type="range" min="18" max="45" step="1" value="${s.wage}" data-change="staff-wage">
+ <div class="lab-results"><div><span>Additional daily labor</span><strong>$${m.cost}</strong></div><div><span>Five-day estimate</span><strong>$${m.weekCost}</strong></div><div><span>22-day estimate</span><strong>$${m.monthCost.toLocaleString()}</strong></div></div>
+ <p class="tiny muted">Assumed additional paid hours: minimum 0, overlapping 3, relief 6, combined 9 per day. These are examples, not actual quoted labor budgets or staffing schedules. Added daily expense per attending child: $${m.extraPerChild.toFixed(2)}.</p></div>
+ <div class="staff-section"><h4>4. Evaluate the decision</h4>
+ <div class="coverage-summary" aria-live="polite">
+ <div><span>Scheduled teachers</span><strong>${m.scheduled}</strong></div>
+ <div><span>Qualified reserve available now</span><strong>+${m.backup}</strong></div>
+ <div><span>Unavailable due to incident</span><strong>−${m.lost}</strong></div>
+ <div><span>Available for group coverage</span><strong>${m.available}</strong></div>
+ <div><span>Illustrative floor for attendance</span><strong>${m.floor}</strong></div>
+ </div>
+ <div class="status-banner ${m.ok?"good":"bad"}">${m.ok?"The modeled numerical teacher floor is met after this interruption.":"Coverage gap: the model is short "+m.gap+" qualified teacher"+(m.gap===1?"":"s")+" after the interruption. Do not proceed as though staffing is adequate."}</div>
+ ${m.enhanced?`<div class="staff-support-warning"><strong>Individualized support consideration.</strong> ${termHtml("Minimum ratio")} compliance alone cannot establish whether this child receives appropriate supervision, accommodations, or communication support. Review the actual child-specific plan and available staffing.</div>`:""}
+ <p><strong>Director's next action:</strong> ${m.ok?"Verify classroom assignments, actual supervision, staff qualifications, and ability to maintain coverage throughout the day.":"Obtain suitable qualified relief, change arrangements where permitted, or reduce attendance and operations until the program can provide required supervision."}</p>
+ ${sourceHtml("staff")}
+ <div class="actions journey-next">${journeyButton()}</div></div></section>
+ <aside class="sidepanel"><h3>Leadership skills in action</h3>
+ <p><strong>${termHtml("Technical skill")}:</strong> Determine who is qualified, onsite, and counted toward actual classroom supervision.</p>
+ <p><strong>${termHtml("Human skill")}:</strong> Recognize that employees cannot postpone illness or restroom needs on command.</p>
+ <p><strong>${termHtml("Conceptual skill")}:</strong> Connect employee schedules, enrollment, family needs, and the operating budget.</p>
+ <div class="callout"><strong>A policy cannot create an employee.</strong><p>When coverage does not exist, repeating the rule or asking staff to work harder will not solve the underlying resources problem.</p></div>
+ <p class="tiny muted">Think about an ordinary day in your own program. How many times can the schedule tolerate an unexpected absence without forcing a supervisor to improvise?</p></aside></div>`;
 }
 const clsOptions=[["","Choose classification"],["observed","Directly observed"],["recorded","Recorded evidence"],["alleged","Reported allegation"],["inference","Inference"],["forecast","Prediction"]];
 function evidenceView(){
@@ -283,6 +337,10 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")hideDefinitions();})
  else if(type==="staff-plan"){state.staffing.plan=el.value;state.sequence.staffTouched=true;}
  else if(type==="staff-shock"){state.staffing.disruption=el.value;state.sequence.staffTouched=true;}
  else if(type==="staff-wage"){state.staffing.wage=Math.max(18,Math.min(45,Number(el.value)||23));state.sequence.staffTouched=true;}
+ else if(type==="staff-attendance"){state.staffing.attendance=Math.max(6,Math.min(36,Number(el.value)||12));state.sequence.staffTouched=true;}
+ else if(type==="staff-teachers"){state.staffing.qualifiedTeachers=Math.max(1,Math.min(4,Number(el.value)||1));state.sequence.staffTouched=true;}
+ else if(type==="staff-window"){state.staffing.window=el.value;state.sequence.staffTouched=true;}
+ else if(type==="staff-support"){state.staffing.support=el.value;state.sequence.staffTouched=true;}
  else if(type==="evidence"){if(!state.evidenceReviewed)state.evidence[el.dataset.id]=el.value;}
  else if(type==="diagnostic-skill"||type==="diagnostic-cause"){state.assessment.diagnostic[el.dataset.id]??={};state.assessment.diagnostic[el.dataset.id][type==="diagnostic-skill"?"skill":"cause"]=el.value;}
  else if(type==="capstone"){state.assessment.capstone[el.dataset.stage]=el.value;}
