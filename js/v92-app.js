@@ -1,18 +1,51 @@
 (function DirectorDeskApp(){
 "use strict";
 const D=window.CWC_V92_DATA;
+const L=window.CWC_V94_LESSONS||{modules:{},glossary:{}};
 if(!D){document.body.innerHTML="<p>The scenario data could not be loaded.</p>";return;}
 const KEY="cwc-v92-directors-day-state";
 const pages=["overview","chapters","cases","staff","evidence","assessment","facilitator"];
 const navLabels={overview:"Program overview",chapters:"Learning chapters",cases:"Applied simulations",staff:"Staffing Lab",evidence:"Evidence Journal",assessment:"Competency assessment",facilitator:"Facilitator review"};
 const navIcons={overview:"⌂",chapters:"◫",cases:"◈",staff:"♟",evidence:"▤",assessment:"◉",facilitator:"▣"};
-function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false};}
-function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
+function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{}};}
+function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},introSeen:raw.introSeen||{},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
 let state=restore();
 try{const direct=new URLSearchParams(window.location.search);const requested=direct.get("case");if(requested&&D.cases.some(c=>c.id===requested)){state.caseId=requested;state.page="cases";}const page=direct.get("page");if(page&&pages.includes(page))state.page=page;}catch(e){}
 const $=sel=>document.querySelector(sel);
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){const n=$("#storageNote");if(n)n.textContent="Local progress could not be saved on this device.";}}
+function termHtml(raw){
+ const source=esc(raw);
+ const words=Object.keys(L.glossary||{}).sort((a,b)=>b.length-a.length);
+ if(!words.length)return source;
+ const re=new RegExp("\\b("+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\function getCase(id){")).join("|")+")\\b","gi");
+ return source.replace(re,(matched)=>{
+   const key=words.find(w=>w.toLowerCase()===matched.toLowerCase());
+   const info=L.glossary[key]||"";
+   return '<span class="term-wrap"><button type="button" class="term-button" data-action="term" aria-expanded="false" aria-label="'+esc(matched)+', show definition">'+esc(matched)+'<span aria-hidden="true"> ⓘ</span></button><span class="term-definition" role="note" hidden>'+esc(info)+'</span></span>';
+ });
+}
+
+function moduleKey(){if(state.page==="cases")return "case:"+state.caseId;return state.page;}
+
+function introductoryLesson(key){
+ const info=L.modules?.[key];
+ if(!info)return "<div class='note'>The lesson for this activity is unavailable.</div>";
+ return '<section class="panel module-lesson" aria-label="Learning lesson"><span class="eyebrow">'+esc(info.kicker)+'</span><h2>'+esc(info.title)+'</h2><div class="lesson-text">'+info.paragraphs.map(p=>'<p>'+termHtml(p)+'</p>').join("")+'</div><div class="learning-check"><h3>What you will practice</h3><ul>'+info.focus.map(p=>'<li>'+termHtml(p)+'</li>').join("")+'</ul></div><div class="lesson-question"><strong>Before you decide</strong><p>'+termHtml(info.question)+'</p></div><p class="tiny muted">Select underlined terms to see their definitions. These explanations add context without simplifying away professional concepts.</p><div class="actions">'+hButton("complete-lesson","Continue to "+(key.startsWith("case:")?"the case":key==="staff"?"the staffing lab":key==="evidence"?"the evidence journal":key==="facilitator"?"facilitator review":"the assessment")+" →","primary")+'</div></section>';
+}
+
+function realCaseAfterword(c){
+ const info=L.modules?.["case:"+c.id]?.afterword;
+ if(!info)return "";
+ return '<section class="afterword" aria-label="Origin of this training scenario"><div class="afterword-kicker">AFTER THE SCENARIO · THE REAL-WORLD FOUNDATION</div><h3>'+esc(info.label)+'</h3><p>'+termHtml(info.text)+'</p><p class="tiny muted">Real people are not identified in this exercise. All consequences and optional branches are instructional, not findings about an actual person.</p></section>';
+}
+
+function hideDefinitions(){
+ document.querySelectorAll(".term-button[aria-expanded='true']").forEach(btn=>{
+  btn.setAttribute("aria-expanded","false");
+  const panel=btn.nextElementSibling;if(panel)panel.hidden=true;
+ });
+}
 function getCase(id){return D.cases.find(c=>c.id===id)||D.cases[0];}
 function work(id){return state.caseWork[id]||(state.caseWork[id]={step:0,chosen:[]});}
 function optionFor(stage,id){return stage.options.find(o=>o.id===id);}
