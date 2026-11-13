@@ -7,8 +7,8 @@ const KEY="cwc-v92-directors-day-state";
 const pages=["overview","chapters","cases","staff","evidence","assessment","facilitator"];
 const navLabels={overview:"Program overview",chapters:"Learning chapters",cases:"Applied simulations",staff:"Staffing Lab",evidence:"Evidence Journal",assessment:"Competency assessment",facilitator:"Facilitator review"};
 const navIcons={overview:"⌂",chapters:"◫",cases:"◈",staff:"♟",evidence:"▤",assessment:"◉",facilitator:"▣"};
-function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{}};}
-function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},introSeen:raw.introSeen||{},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
+function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false}};}
+function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},introSeen:raw.introSeen||{},sequence:{...z.sequence,...raw.sequence},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
 let state=restore();
 try{const direct=new URLSearchParams(window.location.search);const requested=direct.get("case");if(requested&&D.cases.some(c=>c.id===requested)){state.caseId=requested;state.page="cases";}const page=direct.get("page");if(page&&pages.includes(page))state.page=page;}catch(e){}
 const $=sel=>document.querySelector(sel);
@@ -28,13 +28,14 @@ function termHtml(raw){
 }
 function moduleKey(){if(state.page==="cases")return "case:"+state.caseId;return state.page;}
 function continueJourney(){
+ if(state.page==="cases"&&work(state.caseId).step<getCase(state.caseId).stages.length)return;
  if(state.page==="cases"){
   if(state.caseId==="pickup"){state.caseId="hospital";return go("cases");}
   if(state.caseId==="hospital"){state.caseId="staff";return go("cases");}
   return go("staff");
  }
- if(state.page==="staff")return go("evidence");
- if(state.page==="evidence")return go("assessment");
+ if(state.page==="staff"){if(!state.sequence.staffTouched)return;state.sequence.staffCompleted=true;save();return go("evidence");}
+ if(state.page==="evidence"){if(!state.evidenceReviewed)return;return go("assessment");}
  if(state.page==="assessment")return go("facilitator");
  return go("chapters");
 }
@@ -71,9 +72,39 @@ function work(id){return state.caseWork[id]||(state.caseWork[id]={step:0,chosen:
 function optionFor(stage,id){return stage.options.find(o=>o.id===id);}
 function doneCount(){return D.cases.filter(c=>work(c.id).step>=c.stages.length).length;}
 function courseProgress(){try{const key="care-with-a-compass-supervisor-v72-72q",raw=localStorage.getItem(key)||sessionStorage.getItem(key);if(!raw)return {done:0,capstone:false};const s=JSON.parse(raw);return {done:Array.isArray(s.done)?s.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=5).length:0,capstone:!!s.capstone?.completed};}catch(e){return {done:0,capstone:false};}}
+function courseReady(){return courseProgress().capstone;}
+function allCasesDone(){return D.cases.every(c=>work(c.id).step>=c.stages.length);}
+function staffReady(){return allCasesDone();}
+function staffingDone(){return !!state.sequence?.staffCompleted||state.evidenceReviewed||state.assessment.submitted;}
+function nextRequired(){
+ if(!courseReady())return {page:"chapters"};
+ for(const c of D.cases)if(work(c.id).step<c.stages.length)return {page:"cases",caseId:c.id};
+ if(!staffingDone())return {page:"staff"};
+ if(!state.evidenceReviewed)return {page:"evidence"};
+ if(!state.assessment.submitted)return {page:"assessment"};
+ return {page:"facilitator"};
+}
+function canOpen(page){
+ if(page==="overview"||page==="chapters")return true;
+ if(page==="cases")return courseReady();
+ if(page==="staff")return staffReady();
+ if(page==="evidence")return staffingDone();
+ if(page==="assessment")return state.evidenceReviewed;
+ if(page==="facilitator")return state.assessment.submitted;
+ return false;
+}
+function canOpenCase(id){
+ const i=D.cases.findIndex(c=>c.id===id);
+ return courseReady()&&i>=0&&(i===0||D.cases.slice(0,i).every(c=>work(c.id).step>=c.stages.length));
+}
+function resumeLinear(){
+ const next=nextRequired();
+ if(next.caseId)state.caseId=next.caseId;
+ return go(next.page);
+}
 function hButton(action,label,kind="secondary",extra=""){return `<button type="button" data-action="${esc(action)}" class="btn ${kind}" ${extra}>${label}</button>`;}
 function label(title,body){return `<div class="kicker">${esc(title)}</div>${body}`;}
-function nav(){return pages.map(p=>`<button data-action="nav" data-page="${p}" class="navbtn ${state.page===p?"active":""}" aria-current="${state.page===p?"page":"false"}"><span class="navicon" aria-hidden="true">${navIcons[p]}</span><span>${esc(navLabels[p])}</span></button>`).join("");}
+function nav(){return pages.map(p=>{const permitted=canOpen(p),active=state.page===p;return `<button data-action="nav" data-page="${p}" class="navbtn ${active?"active":""} ${!permitted?"locked":""}" aria-current="${active?"page":"false"}" ${permitted?"":"disabled aria-label='"+esc(navLabels[p])+", upcoming section'"}><span class="navicon" aria-hidden="true">${navIcons[p]}</span><span>${esc(navLabels[p])}</span>${!permitted?'<span class="lock-mark" aria-hidden="true">⌁</span>':""}</button>`}).join("");}
 function iconCard(value,name,small=""){return `<div class="metric"><strong>${esc(value)}</strong><span>${esc(name)}</span>${small?`<small>${esc(small)}</small>`:""}</div>`;}
 function overview(){
  const chapters=courseProgress();
@@ -163,7 +194,7 @@ function render(){
  app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.4.0</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><button class="sidebar-course-link" type="button" data-action="go-chapters">◫ Open learning chapters</button><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><span class="tiny muted">LOCAL DEMONSTRATION</span><span class="avatar" aria-hidden="true">C</span></div></header><main id="main" tabindex="-1">${content}</main><footer><span>Care with a Compass · Supervisor Leadership Program · v9.4.0</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
  document.title="Care with a Compass | Supervisor Leadership Program v9.4";
 }
-function go(page){if(!pages.includes(page))return;state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
+function go(page){if(!canOpen(page))return; if(page==="cases"&&!canOpenCase(state.caseId)){const next=nextRequired();if(next.caseId)state.caseId=next.caseId;else state.caseId=D.cases[0].id;}state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
 function download(name,body,type){const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function report(){
  const a=state.assessment,r=assessScores();
@@ -175,7 +206,7 @@ document.addEventListener("click",e=>{
  const action=btn.dataset.action;
  if(action==="term"){const panel=btn.nextElementSibling;if(!panel)return;const wasOpen=btn.getAttribute("aria-expanded")==="true";hideDefinitions();if(!wasOpen){btn.setAttribute("aria-expanded","true");panel.hidden=false;}return;}
  if(action==="complete-lesson"){const key=moduleKey();if(!L.modules?.[key])return;state.introSeen[key]=true;save();return render();}
- if(action==="start-training")return go("chapters");
+ if(action==="start-training")return resumeLinear();
  if(action==="journey-next")return continueJourney();
  if(action==="review-lesson"){const key=moduleKey();delete state.introSeen[key];save();return render();}
  if(action==="nav")return go(btn.dataset.page);
@@ -185,7 +216,7 @@ document.addEventListener("click",e=>{
  if(action==="go-evidence")return go("evidence");
  if(action==="go-assessment")return go("assessment");
  if(action==="go-facilitator")return go("facilitator");
- if(action==="open-case"){state.caseId=btn.dataset.id;return go("cases");}
+ if(action==="open-case"){if(!canOpenCase(btn.dataset.id))return;state.caseId=btn.dataset.id;return go("cases");}
  if(action==="case-answer"){
   const c=getCase(state.caseId),w=work(c.id);if(w.step>=c.stages.length||w.chosen[w.step])return;
   if(!optionFor(c.stages[w.step],btn.dataset.option))return;
@@ -212,9 +243,9 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")hideDefinitions();})
  const el=e.target,type=el.dataset.change;if(!type)return;
  if(type==="case-select"){state.caseId=el.value;}
  else if(type==="variant-select"){if(state.variants[state.caseId]!==el.value&&work(state.caseId).chosen.length&&!window.confirm("Switching starting conditions restarts this scenario. Continue?"))return render();state.variants[state.caseId]=el.value;state.caseWork[state.caseId]={step:0,chosen:[]};}
- else if(type==="staff-plan"){state.staffing.plan=el.value;}
- else if(type==="staff-shock"){state.staffing.disruption=el.value;}
- else if(type==="staff-wage"){state.staffing.wage=Math.max(18,Math.min(45,Number(el.value)||23));}
+ else if(type==="staff-plan"){state.staffing.plan=el.value;state.sequence.staffTouched=true;}
+ else if(type==="staff-shock"){state.staffing.disruption=el.value;state.sequence.staffTouched=true;}
+ else if(type==="staff-wage"){state.staffing.wage=Math.max(18,Math.min(45,Number(el.value)||23));state.sequence.staffTouched=true;}
  else if(type==="evidence"){if(!state.evidenceReviewed)state.evidence[el.dataset.id]=el.value;}
  else if(type==="diagnostic-skill"||type==="diagnostic-cause"){state.assessment.diagnostic[el.dataset.id]??={};state.assessment.diagnostic[el.dataset.id][type==="diagnostic-skill"?"skill":"cause"]=el.value;}
  else if(type==="capstone"){state.assessment.capstone[el.dataset.stage]=el.value;}
