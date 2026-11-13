@@ -249,3 +249,48 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 @media(max-width:870px){.topbar-right{display:flex!important}.topbar{flex-wrap:wrap;gap:8px}.topbar-right{margin-left:auto}}
 @media(max-width:560px){.topbar-right{width:100%;margin-left:0}.utility-actions{width:100%;justify-content:stretch}.utility-button{flex:1 1 0;min-width:0;font-size:12px}.topbar h1{font-size:20px}}
 @media print{.utility-actions{display:none!important}}
+
+/* v9.6: consistent source notes, term help, answer controls and expanded staffing lab. */
+.term-definition{display:none}
+.term-wrap:hover>.term-definition,
+.term-wrap:focus-within>.term-definition,
+.term-button[aria-expanded="true"]+.term-definition{display:block}
+.term-definition[hidden]{display:none!important}
+.hover-term{position:relative;display:inline;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:#8f73ab;text-underline-offset:3px;color:#5c3682;cursor:help}
+.hover-definition{display:none;position:absolute;left:0;top:calc(100% + 7px);width:min(310px,calc(100vw - 52px));background:#291f39;color:#fff;border:1px solid #b99fca;border-radius:10px;padding:12px 15px;z-index:80;box-shadow:0 12px 30px #34224435;text-align:left;font:normal 13px/1.6 system-ui,sans-serif;letter-spacing:0;pointer-events:none;white-space:normal}
+.hover-term:hover>.hover-definition,
+.answer:focus-visible .hover-definition,
+.radio-line:focus-within .hover-definition{display:block}
+.scenario-sources{margin:18px 0 2px;background:#f8f5fa;border:1px solid #e1d8e8;border-radius:11px;padding:14px 17px;font-size:13px}
+.scenario-sources summary{font-weight:800;cursor:pointer;color:#583671}
+.scenario-sources ul{padding:0 0 0 21px;margin:15px 0;display:flex;flex-direction:column;gap:13px}
+.scenario-sources li{line-height:1.55}
+.scenario-sources a{color:#5a3981;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.scenario-sources .source-kind{display:inline-block;margin-left:8px;color:#7a7283;font-size:11px}
+.scenario-sources li p{font-size:12px;margin:5px 0 0;color:#5f5868}
+.scenario-sources>p{margin:0}
+.afterword-paragraphs p{font-size:14px;line-height:1.87;margin:12px 0 17px}
+.afterword-question{background:white;padding:17px 19px;border:1px solid #ecd8b3;border-left:4px solid #ba8a41;border-radius:9px;margin:22px 0}
+.afterword-question strong{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#715028}
+.afterword-question p{font:normal 17px/1.65 Georgia,serif;margin:10px 0 0;color:#493b29}
+.staff-panel h3{font-size:24px}
+.staff-panel h4{font:normal 21px/1.35 Georgia,serif;color:#32283b;margin:0 0 15px}
+.staff-section{border-top:1px solid #e3dfdc;margin-top:24px;padding-top:22px}
+.staff-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px}
+.staff-controls label{margin-top:7px}
+.staff-summary{background:#f4eff8;border:1px solid #ded1e7;border-radius:11px;margin:17px 0;padding:15px;display:flex;flex-direction:column;gap:6px}
+.staff-summary strong{font-size:14px;color:#51376d}
+.staff-summary span{color:#61576d;font-size:12px}
+.staff-panel .lab-results{margin:17px 0 10px}
+.staff-panel .lab-results>div{background:#f7f4f9;border:1px solid #e8e0ee}
+.coverage-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:17px 0}
+.coverage-summary>div{padding:12px 7px;border-radius:9px;border:1px solid #e5dde9;background:#faf8fc;text-align:center}
+.coverage-summary span{display:block;font-size:10px;line-height:1.45;color:#61596b}
+.coverage-summary strong{display:block;font:normal 23px Georgia,serif;color:#44305d;margin-top:7px}
+.staff-support-warning{margin:12px 0;padding:15px;border-radius:10px;background:#fff6e6;border:1px solid #e8d4ac;font-size:13px;line-height:1.7}
+.staff-support-warning strong{color:#87552c}
+.staff-panel .journey-next{margin:20px 0}
+.radio-line{min-height:56px;border-radius:11px}
+.radio-line:focus-within{border-color:#715198;outline:2px solid #bda4d2;outline-offset:2px}
+@media(max-width:750px){.staff-controls{grid-template-columns:1fr}.coverage-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:450px){.coverage-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.scenario-sources .source-kind{display:block;margin:3px 0}.hover-definition{width:240px}}
