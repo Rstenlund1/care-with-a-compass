@@ -185,3 +185,17 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 @media(max-width:620px){body{font-size:14px}main{padding:24px 15px 45px}.topbar h1{font-size:20px}.hero{padding:26px 22px}.hero h2{font-size:32px}.hero p{font-size:14px}.metrics,.case-grid,.feature-grid,.score-grid,.gate-grid,.lab-results{grid-template-columns:1fr 1fr}.metric{padding:14px}.section-top{display:block}.section-top h2{font-size:27px}.case-tile{min-height:240px}.toolbar{display:flex;flex-direction:column;align-items:stretch}.case-select{display:block;width:100%}.case-select select{width:100%}.evidence-item,.question-grid{grid-template-columns:1fr}.evidence-item{gap:0}.layout-main{display:block}.panel{padding:20px 17px}.audit-row{display:block}.audit-row>span{display:block;margin-top:4px}.hero-actions{display:flex;flex-direction:column;align-items:stretch}.hero-actions>.btn{width:100%}footer{display:block;line-height:1.8}}
 @media(max-width:390px){.metrics,.case-grid,.feature-grid,.score-grid,.gate-grid{grid-template-columns:1fr}.tile-end{align-items:flex-start;flex-direction:column}}
 @media print{.sidebar,.topbar,footer,.btn,.toolbar,.hero,.answers{display:none!important}.layout{display:block}main{max-width:none;padding:0}.panel,.sidepanel{break-inside:avoid;box-shadow:none;border:1px solid #aaa}body{background:#fff}}
+
+/* v9.3: one supervisor program with integrated five-chapter course */
+.program-roadmap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:22px 0 32px}
+.roadmap-step{display:flex;gap:15px;background:white;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);min-height:225px}
+.roadmap-no{color:#957ab0;font-family:Georgia,serif;font-size:28px;line-height:1;flex:0 0 36px}
+.roadmap-step h3{font-size:20px}
+.roadmap-step p{font-size:13px;line-height:1.65;color:var(--sub)}
+.roadmap-step .btn{font-size:12px;min-height:40px}
+.sidebar-course-link{background:transparent;border:0;padding:0;color:#eacc9c;font-weight:750;text-align:left;font-size:13px;cursor:pointer}
+.sidebar-course-link:hover{text-decoration:underline}
+.chapter-embed-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:clamp(11px,2.5vw,25px);overflow:hidden;box-shadow:var(--shadow)}
+.chapter-frame{width:100%;height:1450px;min-height:650px;border:0;display:block;background:transparent}
+@media(max-width:1150px){.program-roadmap{grid-template-columns:1fr}.roadmap-step{min-height:unset}}
+@media print{.program-roadmap,.chapter-embed-wrap{box-shadow:none}.chapter-frame{min-height:850px}}
