@@ -24,7 +24,7 @@ function termHtml(raw){
  return source.replace(re,(matched)=>{
    const key=words.find(w=>w.toLowerCase()===matched.toLowerCase());
    const info=L.glossary[key]||"";
-   return '<span class="term-wrap"><button type="button" class="term-button" data-action="term" aria-expanded="false" aria-label="'+esc(matched)+', show definition" title="'+esc(info)+'">'+esc(matched)+'<span aria-hidden="true"> ⓘ</span></button><span class="term-definition" role="note" hidden>'+esc(info)+'</span></span>';
+   return '<span class="term-wrap"><button type="button" class="term-button" data-action="term" aria-expanded="false" aria-label="'+esc(matched)+', show definition" title="'+esc(info)+'">'+esc(matched)+'<span aria-hidden="true"> ⓘ</span></button><span class="term-definition" role="note">'+esc(info)+'</span></span>';
  });
 }
 function moduleKey(){if(state.page==="cases")return "case:"+state.caseId;return state.page;}
@@ -65,7 +65,7 @@ function realCaseAfterword(c){
 function hideDefinitions(){
  document.querySelectorAll(".term-button[aria-expanded='true']").forEach(btn=>{
   btn.setAttribute("aria-expanded","false");
-  const panel=btn.nextElementSibling;if(panel)panel.hidden=true;
+  // Visibility is managed by hover/focus CSS and aria-expanded.
  });
 }
 function sourceHtml(topic,stageIndex){
@@ -76,6 +76,24 @@ function sourceHtml(topic,stageIndex){
   return '<li><a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">'+esc(r.label)+'</a><span class="source-kind">'+esc(r.kind)+'</span><p>'+esc(r.note)+'</p></li>';
  }).filter(Boolean).join("");
  return '<details class="scenario-sources" open><summary>Why this decision? Laws, standards, and sources</summary><ul>'+links+'</ul><p class="tiny muted">Sources explain the governing requirements or professional rationale. A recommended practice is not automatically a legal mandate; check current rules for the program’s license type.</p></details>';
+}
+function inlineTerms(raw){
+ const source=esc(raw);
+ const words=Object.keys(L.glossary||{}).sort((a,b)=>b.length-a.length);
+ if(!words.length)return source;
+ const re=new RegExp("\\b("+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\function getCase(id){")).join("|")+")\\b","gi");
+ return source.replace(re,(matched)=>{
+   const key=words.find(w=>w.toLowerCase()===matched.toLowerCase());
+   const definition=L.glossary[key]||"";
+   return '<span class="hover-term" tabindex="0" title="'+esc(definition)+'" aria-label="'+esc(matched)+': '+esc(definition)+'">'+esc(matched)+'<span class="hover-definition" role="note">'+esc(definition)+'</span></span>';
+ });
+}
+function orderedOptions(options,key){
+ let hash=(state.orderSeed||1)>>>0;
+ for(const c of String(key))hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;
+ const arr=options.slice();
+ for(let i=arr.length-1;i>0;i--){hash=(Math.imul(hash,1664525)+1013904223)>>>0;const j=hash%(i+1);[arr[i],arr[j]]=[arr[j],arr[i]];}
+ return arr;
 }
 function getCase(id){return D.cases.find(c=>c.id===id)||D.cases[0];}
 function work(id){return state.caseWork[id]||(state.caseWork[id]={step:0,chosen:[]});}
@@ -222,7 +240,7 @@ function csv(x){return '"'+String(x??"").replace(/"/g,'""')+'"';}
 document.addEventListener("click",e=>{
  const btn=e.target.closest("button[data-action]");if(!btn)return;
  const action=btn.dataset.action;
- if(action==="term"){const panel=btn.nextElementSibling;if(!panel)return;const wasOpen=btn.getAttribute("aria-expanded")==="true";hideDefinitions();if(!wasOpen){btn.setAttribute("aria-expanded","true");panel.hidden=false;}return;}
+ if(action==="term"){const wasOpen=btn.getAttribute("aria-expanded")==="true";hideDefinitions();if(!wasOpen)btn.setAttribute("aria-expanded","true");return;}
  if(action==="complete-lesson"){const key=moduleKey();if(!L.modules?.[key])return;state.introSeen[key]=true;save();return render();}
  if(action==="start-training")return resumeLinear();
  if(action==="home")return returnHome();
