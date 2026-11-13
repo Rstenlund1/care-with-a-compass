@@ -236,3 +236,16 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .optional-review .actions{padding-top:14px}
 .journey-next{margin-top:20px}
 .journey-next .btn.primary{padding:15px 23px}
+
+/* v9.5.1: persistent, clearly labeled utility controls. */
+.topbar-right{display:flex;align-items:center;flex:0 0 auto}
+.utility-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.utility-button{appearance:none;display:inline-flex;align-items:center;gap:7px;justify-content:center;min-height:40px;padding:9px 13px;border:1px solid #bdb0ca;border-radius:9px;background:#fff;color:#44305d;font-size:12px;font-weight:760;white-space:nowrap;cursor:pointer}
+.utility-button:hover{border-color:#73518b;background:#f5effa}
+.utility-button:focus-visible{outline:3px solid #9c65c7;outline-offset:2px}
+.utility-button span{font-size:17px;line-height:1}
+.utility-reset{border-color:#d7c6c7;color:#79434c}
+.utility-reset:hover{border-color:#bc6879;background:#fff4f5}
+@media(max-width:870px){.topbar-right{display:flex!important}.topbar{flex-wrap:wrap;gap:8px}.topbar-right{margin-left:auto}}
+@media(max-width:560px){.topbar-right{width:100%;margin-left:0}.utility-actions{width:100%;justify-content:stretch}.utility-button{flex:1 1 0;min-width:0;font-size:12px}.topbar h1{font-size:20px}}
+@media print{.utility-actions{display:none!important}}
