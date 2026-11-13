@@ -294,3 +294,11 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .radio-line:focus-within{border-color:#715198;outline:2px solid #bda4d2;outline-offset:2px}
 @media(max-width:750px){.staff-controls{grid-template-columns:1fr}.coverage-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:450px){.coverage-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.scenario-sources .source-kind{display:block;margin:3px 0}.hover-definition{width:240px}}
+
+/* v9.6.1: replace statistics with the educational rationale on the landing page. */
+.training-rationale{background:linear-gradient(135deg,#fff 0%,#fbf8ff 100%);border:1px solid #dcd2e4;border-radius:17px;padding:clamp(24px,3.3vw,41px);margin:0 0 37px;box-shadow:var(--shadow)}
+.rationale-eyebrow{font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:#76558f;margin-bottom:12px}
+.training-rationale h2{font-size:clamp(28px,3.2vw,39px);margin:0 0 19px;max-width:900px}
+.training-rationale p{font-size:15px;line-height:1.8;color:#3e3746;max-width:920px;margin:0 0 16px}
+.training-rationale .rationale-bottom{font-size:16px;line-height:1.65;color:#39284c;border-top:1px solid #e4d9e9;margin:22px 0 0;padding-top:18px}
+@media(max-width:620px){.training-rationale{padding:24px 20px}.training-rationale p{font-size:14px}.training-rationale .rationale-bottom{font-size:15px}}
