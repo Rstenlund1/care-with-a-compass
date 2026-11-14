@@ -137,6 +137,8 @@ function certificatePrint(state,foundationReady,casesDone){
  if(!tab){global.alert("Your browser blocked the certificate window. Allow pop-ups for this website and try again.");return false;}
  tab.document.open();tab.document.write(html);tab.document.close();return true;
 }
-global.CWC_LEARNER={ready,enrollView,enroll,notice,queue,flush,chapterCompleted,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
+function resetProgress(){record.reports=[];record.completedAt="";record.sessionId="cw"+Date.now().toString(36)+Math.random().toString(36).slice(2,9);write();}
+function forgetLearner(){try{localStorage.removeItem(STORAGE);}catch(e){}record=baseline();}
+global.CWC_LEARNER={ready,enrollView,enroll,notice,queue,flush,resetProgress,forgetLearner,chapterCompleted,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
 if(configured()&&ready())global.addEventListener("load",()=>void flush());
 })(window);
