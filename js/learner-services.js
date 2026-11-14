@@ -91,7 +91,7 @@ function friendlyError(response,data){
  return "Formspree declined the report (HTTP "+response.status+"). "+(raw||"Check your form's Workflow and submission settings.");
 }
 function reportError(ch){
- const r=record.reports.find(x=>x.key==="chapter-"+Number(ch));
+ const r=record.reports.find(x=>x.key==="chapter-"+Number(ch)+"-detailed-v1");
  return r?.status==="sent"?"":String(r?.error||"").slice(0,350);
 }
 function flush(targetKey=null){
