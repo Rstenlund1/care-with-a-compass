@@ -3,11 +3,11 @@
 (function(global){
 "use strict";
 const STORAGE="cwc-learner-record-v1";
-const VERSION="9.8.1";
+const VERSION="9.8.3";
 const MAX_REPORTS=100;
 function baseline(){return {name:"",organization:"",consent:false,sessionId:"",registeredAt:"",completedAt:"",reports:[]};}
 function read(){try{const o=JSON.parse(localStorage.getItem(STORAGE)||"null");return o&&typeof o==="object"?{...baseline(),...o,reports:Array.isArray(o.reports)?o.reports.slice(-MAX_REPORTS):[]}:baseline();}catch(e){return baseline();}}
-let record=read(),sending=false;
+let record=read(),sendingPromise=null;
 function write(){try{localStorage.setItem(STORAGE,JSON.stringify(record));}catch(e){/* A browser that blocks storage cannot preserve course reports. */}}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function ready(){return record.consent===true&&record.name.trim().length>=2;}
@@ -56,23 +56,26 @@ function queue(kind,key,title,detail){
  record.reports=record.reports.slice(-MAX_REPORTS);write();
  if(configured())void flush();return true;
 }
-async function flush(){
- if(sending||!ready()||!configured())return;
- sending=true;
- try {
-  for(const item of record.reports.filter(x=>x.status!=="sent").slice(0,20)){
-   try{
-    const response=await fetch(endpoint(),{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:JSON.stringify({
-     subject:"Care with a Compass · "+item.title+" · "+record.name,
-     name:record.name,organization:record.organization||"Not specified",
-     session_id:record.sessionId,report_type:item.kind,report_date:item.createdAt,
-     report_details:reportText(item.detail),version:VERSION
-    })});
-    if(!response.ok)throw Error("Form reporting service returned "+response.status);
-    item.status="sent";item.sentAt=new Date().toISOString();delete item.error;write();
-   }catch(e){item.error="Delivery failed; stored locally for a retry.";write();break;}
-  }
- }finally{sending=false;}
+function flush(){
+ if(sendingPromise)return sendingPromise;
+ if(!ready()||!configured())return Promise.resolve();
+ sendingPromise=(async()=>{
+  try{
+   for(const item of record.reports.filter(x=>x.status!=="sent").slice(0,20)){
+    try{
+     const response=await fetch(endpoint(),{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:JSON.stringify({
+      subject:"Care with a Compass · "+item.title+" · "+record.name,
+      name:record.name,organization:record.organization||"Not specified",
+      session_id:record.sessionId,report_type:item.kind,report_date:item.createdAt,
+      report_details:reportText(item.detail),version:VERSION
+     })});
+     if(!response.ok)throw Error("Reporting service returned "+response.status);
+     item.status="sent";item.sentAt=new Date().toISOString();delete item.error;write();
+    }catch(e){item.error="Delivery failed; stored locally for a retry.";write();break;}
+   }
+  }finally{sendingPromise=null;}
+ })();
+ return sendingPromise;
 }
 function chapterCompleted(payload){
  const ch=Number(payload?.chapter);
@@ -87,6 +90,14 @@ function chapterCompleted(payload){
   outstandingGaps:Array.isArray(payload.outstandingGaps)?payload.outstandingGaps.slice(0,25).map(x=>String(x).slice(0,90)):[]
  };
  return queue("chapter","chapter-"+ch,"Chapter "+ch+" results",safe);
+}
+async function submitChapter(payload){
+ const ch=Number(payload?.chapter);
+ if(!Number.isInteger(ch)||ch<1||ch>5||!ready())return "failed";
+ chapterCompleted(payload);
+ await flush();
+ const item=record.reports.find(x=>x.key==="chapter-"+ch);
+ return item?.status==="sent"?"sent":item?"queued":"failed";
 }
 function assessmentSubmitted(r){
  const m=r?.mastery||{},s=r?.scores||{};
@@ -136,6 +147,6 @@ function certificatePrint(state,foundationReady,casesDone){
 }
 function resetProgress(){record.reports=[];record.completedAt="";record.sessionId="cw"+Date.now().toString(36)+Math.random().toString(36).slice(2,9);write();}
 function forgetLearner(){try{localStorage.removeItem(STORAGE);}catch(e){}record=baseline();}
-global.CWC_LEARNER={ready,enrollHero,enroll,notice,queue,flush,resetProgress,forgetLearner,chapterCompleted,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
+global.CWC_LEARNER={ready,enrollHero,enroll,notice,queue,flush,resetProgress,forgetLearner,chapterCompleted,submitChapter,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
 if(configured()&&ready())global.addEventListener("load",()=>void flush());
 })(window);
