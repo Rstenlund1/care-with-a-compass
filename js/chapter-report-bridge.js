@@ -68,7 +68,7 @@ global.addEventListener("message",e=>{
  if(message?.app!=="care-with-a-compass"||message.kind!=="chapter-submit-status")return;
  const ch=Number(message.chapter);
  if(Number.isInteger(ch)&&ch>=1&&ch<=5){
-  global.chapterResultStatus?.(ch,message.status);
+  global.chapterResultStatus?.(ch,message.status,String(message.error||"").slice(0,400));
  }
 });
 global.CWC_CHAPTER_REPORT={summary,notifyProgress};
