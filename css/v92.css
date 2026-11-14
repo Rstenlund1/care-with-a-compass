@@ -319,3 +319,26 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .capstone-history-item p{font-size:12px;color:var(--sub);line-height:1.55;margin:6px 0}
 .capstone-history-item .btn{flex:0 0 auto}
 @media(max-width:620px){.capstone-history-item{display:block}.capstone-history-item .btn{margin-top:8px}}
+
+/* v9.8 learner intake, public creator credit and instructor reporting */
+.hero-author{font-size:12px!important;color:#f3e6ff!important;letter-spacing:.01em;margin:13px 0 0!important}
+.hero-author strong{color:#fff}
+.learner-onboarding{min-height:100vh;display:grid;place-items:center;padding:28px 20px;background:radial-gradient(circle at 18% 15%,#3b2a59,#21182e 68%)}
+.learner-onboarding-panel{background:#fffdfb;width:min(100%,680px);padding:clamp(26px,5vw,55px);border-radius:20px;box-shadow:0 25px 65px #0004}
+.learner-onboarding-panel .eyebrow{font-weight:800;letter-spacing:.14em;font-size:12px;color:#805996}
+.learner-onboarding h1{font:normal clamp(32px,4vw,46px)/1.1 Georgia,serif;letter-spacing:-.02em;color:#312041;margin:16px 0}
+.learner-onboarding p{font-size:14px;line-height:1.75;color:#4c4254}
+.learner-onboarding .learner-creator{font-size:13px;color:#6b527b;margin:0 0 22px}
+#cwc-learner-form{display:flex;flex-direction:column;gap:10px;margin-top:25px}
+#cwc-learner-form>label:not(.learner-agreement){font-size:13px;font-weight:750;margin-top:10px;color:#30213f}
+#cwc-learner-form>input{box-sizing:border-box;width:100%;border:1px solid #cfc4d5;background:#fff;padding:13px 15px;border-radius:10px;font:15px system-ui;color:#231b2a}
+#cwc-learner-form>input:focus{outline:3px solid #d4b9ed}
+.learner-agreement{display:flex;align-items:flex-start;gap:10px;margin-top:16px;font:13px/1.65 system-ui;color:#483955}
+.learner-agreement input{flex:none;width:19px;height:19px;margin:2px 0 0}
+.learner-onboarding .learner-privacy-note{font-size:12px;color:#6b6271;margin:3px 0}
+.learner-enroll-error{font-size:12px;color:#b32335;min-height:12px;margin:0}
+#cwc-learner-form button{align-self:flex-start;margin-top:10px}
+.learner-status{border-top:1px solid #e9dfef;padding:9px 25px;font:12px/1.6 system-ui;color:#73577e;background:#faf7fc}
+.learner-status strong{color:#392745}
+.assessment-participant{padding:12px 15px;border-radius:10px;background:#f5f0f7;color:#392a45}
+@media(max-width:620px){.learner-onboarding{padding:10px}.learner-onboarding-panel{padding:25px 18px}.learner-status{padding:9px 15px}}
