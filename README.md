@@ -1,8 +1,8 @@
-# Care with a Compass — The Director's Desk · v9.8.2
+# Care with a Compass — The Director's Desk · v9.8.4
 
 An interactive, consequential leadership-development **academic prototype** created for EDACE 830 at Kansas State University.
 
-**Try the program:** https://rstenlund1.github.io/care-with-a-compass/?v=9.8.2
+**Try the program:** https://rstenlund1.github.io/care-with-a-compass/?v=9.8.4
 
 ## What this release includes
 
@@ -12,15 +12,15 @@ An interactive, consequential leadership-development **academic prototype** crea
 - A structured diagnostic assessment and a proposed, human-scored 30-day workplace transfer plan.
 - A single guided Continue Training flow, open sidebar navigation, and clear Home / Start Over controls.
 
-## Staffing budget clarification (v9.8.2)
+## Staffing budget clarification (v9.8.4)
 
 The staffing lab separates **base teacher labor**, **additional teacher coverage**, and **total modeled teacher labor**. It assumes eight paid hours per scheduled teacher per day, plus 0/3/6/9 extra paid hours for no extra teacher, a 3-hour busy-period teacher, a 6-hour backup teacher, or both. Dollar totals respond to the number of teachers, reserve plan, and fully loaded hourly cost; the wage slider updates totals while being moved. These are instructional cost projections, not actual operating budgets. Additional cost is correctly $0 when no extra teacher is scheduled, but baseline labor still costs money. The 3-hour teacher is counted only during their extra shift; this classroom model assumes the 6-hour backup teacher is on shift during the selected incident.
 
-## Responsive embedded learning chapters (v9.8.2)
+## Responsive embedded learning chapters (v9.8.4)
 
 The five-chapter iframe now reports its intrinsic content height rather than the full iframe viewport height. The outer page resizes the frame up or down with a small fixed margin, avoiding the accumulating blank white area between lesson screens. The measurement uses element bounds and a resize observer, including updates after images load. No lesson or question content was changed.
 
-## Learner enrollment, reports, and completion certificate (v9.8.2)
+## Learner enrollment, reports, and completion certificate (v9.8.4)
 
 - **Learner full name is required** on the main opening page beneath the introductory program description; there is no separate registration splash screen. Company, center, or organization is optional; participants acknowledge that their scores and progress may be shared with the program instructor. The instructor's identity appears on the program landing page.
 - When learners complete each of the five foundational chapters, the embedded chapter engine supplies the **first-attempt and final response summary**, question/objective IDs, remedial attempts and live-coaching flag. The parent program also queues the final competency-assessment results and facilitator-review updates.
@@ -29,6 +29,16 @@ The five-chapter iframe now reports its intrinsic content height rather than the
 - A **Switch Learner** control clears local progress and identity on shared devices. Start Over preserves the enrolled learner's identity but clears program progress, reports and completion date for a new attempt.
 
 For current enrollment and email setup details, see [REPORTING_SETUP.md](REPORTING_SETUP.md).
+
+## Chapter submission and case variation (v9.8.4)
+
+Each foundational chapter now ends with a **Review and Submit Chapter** checkpoint, displaying initial and final preferred-response counts. A deliberate **Submit Chapter Results to Instructor** button sends the learner's report to the configured Formspree service and displays success only after the service responds successfully. An independent **Continue to Next Chapter (testing)** button remains available during testing. Older completed chapters are preserved, with a reminder to submit any that do not yet have a successful local delivery record.
+
+The surrounding chapter count updates from secure same-origin messages from the embedded lesson engine; it no longer remains stuck at 0/5 when a learner completes Chapter 1. Reporting events use distinct `chapter-submit-request` and `chapter-submit-status` messages so a chapter is not emailed merely by navigating onward.
+
+The seven applied-case starting conditions now select **15 scenario adjustments** across the three long-form simulations. The variant changes actual question wording, situation details, and relevant response wording while preserving consistent scoring and essential safety duties.
+
+Seven editorial photo banners reuse pictures already included in `images/` across applied cases, the staffing simulation, the evidence journal, the competency assessment and facilitator review.
 
 ## Pilot scoring model
 
