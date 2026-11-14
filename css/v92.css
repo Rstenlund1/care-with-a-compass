@@ -360,3 +360,6 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .section-photo-banner figcaption span{font:800 10px/1.5 system-ui;letter-spacing:.19em;color:#eac995}
 .section-photo-banner figcaption strong{font:normal clamp(23px,3vw,39px)/1.18 Georgia,serif;text-shadow:0 2px 10px #130d1b44}
 @media(max-width:640px){.section-photo-banner{height:180px;margin-bottom:18px}.section-photo-banner::after{background:linear-gradient(90deg,rgba(26,18,39,.83),rgba(26,18,39,.3))}.section-photo-banner figcaption{max-width:85%}}
+
+/* v9.8.5: match the section banner to the 970px lesson reading card. */
+.section-photo-banner--lesson{width:100%;max-width:970px;margin:0 auto 26px}
