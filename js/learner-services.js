@@ -3,10 +3,10 @@
 (function(global){
 "use strict";
 const STORAGE="cwc-learner-record-v1";
-const VERSION="9.8.6";
+const VERSION="9.8.7";
 const MAX_REPORTS=100;
 function baseline(){return {name:"",organization:"",consent:false,sessionId:"",registeredAt:"",completedAt:"",reports:[]};}
-function read(){try{const o=JSON.parse(localStorage.getItem(STORAGE)||"null");return o&&typeof o==="object"?{...baseline(),...o,reports:Array.isArray(o.reports)?o.reports.slice(-MAX_REPORTS):[]}:baseline();}catch(e){return baseline();}}
+function read(){try{const o=JSON.parse(localStorage.getItem(STORAGE)||"null");return o&&typeof o==="object"?{...baseline(),...o,reports:Array.isArray(o.reports)?o.reports.slice(-MAX_REPORTS).map(r=>r.kind==="chapter"&&!String(r.key||"").includes("-detailed-")&&r.status!=="sent"?{...r,status:"superseded"}:r):[]}:baseline();}catch(e){return baseline();}}
 let record=read(),sendingPromise=null;
 function write(){try{localStorage.setItem(STORAGE,JSON.stringify(record));}catch(e){/* A browser that blocks storage cannot preserve course reports. */}}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -42,7 +42,7 @@ function enroll(){
 }
 function notice(){
  if(!ready())return "";
- const left=record.reports.filter(x=>x.status!=="sent").length;
+ const left=record.reports.filter(x=>x.status==="pending").length;
  return '<div class="learner-status"><strong>Participant:</strong> '+esc(record.name)+(record.organization?" · "+esc(record.organization):"")
  +(configured()?(left?' · '+left+' report(s) awaiting delivery':' · Instructor reporting connected'):' · Email reporting awaits instructor setup')
  +'</div>';
@@ -50,11 +50,29 @@ function notice(){
 function reportText(detail){
  return Object.entries(detail||{}).map(([k,v])=>k+": "+(Array.isArray(v)?v.join("; "):String(v??""))).join("\n").slice(0,14000);
 }
-function queue(kind,key,title,detail){
+function queue(kind,key,title,detail,autoSend=true){
  if(!ready()||record.reports.some(r=>r.key===key))return false;
  record.reports.push({kind,key,title:String(title).slice(0,100),detail,createdAt:new Date().toISOString(),status:"pending"});
  record.reports=record.reports.slice(-MAX_REPORTS);write();
- if(configured())void flush();return true;
+ if(configured()&&autoSend)void flush();return true;
+}
+function summarizeMisses(questions){
+ if(!Array.isArray(questions)||!questions.length)return "No first-attempt questions required correction.";
+ return questions.slice(0,25).map((q,i)=>[
+  (i+1)+". "+String(q.id||"")+" | Objective "+String(q.objective??"?"),
+  "QUESTION: "+String(q.question||""),
+  "FIRST ANSWER: "+String(q.firstAnswer||""),
+  "PREFERRED: "+String(q.preferredAnswer||""),
+  "WHY THIS CHOICE NEEDS REVIEW: "+String(q.feedbackForFirstAnswer||""),
+  "DIRECTOR RATIONALE: "+String(q.whyPreferred||""),
+  "FINAL ANSWER: "+String(q.latestAnswer||""),
+  "FINAL STATUS: "+(q.finalCorrect?"Met after practice":"Still needs instructor review")
+ ].join("\n")).join("\n\n").slice(0,18000);
+}
+function overviewResults(items){
+ if(!Array.isArray(items))return "";
+ return items.map(q=>[q.id,"objective "+q.objective,"first "+q.first,"final "+q.latest,
+  "attempts "+q.attempts,"first choice "+q.firstChoice,"final choice "+q.latestChoice].join(" | ")).join("\n").slice(0,5000);
 }
 function friendlyError(response,data){
  const errors=Array.isArray(data?.errors)?data.errors:[];
@@ -76,30 +94,43 @@ function reportError(ch){
  const r=record.reports.find(x=>x.key==="chapter-"+Number(ch));
  return r?.status==="sent"?"":String(r?.error||"").slice(0,350);
 }
-function flush(){
- if(sendingPromise)return sendingPromise;
+function flush(targetKey=null){
+ if(sendingPromise)return sendingPromise.then(()=>targetKey?flush(targetKey):undefined);
  if(!ready()||!configured())return Promise.resolve();
  sendingPromise=(async()=>{
   try{
-   for(const item of record.reports.filter(x=>x.status!=="sent").slice(0,20)){
+   const list=(targetKey
+    ? record.reports.filter(x=>x.key===targetKey&&x.status!=="sent"&&x.status!=="superseded")
+    : record.reports.filter(x=>x.status==="pending"&&x.kind!=="chapter")).slice(0,20);
+   for(const item of list){
     try{
-     const response=await fetch(endpoint(),{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:JSON.stringify({
-      subject:"Care with a Compass · "+item.title+" · "+record.name,
+     const detail=item.detail||{};
+     const compact={...detail};
+     delete compact.missedQuestions;delete compact.questionResults;
+     const body={
+      subject:"Care with a Compass | "+item.title+" | "+record.name,
       name:record.name,organization:record.organization||"Not specified",
-      session_id:record.sessionId,report_type:item.kind,report_date:item.createdAt,
-      report_details:reportText(item.detail),version:VERSION
-     })});
+      session_id:record.sessionId,report_type:item.kind,
+      report_date:item.createdAt,report_id:record.sessionId+":"+item.key,
+      report_details:reportText(compact),version:VERSION
+     };
+     if(item.kind==="chapter"){
+      body.first_attempt_mistakes=summarizeMisses(detail.missedQuestions);
+      body.all_question_outcomes=overviewResults(detail.questionResults);
+     }
+     const response=await fetch(endpoint(),{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:JSON.stringify(body)});
      if(!response.ok){
-      let detail={};
-      try{detail=await response.json();}catch(e){}
-      throw Error(friendlyError(response,detail));
+      let responseBody={};
+      try{responseBody=await response.json();}catch(e){}
+      throw Error(friendlyError(response,responseBody));
      }
      item.status="sent";item.sentAt=new Date().toISOString();delete item.error;write();
     }catch(e){
-     const original=String(e?.message||e||"");
-     item.error=original.startsWith("Formspree")?original:"The browser could not reach Formspree. Check your connection, browser privacy extensions, and try again.";
+     const reason=String(e?.message||e||"");
+     item.error=reason.startsWith("Formspree")?reason:"The browser could not confirm the Formspree response. This report may still have been delivered. Check the Formspree submissions list before retrying.";
      item.status="pending";
-     write();break;
+     write();
+     break;
     }
    }
   }finally{sendingPromise=null;}
@@ -116,16 +147,33 @@ function chapterCompleted(payload){
   firstTryCorrect:Number(payload.firstTryCorrect)||0,finalCorrect:Number(payload.finalCorrect)||0,
   needsLiveCoaching:!!payload.needsLiveCoaching,
   firstTryGaps:Array.isArray(payload.firstTryGaps)?payload.firstTryGaps.slice(0,25).map(x=>String(x).slice(0,90)):[],
-  outstandingGaps:Array.isArray(payload.outstandingGaps)?payload.outstandingGaps.slice(0,25).map(x=>String(x).slice(0,90)):[]
+  outstandingGaps:Array.isArray(payload.outstandingGaps)?payload.outstandingGaps.slice(0,25).map(x=>String(x).slice(0,90)):[],
+  missedQuestions:Array.isArray(payload.missedQuestions)?payload.missedQuestions.slice(0,25).map(q=>({
+   id:String(q.id||"").slice(0,20),objective:Number(q.objective)||0,
+   question:String(q.question||"").slice(0,850),
+   firstAnswer:String(q.firstAnswer||"").slice(0,900),
+   preferredAnswer:String(q.preferredAnswer||"").slice(0,900),
+   latestAnswer:String(q.latestAnswer||"").slice(0,900),
+   firstCorrect:!!q.firstCorrect,finalCorrect:!!q.finalCorrect,
+   feedbackForFirstAnswer:String(q.feedbackForFirstAnswer||"").slice(0,1000),
+   whyPreferred:String(q.whyPreferred||"").slice(0,1000)
+  })):[],
+  questionResults:Array.isArray(payload.questionResults)?payload.questionResults.slice(0,25).map(q=>({
+   id:String(q.id||"").slice(0,20),objective:Number(q.objective)||0,
+   first:String(q.first||"").slice(0,30),latest:String(q.latest||"").slice(0,30),
+   attempts:Number(q.attempts)||0,firstChoice:String(q.firstChoice||"").slice(0,20),
+   latestChoice:String(q.latestChoice||"").slice(0,20)
+  })):[]
  };
- return queue("chapter","chapter-"+ch,"Chapter "+ch+" results",safe);
+ return queue("chapter","chapter-"+ch+"-detailed-v1","Chapter "+ch+" results ("+safe.firstTryCorrect+"/"+safe.totalQuestions+" first try)",safe,false);
 }
 async function submitChapter(payload){
  const ch=Number(payload?.chapter);
  if(!Number.isInteger(ch)||ch<1||ch>5||!ready())return "failed";
  chapterCompleted(payload);
- await flush();
- const item=record.reports.find(x=>x.key==="chapter-"+ch);
+ const key="chapter-"+ch+"-detailed-v1";
+ await flush(key);
+ const item=record.reports.find(x=>x.key===key);
  return item?.status==="sent"?"sent":item?"queued":"failed";
 }
 function assessmentSubmitted(r){
