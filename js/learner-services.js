@@ -95,46 +95,44 @@ function reportError(ch){
  return r?.status==="sent"?"":String(r?.error||"").slice(0,350);
 }
 function flush(targetKey=null){
- if(sendingPromise)return sendingPromise.then(()=>targetKey?flush(targetKey):undefined);
  if(!ready()||!configured())return Promise.resolve();
- sendingPromise=(async()=>{
-  try{
-   const list=(targetKey
-    ? record.reports.filter(x=>x.key===targetKey&&x.status!=="sent"&&x.status!=="superseded")
-    : record.reports.filter(x=>x.status==="pending"&&x.kind!=="chapter")).slice(0,20);
-   for(const item of list){
-    try{
-     const detail=item.detail||{};
-     const compact={...detail};
-     delete compact.missedQuestions;delete compact.questionResults;
-     const body={
-      subject:"Care with a Compass | "+item.title+" | "+record.name,
-      name:record.name,organization:record.organization||"Not specified",
-      session_id:record.sessionId,report_type:item.kind,
-      report_date:item.createdAt,report_id:record.sessionId+":"+item.key,
-      report_details:reportText(compact),version:VERSION
-     };
-     if(item.kind==="chapter"){
-      body.first_attempt_mistakes=summarizeMisses(detail.missedQuestions);
-      body.all_question_outcomes=overviewResults(detail.questionResults);
-     }
-     const response=await fetch(endpoint(),{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:JSON.stringify(body)});
-     if(!response.ok){
-      let responseBody={};
-      try{responseBody=await response.json();}catch(e){}
-      throw Error(friendlyError(response,responseBody));
-     }
-     item.status="sent";item.sentAt=new Date().toISOString();delete item.error;write();
-    }catch(e){
-     const reason=String(e?.message||e||"");
-     item.error=reason.startsWith("Formspree")?reason:"The browser could not confirm the Formspree response. This report may still have been delivered. Check the Formspree submissions list before retrying.";
-     item.status="pending";
-     write();
-     break;
+ if(sendingPromise)return sendingPromise.then(()=>flush(targetKey));
+ // Defer queue processing to a microtask. The promise must be assigned before
+ // the empty-queue path can finish, or future submissions may recurse forever.
+ sendingPromise=Promise.resolve().then(async()=>{
+  const list=(targetKey
+   ?record.reports.filter(x=>x.key===targetKey&&x.status!=="sent"&&x.status!=="superseded")
+   :record.reports.filter(x=>x.status==="pending"&&x.kind!=="chapter")).slice(0,20);
+  for(const item of list){
+   try{
+    const detail=item.detail||{};
+    const compact={...detail};
+    delete compact.missedQuestions;delete compact.questionResults;
+    const body={
+     subject:"Care with a Compass | "+item.title+" | "+record.name,
+     name:record.name,organization:record.organization||"Not specified",
+     session_id:record.sessionId,report_type:item.kind,
+     report_date:item.createdAt,report_id:record.sessionId+":"+item.key,
+     report_details:reportText(compact),version:VERSION
+    };
+    if(item.kind==="chapter"){
+     body.first_attempt_mistakes=summarizeMisses(detail.missedQuestions);
+     body.all_question_outcomes=overviewResults(detail.questionResults);
     }
+    const response=await fetch(endpoint(),{method:"POST",headers:{"Accept":"application/json","Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(!response.ok){
+     let responseBody={};
+     try{responseBody=await response.json();}catch(e){}
+     throw Error(friendlyError(response,responseBody));
+    }
+    item.status="sent";item.sentAt=new Date().toISOString();delete item.error;write();
+   }catch(e){
+    const reason=String(e?.message||e||"");
+    item.error=reason.startsWith("Formspree")?reason:"The browser could not confirm the Formspree response. This report may still have been delivered. Check Formspree submissions before retrying.";
+    item.status="pending";write();break;
    }
-  }finally{sendingPromise=null;}
- })();
+  }
+ }).finally(()=>{sendingPromise=null;});
  return sendingPromise;
 }
 function chapterCompleted(payload){
