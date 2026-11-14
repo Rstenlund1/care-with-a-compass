@@ -1,4 +1,4 @@
-# Care with a Compass · Instructor Email Reporting Setup (v9.8.1)
+# Care with a Compass · Instructor Email Reporting Setup (v9.8.4)
 
 The public site runs on GitHub Pages, so it cannot send an email itself. For a short supervised pilot, use a verified **Formspree form** to send instructor notifications to **rickstenlund@outlook.com**.
 
@@ -10,12 +10,12 @@ The public site runs on GitHub Pages, so it cannot send an email itself. For a s
 4. Under **Project Settings → Restrict to Domain**, enter `rstenlund1.github.io` (without `https://` or a path). This reduces casual unauthorized submissions, but it is not authentication.
 5. Under **Integration**, copy the **public form endpoint**, in the format `https://formspree.io/f/xxxxxxxx`. Do **not** copy API keys, email passwords, or a private dashboard link.
 6. Edit the public GitHub repository `index.html`. Locate `window.CWC_REPORT_ENDPOINT=""` and change the empty quotes to your **exact Formspree endpoint**. Do not alter the surrounding script.
-7. Confirm that the published site loads the updated `index.html`. Test registration in the main introductory panel and one chapter completion with an imaginary adult's name; verify that **Formspree shows a submission and the instructor Outlook inbox receives the notification**. Check Junk/Spam as needed.
+7. Confirm that the published site loads the updated `index.html`. Test registration in the main introductory panel and one explicit Submit Chapter Results action with an imaginary adult's name; verify that **Formspree shows a submission and the instructor Outlook inbox receives the notification**. Check Junk/Spam as needed.
 8. Test final assessment submission and optional facilitator scoring. Repeat with an incomplete answer path to confirm coaching gaps are listed correctly.
 
 ## Expected volume
 
-Each participant can generate **five chapter-completion notices**, **one final-assessment notice**, and **one instructor-review notice**: approximately **seven submissions per participant**. Fifteen learners can therefore generate roughly **105 notices**. Formspree's published free plan currently includes **50 monthly submissions**; a paid plan is likely needed for the full proposed pilot. Pricing and terms may change; see https://formspree.io/plans/.
+Each participant can generate **five learner-submitted chapter notices**, **one final-assessment notice**, and **one instructor-review notice**: approximately **seven submissions per participant**. Fifteen learners can therefore generate roughly **105 notices**. Formspree's published free plan currently includes **50 monthly submissions**; a paid plan is likely needed for the full proposed pilot. Pricing and terms may change; see https://formspree.io/plans/.
 
 ## What goes into the reports
 
