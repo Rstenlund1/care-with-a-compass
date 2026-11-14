@@ -1,8 +1,8 @@
-# Care with a Compass — The Director's Desk · v9.8.1
+# Care with a Compass — The Director's Desk · v9.8.2
 
 An interactive, consequential leadership-development **academic prototype** created for EDACE 830 at Kansas State University.
 
-**Try the program:** https://rstenlund1.github.io/care-with-a-compass/?v=9.8.1
+**Try the program:** https://rstenlund1.github.io/care-with-a-compass/?v=9.8.2
 
 ## What this release includes
 
@@ -12,11 +12,15 @@ An interactive, consequential leadership-development **academic prototype** crea
 - A structured diagnostic assessment and a proposed, human-scored 30-day workplace transfer plan.
 - A single guided Continue Training flow, open sidebar navigation, and clear Home / Start Over controls.
 
-## Staffing budget clarification (v9.8.1)
+## Staffing budget clarification (v9.8.2)
 
 The staffing lab separates **base teacher labor**, **additional teacher coverage**, and **total modeled teacher labor**. It assumes eight paid hours per scheduled teacher per day, plus 0/3/6/9 extra paid hours for no extra teacher, a 3-hour busy-period teacher, a 6-hour backup teacher, or both. Dollar totals respond to the number of teachers, reserve plan, and fully loaded hourly cost; the wage slider updates totals while being moved. These are instructional cost projections, not actual operating budgets. Additional cost is correctly $0 when no extra teacher is scheduled, but baseline labor still costs money. The 3-hour teacher is counted only during their extra shift; this classroom model assumes the 6-hour backup teacher is on shift during the selected incident.
 
-## Learner enrollment, reports, and completion certificate (v9.8.1)
+## Responsive embedded learning chapters (v9.8.2)
+
+The five-chapter iframe now reports its intrinsic content height rather than the full iframe viewport height. The outer page resizes the frame up or down with a small fixed margin, avoiding the accumulating blank white area between lesson screens. The measurement uses element bounds and a resize observer, including updates after images load. No lesson or question content was changed.
+
+## Learner enrollment, reports, and completion certificate (v9.8.2)
 
 - **Learner full name is required** on the main opening page beneath the introductory program description; there is no separate registration splash screen. Company, center, or organization is optional; participants acknowledge that their scores and progress may be shared with the program instructor. The instructor's identity appears on the program landing page.
 - When learners complete each of the five foundational chapters, the embedded chapter engine supplies the **first-attempt and final response summary**, question/objective IDs, remedial attempts and live-coaching flag. The parent program also queues the final competency-assessment results and facilitator-review updates.
