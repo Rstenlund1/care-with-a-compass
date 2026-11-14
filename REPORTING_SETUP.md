@@ -1,4 +1,4 @@
-# Care with a Compass · Instructor Email Reporting Setup (v9.8.4)
+# Care with a Compass · Instructor Email Reporting Setup (v9.8.7)
 
 The public site runs on GitHub Pages, so it cannot send an email itself. For a short supervised pilot, use a verified **Formspree form** to send instructor notifications to **rickstenlund@outlook.com**.
 
@@ -19,13 +19,13 @@ Each participant can generate **five learner-submitted chapter notices**, **one 
 
 ## What goes into the reports
 
-Every report contains the learner's self-entered name, optional organization, browser-local session ID, date, and event type. Chapter reports summarize attempted items, first-try preferred decisions, current preferred decisions, individual question/objective IDs requiring coaching, and whether the question-attempt cap triggered a facilitator flag. The final assessment adds scored portions, gate metrics, and selected **option IDs**, while facilitator updates provide the manual score and provisional outcome.
+Every report contains the learner's self-entered name, optional organization, browser-local session ID, date, and event type. Chapter emails now include a separate first_attempt_mistakes field containing each initially missed question's full scenario, original selected answer, preferred answer, feedback/rationale, and final remediation result, plus an all_question_outcomes field listing all question IDs, objectives, attempts and first/final selections. The instructor can therefore prepare coaching without looking up question IDs. The final assessment adds scored portions, gate metrics, and selected **option IDs**, while facilitator updates provide the manual score and provisional outcome.
 
 **Raw open-ended learner reflections, details about children, family names, and staff case narratives are deliberately excluded.** The enrollment screen tells learners that their performance will be sent to the instructor and warns against entering other people's private information.
 
 ## Reliability and limitations
 
-- No report goes to a provider while `window.CWC_REPORT_ENDPOINT` is empty.
+- A browser may fail to receive a response even when Formspree accepted the report. Before retrying an ambiguous send, check the Formspree submissions dashboard and report_id to avoid duplicate messages.\n- No report goes to a provider while `window.CWC_REPORT_ENDPOINT` is empty.
 - Reports are queued **in the learner's browser** and delivered on completion or a later visit once the endpoint is configured. Failed submissions remain locally queued for a later retry. Clearing browser storage, switching learner, or starting over may discard undelivered records.
 - The site does not provide secure logins, attendance verification, confirmed facilitator identity, tamperproof scores, or a central class roster.
 - The completion certificate documents finished activities and is separate from the proposed **90/100 plus safety-gates** competency assessment.
