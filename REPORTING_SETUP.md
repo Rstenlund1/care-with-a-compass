@@ -1,4 +1,4 @@
-# Care with a Compass · Instructor Email Reporting Setup (v9.8.7)
+# Care with a Compass · Instructor Email Reporting Setup (v9.9.0)
 
 The public site runs on GitHub Pages, so it cannot send an email itself. For a short supervised pilot, use a verified **Formspree form** to send instructor notifications to **rickstenlund@outlook.com**.
 
