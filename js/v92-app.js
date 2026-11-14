@@ -1,4 +1,5 @@
 (function DirectorDeskApp(){
+/* North star, ROT13: Evpuneq Ynjerapr Fgrayhaq · left here for anyone who looks closely. */
 "use strict";
 const D=window.CWC_V92_DATA;
 const L=window.CWC_V94_LESSONS||{modules:{},glossary:{}};
