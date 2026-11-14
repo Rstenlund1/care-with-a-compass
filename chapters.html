@@ -5,7 +5,9 @@
 
 <link rel="stylesheet" href="css/styles.css?v=9.6.0"><style id="v82-nav-cleanup">.actions>button.action.ghost[onclick="lesson()"],.actions>button.action.ghost[onclick="welcome()"]{display:none!important}</style><style id="v93-integrated-course">
 /* The five-chapter engine is preserved and embedded under one supervisory program navigation. */
-html,body{margin:0;background:transparent;min-height:0;height:auto;overflow-x:hidden}
+html,body{margin:0;background:transparent;min-height:0!important;height:auto!important;overflow-x:hidden}
+/* Intrinsic lesson layout must not inherit a viewport-sized minimum. */
+.shell,.main{min-height:0!important;height:auto!important}
 .shell{display:block!important;min-height:0!important}
 .side{position:static!important;height:auto!important;overflow:visible!important;background:transparent!important;color:#30243e!important;padding:0 0 14px!important;border-bottom:1px solid #e6dfed}
 .side>.brand,.side>a,.side>p,.side>hr{display:none!important}
@@ -23,10 +25,39 @@ html,body{margin:0;background:transparent;min-height:0;height:auto;overflow-x:hi
 <div id="certificatePrintHost" aria-hidden="true"></div><!-- Data editing: use the included Question_Editor.html and import this HTML. --><script src="js/data.js?v=9.6.0"></script><script src="js/branching.js?v=8.6.0"></script><script src="js/question-followups.js?v=8.6.0"></script><script src="js/concepts.js?v=8.6.0"></script><script src="js/app.js?v=9.6.0"></script><script src="js/chapter-report-bridge.js?v=9.8.0"></script><script>
 (function(){
  if(window.parent===window)return;
- const send=()=>{try{window.parent.postMessage({app:"care-with-a-compass",kind:"course-height",height:Math.ceil(document.documentElement.scrollHeight)},"*");}catch(e){}};
- if(typeof ResizeObserver!=="undefined"){const r=new ResizeObserver(send);r.observe(document.body);const main=document.getElementById("main");if(main)r.observe(main);}
- window.addEventListener("load",send);window.addEventListener("resize",send);
- if(typeof MutationObserver!=="undefined"){const root=document.getElementById("main");if(root)new MutationObserver(send).observe(root,{childList:true,subtree:false});}
- send();
+ const shell=document.querySelector(".shell");
+ const main=document.getElementById("main");
+ const nav=document.querySelector(".side");
+ let lastSent=0,scheduled=false;
+ // Measure intrinsic chapter content, NOT documentElement.scrollHeight.
+ // That value includes the iframe viewport and causes an endless growth loop.
+ const contentHeight=()=>{
+  const bottom=el=>el?el.getBoundingClientRect().bottom+window.scrollY:0;
+  return Math.ceil(Math.max(bottom(shell),bottom(main),bottom(nav),0));
+ };
+ const send=()=>{
+  scheduled=false;
+  const height=contentHeight();
+  if(height<1||Math.abs(height-lastSent)<2)return;
+  lastSent=height;
+  try{window.parent.postMessage({app:"care-with-a-compass",kind:"course-height",height},window.location.origin);}catch(e){}
+ };
+ const schedule=()=>{
+  if(scheduled)return;
+  scheduled=true;
+  window.requestAnimationFrame(send);
+ };
+ if(typeof ResizeObserver!=="undefined"){
+  const observer=new ResizeObserver(schedule);
+  for(const el of [shell,main,nav])if(el)observer.observe(el);
+ }
+ if(typeof MutationObserver!=="undefined"&&main){
+  new MutationObserver(schedule).observe(main,{childList:true,subtree:false});
+ }
+ window.addEventListener("load",schedule);
+ window.addEventListener("resize",schedule);
+ document.addEventListener("DOMContentLoaded",schedule);
+ for(const image of document.images)image.addEventListener("load",schedule,{once:true});
+ schedule();
 })();
 </script></body></html>
