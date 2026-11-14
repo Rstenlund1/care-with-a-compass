@@ -7,7 +7,7 @@ const CHAPTERS=DATA.lessons.length, Q=DATA.questions;
 const BRANCHING=window.COMPASS_BRANCHING; if(!BRANCHING||BRANCHING.schemaVersion!=='7.2.0')throw Error('Branching data missing: ensure branch data loads before the application'); const FOLLOWUPS=window.COMPASS_QUESTION_FOLLOWUPS||{};
 let state=null,storageWorks=true,lastGlossBtn=null;
 const ABC='ABCDE';
-function fresh(){return {chapter:1,phase:'welcome',history:{},pendingGap:{},wrongTags:{},needsWorkshop:{},maxProgress:{},lab:{},current:null,order:[0,1,2,3,4],lastAnswer:null,reflection:{},refReviewed:{},done:[],capstone:{step:0,choices:[],reflection:'',completed:false},certificateName:'',completedAt:null,streak:{},support:{},guided:false,branchPending:null,branchDone:{},seenConcepts:{},currentConcept:null,labSchedule:{}}}
+function fresh(){return {chapter:1,phase:'welcome',history:{},pendingGap:{},wrongTags:{},needsWorkshop:{},maxProgress:{},lab:{},current:null,order:[0,1,2,3,4],lastAnswer:null,reflection:{},refReviewed:{},done:[],capstone:{step:0,choices:[],reflection:'',completed:false},certificateName:'',completedAt:null,streak:{},support:{},guided:false,branchPending:null,branchDone:{},seenConcepts:{},currentConcept:null,labSchedule:{},chapterReporting:{pending:null,status:{}}}}
 function load(){try{let a=localStorage.getItem(STORAGE)||sessionStorage.getItem(STORAGE);return a?JSON.parse(a):null}catch(e){try{let a=sessionStorage.getItem(STORAGE)||sessionStorage.getItem(LEGACY);return a?JSON.parse(a):null}catch(_){storageWorks=false;return null}}}
 function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state));storageWorks=true}catch(e){try{sessionStorage.setItem(STORAGE,JSON.stringify(state));storageWorks=true}catch(_){storageWorks=false}}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -279,7 +279,85 @@ function reflection(){let ch=state.chapter,l=DATA.lessons[ch-1];state.phase='ref
 function saveReflection(v){state.reflection[state.chapter]=v;save()}
 function sampleHtml(ch){return `<div class="note"><strong>One useful opening:</strong><p>${esc(samples[ch-1][0])}</p><strong>Something to reconsider:</strong><p>${esc(samples[ch-1][1])}</p><p class="meta">Compare this example with your reasoning; local policy and individual care plans may require a different response.</p></div>`}
 function compareReflection(){let el=document.getElementById('reflection'),v=el?.value.trim();if(!v){el.focus();return}saveReflection(el.value);state.refReviewed[state.chapter]=true;document.getElementById('reflectionHelp').innerHTML=sampleHtml(state.chapter);document.getElementById('reflectionCompareAction')?.remove();let actions=document.getElementById('reflectionHelp').nextElementSibling;if(!actions){document.getElementById('reflectionHelp').insertAdjacentHTML('afterend','<div class="actions"><button class="action" onclick="finishChapter()">Save and continue</button></div>')}document.getElementById('reflectionHelp')?.focus({preventScroll:true});save()}
-function finishChapter(){let ch=state.chapter;if(!(state.reflection[ch]||'').trim()){document.getElementById('reflection')?.focus();return}if(!state.refReviewed[ch])return;if(!state.done.includes(ch))state.done.push(ch);if(ch<CHAPTERS){state.chapter++;state.current=null;state.lastAnswer=null;state.phase='lesson';lesson()}else{state.phase='capstone';state.capstone??={step:0,choices:[],reflection:'',completed:false};capstone()}save()}
+function finishChapter(){
+ const ch=state.chapter;
+ if(!(state.reflection[ch]||"").trim()){document.getElementById("reflection")?.focus();return;}
+ if(!state.refReviewed[ch])return;
+ if(!state.done.includes(ch))state.done.push(ch);
+ state.chapterReporting??={pending:null,status:{}};
+ state.chapterReporting.pending=ch;
+ state.phase="chapter-submit";
+ save();
+ window.CWC_CHAPTER_REPORT?.notifyProgress();
+ chapterSubmissionView();
+}
+function chapterReportStatusText(status){
+ if(status==="sent")return "Received by the instructor's reporting service.";
+ if(status==="sending")return "Sending your results now...";
+ if(status==="queued")return "Saved locally but not yet delivered. Try submitting again.";
+ if(status==="failed")return "Delivery was unsuccessful. Try submitting again.";
+ return "Not yet submitted.";
+}
+function chapterSubmissionView(){
+ const ch=Number(state.chapterReporting?.pending);
+ if(!Number.isInteger(ch)||ch<1||ch>CHAPTERS||!state.done.includes(ch))return resume();
+ const h=history(ch),latest=latestResults(ch),items=chItems(ch);
+ const first=new Map();
+ for(const answer of h)if(!first.has(answer.id))first.set(answer.id,answer.correct===true);
+ const firstCorrect=items.filter(q=>first.get(q.id)===true).length;
+ const finalCorrect=items.filter(q=>latest[q.id]===true).length;
+ const coaching=items.filter(q=>latest[q.id]!==true).map(q=>q.id);
+ const current=state.chapterReporting.status?.[ch]||"";
+ state.phase="chapter-submit";
+ render(`<div class="eyebrow">Chapter ${ch} of ${CHAPTERS} · Complete</div><h1 id="focushead">Review and submit Chapter ${ch}</h1>
+ <p class="lede">Your chapter is complete. Submit your results so the instructor can see which leadership decisions need more practice before the next live session.</p>
+ <section class="card chapter-submission-card"><h2>${esc(DATA.lessons[ch-1].title)}</h2>
+ <div class="chapter-submission-metrics"><div><strong>${firstCorrect}/${items.length}</strong><span>Preferred on first try</span></div><div><strong>${finalCorrect}/${items.length}</strong><span>Preferred after practice</span></div><div><strong>${h.length}</strong><span>Total attempts</span></div></div>
+ ${state.needsWorkshop[ch]||coaching.length?`<p class="note">Bring these topics to the next live session: ${esc(coaching.length?coaching.join(", "):"a previous item requiring extra practice")}.</p>`:'<p class="note">No unanswered preferred-response items remain. Your instructor can still review first-attempt gaps.</p>'}
+ <div class="chapter-submit-actions">
+ <button class="action" type="button" onclick="submitChapterResults(${ch})" ${current==="sending"?'disabled':""}>Submit Chapter ${ch} Results to Instructor</button>
+ <button class="action secondary" type="button" onclick="continueAfterChapterSubmit()">Continue to ${ch<CHAPTERS?"Chapter "+(ch+1):"the foundation capstone"} → <small>(testing)</small></button>
+ </div><p class="chapter-submit-status" id="chapterSubmitStatus" role="status" aria-live="polite">${esc(chapterReportStatusText(current))}</p>
+ <p class="meta">In this pilot, you may continue without submitting. For a scheduled live course, your instructor can later require submission before opening the next chapter.</p></section>`);
+}
+function submitChapterResults(ch){
+ if(!state.done.includes(ch))return;
+ state.chapterReporting??={pending:null,status:{}};
+ state.chapterReporting.status[ch]="sending";
+ save();
+ const status=document.getElementById("chapterSubmitStatus");
+ if(status)status.textContent=chapterReportStatusText("sending");
+ const payload=window.CWC_CHAPTER_REPORT?.summary(ch);
+ if(!payload||window.parent===window){
+  chapterResultStatus(ch,"failed");
+  return;
+ }
+ try{window.parent.postMessage({app:"care-with-a-compass",kind:"chapter-submit-request",payload},window.location.origin);}
+ catch(err){chapterResultStatus(ch,"failed");}
+}
+function chapterResultStatus(ch,status){
+ if(!state.done.includes(ch))return;
+ const allowed=["sent","queued","failed"];
+ if(!allowed.includes(status))return;
+ state.chapterReporting??={pending:null,status:{}};
+ state.chapterReporting.status[ch]=status;
+ save();
+ const text=document.getElementById("chapterSubmitStatus");
+ if(text)text.textContent=chapterReportStatusText(status);
+ const marker=document.getElementById("chapterReminderStatus"+ch);
+ if(marker)marker.textContent=chapterReportStatusText(status);
+ window.CWC_CHAPTER_REPORT?.notifyProgress();
+}
+function continueAfterChapterSubmit(){
+ const ch=Number(state.chapterReporting?.pending);
+ if(!state.done.includes(ch))return;
+ state.chapterReporting.pending=null;
+ state.current=null;
+ state.lastAnswer=null;
+ if(ch<CHAPTERS){state.chapter=ch+1;state.phase="lesson";save();lesson();}
+ else{state.phase="capstone";state.capstone??={step:0,choices:[],reflection:"",completed:false};save();capstone();}
+}
+
 
 const FINAL_CHALLENGE=[{"head":"The afternoon that changes everything","lead":"You direct a child care center. A child with a complex medical and communication profile becomes seriously ill. Staff activate the emergency plan; EMS transports the child to the emergency department.","question":"What should you coordinate first?","bridges":{},"choices":[["Close the center immediately without verifying how children remaining on site will be supervised.","Closing without a supervised reunification plan can create a second emergency.",0],["Share the care plan with EMS and keep qualified coverage on site, but leave follow-up ownership unspecified.","The handoff and coverage are protected, but a named person must own updates and the next verification.",1],["Give EMS relevant medical facts and contacts, name an authorized hospital liaison, and verify remaining classroom coverage.","The response protects the child being transported and all children still in care.",2],["Tell staff not to document symptoms until clinicians establish a diagnosis.","Record observable facts and the timeline even while the medical diagnosis remains uncertain.",0]]},{"head":"The parent cannot get to the hospital","lead":"The parent says, “I cannot get there.” A transportation barrier emerges, and the hospital asks who may make discharge decisions.","question":"What is the strongest director-level response?","bridges":{"2":"Your first decision established coverage and a responsible hospital contact. A fresh obstacle appears.","1":"The hospital has basic information, but no one was clearly assigned to coordinate follow-up. The gap becomes visible as discharge questions arise.","0":"Your first response left a safety or documentation breach to repair, even as the hospital seeks a discharge plan."},"choices":[["Document the barrier, contact authorized family supports, involve hospital social work, and verify a safe lawful discharge plan.","Transportation hardship by itself is not neglect; coordinated follow-up and correct consent authority matter.",2],["Help arrange verified transportation and confirm the parent receives the details, but do not yet establish who owns discharge coordination.","Practical transport help is useful; safe discharge and legal responsibility still need verified ownership.",1],["Tell the hospital that the center automatically acquires legal custody whenever the parent cannot travel.","A program does not receive medical decision-making or custody authority merely because it supervises a child.",0],["Instruct the accompanying caregiver to sign medical consent forms on the parent’s behalf.","Facility staff cannot assume parental medical consent authority outside applicable law and authorized emergency procedures.",0]]},{"head":"The allegation without a timestamp","lead":"While handling the hospital situation, a family reports suspected abuse by an employee but cannot name the date. Security footage may overwrite soon.","question":"What protects children and the integrity of the reporting process?","bridges":{"2":"The hospital and family have a coordinated pathway. An unrelated child-protection concern arrives.","1":"Transportation assistance is underway, but discharge accountability remains incomplete when another urgent report arrives.","0":"The hospital still lacks a reliable discharge arrangement. The director must correct that risk while addressing a second allegation."},"choices":[["Restrict the employee’s unsupervised child contact, preserve footage, promptly make the mandated report, but defer a suitable affected-family process update.","The safety, evidence, and immediate reporting duties are protected; the family still needs appropriate, verified communication.",1],["Have staff repeatedly question the child and classmates to pin down a date before calling investigators.","Repeated internal interviewing can compound harm and distort evidence; reasonable-suspicion reporting cannot wait.",0],["Wait for conclusive video before any child-protection or licensing communication.","Mandated reporting is triggered by reasonable suspicion, not proof or a completed private investigation.",0],["Put interim safeguards in place, preserve all available footage, make required reports promptly, and cooperate confidentially with agencies.","The director fulfills reporting duties, safeguards children, and avoids declaring an allegation proven.",2]]},{"head":"A director’s real test","lead":"One month later, observations reveal fragile opening coverage, inconsistent family communication, and signed safety checklists for tasks that staff never completed.","question":"How will you know the program has actually improved?","bridges":{"2":"The allegation was reported promptly, recordings were preserved, and protective steps remained in place. The pattern behind these events now needs attention.","1":"Immediate protections were taken, but appropriate communication with the affected family still needs to be repaired. You also identify broader operational weaknesses.","0":"The allegation process was mishandled and requires immediate correction. The review also exposes a wider pattern of fragile operations."},"choices":[["Declare the issue resolved after every employee signs the online refresher completion sheet.","Completion records do not show that staff perform the required behaviors under pressure.",0],["Set observable standards, name owners, rehearse decisions, observe actual work, coach, and measure whether practice changes.","Evidence of transfer comes from safer routines and repeated verification, not signatures alone.",2],["Add a second verifier to checklist checks and schedule immediate observations, but defer fixing fragile staff coverage.","Independent verification helps; leaving the staffing bottleneck intact makes the improvement incomplete.",1],["Rewrite the handbook without observing practices or reviewing failed shift schedules.","Written policies alone do not demonstrate that unsafe behaviors have changed.",0]]}];
 // Each option owns its own quality level, preventing a grading matrix from drifting away from the words.
