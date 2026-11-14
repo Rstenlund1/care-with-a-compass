@@ -103,3 +103,60 @@ h3{font-size:20px}
 .chapter-reminder-status{color:#695775;margin-right:15px;display:inline-block}
 .chapter-report-reminder .meta{margin-top:10px;font-size:11px}
 @media(max-width:640px){.chapter-submission-metrics{grid-template-columns:1fr}.chapter-submit-actions{flex-direction:column;align-items:stretch}.chapter-submit-actions button{width:100%}}
+
+
+/* v9.9.1: one consistent purple glossary treatment throughout the embedded chapter engine. */
+:root{--gloss-purple:#291f39;--gloss-lavender:#f4edfa;--gloss-accent:#ae92c7}
+/* The original styles.css applies teal with !important: override only glossary classes. */
+.glossbtn,
+.lesson .glossbtn{
+ background:var(--gloss-lavender)!important;
+ color:#5c3682!important;
+ border:0!important;
+ border-bottom:1px dotted #715198!important;
+ border-radius:4px!important;
+ padding:1px 3px!important;
+ text-decoration:none!important;
+ font-weight:600;
+ cursor:help;
+}
+.glossbtn:hover,
+.glossbtn:focus-visible,
+.lesson .glossbtn:hover,
+.lesson .glossbtn:focus-visible{
+ background:#e9dbf2!important;
+ color:#35214a!important;
+ border-bottom-color:#5c3682!important;
+}
+.glossbtn:focus-visible{outline:3px solid #b38aca;outline-offset:3px}
+.glossbtn .glosshint{
+ color:#715198!important;
+ border:1px solid #9470b1!important;
+ background:#fff!important;
+}
+.glossbox.gloss-popover{
+ background:var(--gloss-purple)!important;
+ color:#fff!important;
+ border:1px solid var(--gloss-accent)!important;
+ border-radius:11px!important;
+ box-shadow:0 14px 34px #1d142d3b!important;
+ padding:14px 17px;
+ font:normal 14px/1.6 system-ui,sans-serif;
+}
+.glossbox.gloss-popover strong{color:#e4c9fb!important;font-size:15px}
+.glossbox.gloss-popover p{color:#fff!important;margin:7px 0 14px;line-height:1.65}
+.glossbox.gloss-popover .action.secondary{
+ background:#49345e!important;
+ color:#fff!important;
+ border:1px solid #bd9fd3!important;
+}
+.glossbox.gloss-popover .action.secondary:hover{background:#604477!important}
+.glossbtn:hover::after,.glossbtn:focus-visible::after{
+ background:var(--gloss-purple);
+ color:#fff;
+ border:1px solid var(--gloss-accent);
+ border-radius:11px;
+ box-shadow:0 14px 34px #1d142d3b;
+}
+body.gloss-open .glossbtn:hover::after,
+body.gloss-open .glossbtn:focus-visible::after{display:none!important}
