@@ -3,7 +3,7 @@
 (function(global){
 "use strict";
 const STORAGE="cwc-learner-record-v1";
-const VERSION="9.8.3";
+const VERSION="9.8.4";
 const MAX_REPORTS=100;
 function baseline(){return {name:"",organization:"",consent:false,sessionId:"",registeredAt:"",completedAt:"",reports:[]};}
 function read(){try{const o=JSON.parse(localStorage.getItem(STORAGE)||"null");return o&&typeof o==="object"?{...baseline(),...o,reports:Array.isArray(o.reports)?o.reports.slice(-MAX_REPORTS):[]}:baseline();}catch(e){return baseline();}}
