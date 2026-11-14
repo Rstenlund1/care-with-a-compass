@@ -314,7 +314,7 @@ function chapterSubmissionView(){
  const firstCorrect=items.filter(q=>first.get(q.id)===true).length;
  const finalCorrect=items.filter(q=>latest[q.id]===true).length;
  const coaching=items.filter(q=>latest[q.id]!==true).map(q=>q.id);
- const current=state.chapterReporting.status?.[ch]||"";
+ const current=state.chapterReporting.status?.[ch]||"";const error=String(state.chapterReporting.errors?.[ch]||"");
  state.phase="chapter-submit";
  render(`<div class="eyebrow">Chapter ${ch} of ${CHAPTERS} · Complete</div><h1 id="focushead">Review and submit Chapter ${ch}</h1>
  <p class="lede">Your chapter is complete. Submit your results so the instructor can see which leadership decisions need more practice before the next live session.</p>
@@ -324,7 +324,7 @@ function chapterSubmissionView(){
  <div class="chapter-submit-actions">
  <button class="action" type="button" onclick="submitChapterResults(${ch})" ${current==="sending"?'disabled':""}>Submit Chapter ${ch} Results to Instructor</button>
  <button class="action secondary" type="button" onclick="continueAfterChapterSubmit()">Continue to ${ch<CHAPTERS?"Chapter "+(ch+1):"the foundation capstone"} → <small>(testing)</small></button>
- </div><p class="chapter-submit-status" id="chapterSubmitStatus" role="status" aria-live="polite">${esc(chapterReportStatusText(current))}</p>
+ </div><p class="chapter-submit-status" id="chapterSubmitStatus" role="status" aria-live="polite">${esc(chapterReportStatusText(current)+(current!=="sent"&&error?" "+error:""))}</p>
  <p class="meta">In this pilot, you may continue without submitting. For a scheduled live course, your instructor can later require submission before opening the next chapter.</p></section>`);
 }
 function submitChapterResults(ch){
@@ -342,17 +342,19 @@ function submitChapterResults(ch){
  try{window.parent.postMessage({app:"care-with-a-compass",kind:"chapter-submit-request",payload},window.location.origin);}
  catch(err){chapterResultStatus(ch,"failed");}
 }
-function chapterResultStatus(ch,status){
+function chapterResultStatus(ch,status,error=""){
  if(!state.done.includes(ch))return;
  const allowed=["sent","queued","failed"];
  if(!allowed.includes(status))return;
  state.chapterReporting??={pending:null,status:{}};
  state.chapterReporting.status[ch]=status;
+ state.chapterReporting.errors??={};
+ if(status==="sent")delete state.chapterReporting.errors[ch];else state.chapterReporting.errors[ch]=String(error||"").slice(0,400);
  save();
  const text=document.getElementById("chapterSubmitStatus");
- if(text)text.textContent=chapterReportStatusText(status);
+ if(text)text.textContent=chapterReportStatusText(status)+(status==="sent"?"":state.chapterReporting.errors[ch]?" "+state.chapterReporting.errors[ch]:"");
  const marker=document.getElementById("chapterReminderStatus"+ch);
- if(marker)marker.textContent=chapterReportStatusText(status);
+ if(marker)marker.textContent=chapterReportStatusText(status)+(status==="sent"?"":state.chapterReporting.errors[ch]?" "+state.chapterReporting.errors[ch]:"");
  window.CWC_CHAPTER_REPORT?.notifyProgress();
 }
 function continueAfterChapterSubmit(){
