@@ -3,7 +3,7 @@
 (function(global){
 "use strict";
 const STORAGE="cwc-learner-record-v1";
-const VERSION="9.8.0";
+const VERSION="9.8.1";
 const MAX_REPORTS=100;
 function baseline(){return {name:"",organization:"",consent:false,sessionId:"",registeredAt:"",completedAt:"",reports:[]};}
 function read(){try{const o=JSON.parse(localStorage.getItem(STORAGE)||"null");return o&&typeof o==="object"?{...baseline(),...o,reports:Array.isArray(o.reports)?o.reports.slice(-MAX_REPORTS):[]}:baseline();}catch(e){return baseline();}}
@@ -13,22 +13,19 @@ function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function ready(){return record.consent===true&&record.name.trim().length>=2;}
 function endpoint(){return String(global.CWC_REPORT_ENDPOINT||"").trim();}
 function configured(){return /^https:\/\/formspree\.io\/f\/[a-zA-Z0-9]+$/.test(endpoint());}
-function enrollView(){
- return '<div class="learner-onboarding"><section class="learner-onboarding-panel">'
- +'<div class="eyebrow">CARE WITH A COMPASS · THE DIRECTOR\'S DESK</div>'
- +'<h1>Begin your leadership journey.</h1>'
- +'<p class="learner-creator">A training program created by <strong>Richard Lawrence Stenlund</strong></p>'
- +'<p>Introduce yourself before starting. Your name will appear on your completion certificate and on the chapter progress reports your instructor uses for coaching.</p>'
- +'<form id="cwc-learner-form">'
- +'<label for="cwc-name">Full name <span aria-hidden="true">*</span></label>'
- +'<input id="cwc-name" name="cwc-name" required minlength="2" maxlength="80" autocomplete="name" value="'+esc(record.name)+'" placeholder="First and last name">'
- +'<label for="cwc-organization">Company, center or organization (optional)</label>'
- +'<input id="cwc-organization" name="cwc-organization" maxlength="100" value="'+esc(record.organization)+'" placeholder="Leave blank if not applicable">'
- +'<label class="learner-agreement"><input type="checkbox" id="cwc-agree" required '+(record.consent?'checked':'')+'><span>I understand that my name, organization (if provided), chapter performance and final assessment results may be shared with the program instructor through an email reporting provider. I will avoid including private information about children, families or coworkers in my training responses.</span></label>'
- +'<p class="learner-privacy-note">Progress is stored in this browser. This demonstration does not authenticate users or verify identities. No report is transmitted until an instructor-owned email endpoint is configured.</p>'
- +'<div id="cwc-enroll-error" role="alert" class="learner-enroll-error"></div>'
- +'<button type="submit" class="btn primary">Start training →</button>'
- +'</form></section></div>';
+function enrollHero(){
+ return '<form id="cwc-learner-form" class="hero-enroll-form" aria-label="Start your training">'
+ +'<div class="hero-enroll-heading"><strong>Begin your training</strong><span>Enter your name to save your progress and receive your completion certificate.</span></div>'
+ +'<div class="hero-enroll-fields">'
+ +'<div class="hero-form-field"><label for="cwc-name">Your full name <span aria-hidden="true">*</span></label>'
+ +'<input id="cwc-name" name="cwc-name" type="text" required minlength="2" maxlength="80" autocomplete="name" value="'+esc(record.name)+'" placeholder="First and last name"></div>'
+ +'<div class="hero-form-field"><label for="cwc-organization">Company or center <span>(optional)</span></label>'
+ +'<input id="cwc-organization" name="cwc-organization" type="text" maxlength="100" value="'+esc(record.organization)+'" placeholder="If applicable"></div>'
+ +'</div>'
+ +'<label class="hero-enroll-consent" for="cwc-agree"><input id="cwc-agree" type="checkbox" required '+(record.consent?'checked':'')+'><span>I agree to share my name, optional organization, chapter performance and assessment results with the program instructor through the reporting service. I will not include personal details about children, families, or staff in my responses.</span></label>'
+ +'<div class="hero-enroll-bottom"><button type="submit" class="btn primary-light">Start Training →</button><span>Progress stays on this device. Reporting uses an instructor-configured service.</span></div>'
+ +'<p id="cwc-enroll-error" class="hero-enroll-error" role="alert"></p>'
+ +'</form>';
 }
 function enroll(){
  const name=String(document.getElementById("cwc-name")?.value||"").trim().replace(/\s+/g," ").slice(0,80);
@@ -139,6 +136,6 @@ function certificatePrint(state,foundationReady,casesDone){
 }
 function resetProgress(){record.reports=[];record.completedAt="";record.sessionId="cw"+Date.now().toString(36)+Math.random().toString(36).slice(2,9);write();}
 function forgetLearner(){try{localStorage.removeItem(STORAGE);}catch(e){}record=baseline();}
-global.CWC_LEARNER={ready,enrollView,enroll,notice,queue,flush,resetProgress,forgetLearner,chapterCompleted,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
+global.CWC_LEARNER={ready,enrollHero,enroll,notice,queue,flush,resetProgress,forgetLearner,chapterCompleted,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
 if(configured()&&ready())global.addEventListener("load",()=>void flush());
 })(window);
