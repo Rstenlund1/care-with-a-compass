@@ -196,7 +196,7 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .sidebar-course-link{background:transparent;border:0;padding:0;color:#eacc9c;font-weight:750;text-align:left;font-size:13px;cursor:pointer}
 .sidebar-course-link:hover{text-decoration:underline}
 .chapter-embed-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:clamp(11px,2.5vw,25px);overflow:hidden;box-shadow:var(--shadow)}
-.chapter-frame{width:100%;height:1450px;min-height:650px;border:0;display:block;background:transparent}
+.chapter-frame{width:100%;height:320px;min-height:0;border:0;display:block;background:transparent}
 @media(max-width:1150px){.program-roadmap{grid-template-columns:1fr}.roadmap-step{min-height:unset}}
 @media print{.program-roadmap,.chapter-embed-wrap{box-shadow:none}.chapter-frame{min-height:850px}}
 
