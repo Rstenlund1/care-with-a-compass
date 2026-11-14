@@ -1,8 +1,8 @@
-# Care with a Compass — The Director's Desk · v9.7.0
+# Care with a Compass — The Director's Desk · v9.7.1
 
 An interactive, consequential leadership-development **academic prototype** created for EDACE 830 at Kansas State University.
 
-**Try the program:** https://rstenlund1.github.io/care-with-a-compass/?v=9.7.0
+**Try the program:** https://rstenlund1.github.io/care-with-a-compass/?v=9.7.1
 
 ## What this release includes
 
@@ -11,6 +11,10 @@ An interactive, consequential leadership-development **academic prototype** crea
 - A **five-stage adaptive final capstone**. The preceding decision changes the facts and available responses in the next stage, including twelve modeled conditional scenarios across stages two through five. Learners may review their decision trail and revise prior selections before submitting the local demonstration.
 - A structured diagnostic assessment and a proposed, human-scored 30-day workplace transfer plan.
 - A single guided Continue Training flow, open sidebar navigation, and clear Home / Start Over controls.
+
+## Staffing budget clarification (v9.7.1)
+
+The staffing lab now separates **baseline labor**, **incremental qualified relief labor**, and **total modeled labor**. It assumes eight paid hours per scheduled teacher per day, plus 0/3/6/9 example extra paid hours depending on the reserve staffing plan. Dollar totals respond to the number of teachers, reserve plan, and fully loaded hourly cost; the wage slider updates totals while being moved. These are instructional cost projections, not actual operating budgets. The additional relief amount correctly remains $0 under the minimum-only design, but the total labor is still nonzero.
 
 ## Pilot scoring model
 
