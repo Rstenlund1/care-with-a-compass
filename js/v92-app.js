@@ -329,18 +329,19 @@ function facilitatorView(){
 function render(){
  const app=$("#app");if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready()){app.innerHTML=window.CWC_LEARNER.enrollView();return;}const views={overview,chapters:chaptersView,cases:casesView,staff:staffView,evidence:evidenceView,assessment:assessmentView,facilitator:facilitatorView};
  const key=moduleKey(),content=state.page!=="cases"&&L.modules?.[key]&&!state.introSeen[key]?introductoryLesson(key):views[state.page]();
- app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.8.0</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button></div></div></header><main id="main" tabindex="-1">${content}</main>${window.CWC_LEARNER?.notice()||""}<footer><span>Care with a Compass · Supervisor Leadership Program · v9.8.0</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
+ app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.8.0</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button><button type="button" class="utility-button" data-action="switch-learner" aria-label="Switch learner and clear this browser's training data"><span aria-hidden="true">⇄</span> Switch Learner</button></div></div></header><main id="main" tabindex="-1">${content}</main>${window.CWC_LEARNER?.notice()||""}<footer><span>Care with a Compass · Supervisor Leadership Program · v9.8.0</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
  document.title="Care with a Compass | Supervisor Leadership Program v9.8.0";
 }
 function returnHome(){go("overview");}
 function startOverTraining(){
- if(!window.confirm("Start the ENTIRE training over? This will permanently clear your saved chapter answers, reflections, completed case decisions, lab progress, assessment responses, and facilitator review from this browser. Continue?"))return;
+ if(!window.confirm("Start the ENTIRE training over? This clears your chapter answers, case decisions, assessments, certificate completion date, and locally queued reports for this learner. Continue?"))return;
  try {
   for(const store of [localStorage,sessionStorage]){
    store.removeItem(KEY);
    store.removeItem("care-with-a-compass-supervisor-v72-72q");
   }
  }catch(err){window.alert("Could not clear your saved progress in this browser. Your training has not been restarted.");return;}
+ window.CWC_LEARNER?.resetProgress();
  state=initial();
  render();
  window.scrollTo({top:0,behavior:"auto"});
@@ -362,6 +363,7 @@ document.addEventListener("click",e=>{
  if(action==="start-training")return resumeLinear();
  if(action==="home")return returnHome();
  if(action==="start-over")return startOverTraining();
+ if(action==="switch-learner"){if(!window.confirm("Switch learner? This clears all course progress, reports awaiting delivery, and the previous learner\'s certificate from this browser. Continue?"))return;try{for(const store of [localStorage,sessionStorage]){store.removeItem(KEY);store.removeItem("care-with-a-compass-supervisor-v72-72q");}}catch(e){}window.CWC_LEARNER?.forgetLearner();state=initial();return render();}
  if(action==="journey-next")return continueJourney();
  if(action==="review-lesson"){const key=moduleKey();delete state.introSeen[key];save();return render();}
  if(action==="nav")return go(btn.dataset.page);
