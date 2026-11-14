@@ -3,7 +3,7 @@
 (function(global){
 "use strict";
 const STORAGE="cwc-learner-record-v1";
-const VERSION="9.8.4";
+const VERSION="9.8.6";
 const MAX_REPORTS=100;
 function baseline(){return {name:"",organization:"",consent:false,sessionId:"",registeredAt:"",completedAt:"",reports:[]};}
 function read(){try{const o=JSON.parse(localStorage.getItem(STORAGE)||"null");return o&&typeof o==="object"?{...baseline(),...o,reports:Array.isArray(o.reports)?o.reports.slice(-MAX_REPORTS):[]}:baseline();}catch(e){return baseline();}}
@@ -56,6 +56,26 @@ function queue(kind,key,title,detail){
  record.reports=record.reports.slice(-MAX_REPORTS);write();
  if(configured())void flush();return true;
 }
+function friendlyError(response,data){
+ const errors=Array.isArray(data?.errors)?data.errors:[];
+ const details=errors.map(x=>String(x?.message||x?.code||"").trim()).filter(Boolean);
+ const raw=details.join("; ")||String(data?.error||data?.message||"").trim();
+ const code=errors.map(x=>String(x?.code||"").toUpperCase()).join(" ");
+ const field=errors.map(x=>String(x?.field||"").toLowerCase()).join(" ");
+ if(field.includes("email")||/REQUIRED_FIELD_(MISSING|EMPTY)/.test(code)&&/email/i.test(raw))
+  return "Formspree requires an email field. The training intentionally does not collect learner email addresses. In Formspree, open Workflow → Validation and remove the required email rule.";
+ if(response.status===429)return "Formspree rate limit reached (HTTP 429). Retry after a short interval.";
+ if(response.status===403)return "Formspree denied this request (HTTP 403). Check the form's allowed-domain settings and security/blocking rules.";
+ if(response.status===404)return "Formspree could not find this form (HTTP 404). Check the configured endpoint.";
+ if(response.status===422||response.status===400)return "Formspree validation rejected this report (HTTP "+response.status+"). "+(raw||"Check Workflow → Validation for required fields.");
+ if(response.status===401)return "Formspree rejected authorization (HTTP 401). Check the form's active state and settings.";
+ if(response.status>=500)return "Formspree server error (HTTP "+response.status+"). The report is still saved; retry later.";
+ return "Formspree declined the report (HTTP "+response.status+"). "+(raw||"Check your form's Workflow and submission settings.");
+}
+function reportError(ch){
+ const r=record.reports.find(x=>x.key==="chapter-"+Number(ch));
+ return r?.status==="sent"?"":String(r?.error||"").slice(0,350);
+}
 function flush(){
  if(sendingPromise)return sendingPromise;
  if(!ready()||!configured())return Promise.resolve();
@@ -69,9 +89,18 @@ function flush(){
       session_id:record.sessionId,report_type:item.kind,report_date:item.createdAt,
       report_details:reportText(item.detail),version:VERSION
      })});
-     if(!response.ok)throw Error("Reporting service returned "+response.status);
+     if(!response.ok){
+      let detail={};
+      try{detail=await response.json();}catch(e){}
+      throw Error(friendlyError(response,detail));
+     }
      item.status="sent";item.sentAt=new Date().toISOString();delete item.error;write();
-    }catch(e){item.error="Delivery failed; stored locally for a retry.";write();break;}
+    }catch(e){
+     const original=String(e?.message||e||"");
+     item.error=original.startsWith("Formspree")?original:"The browser could not reach Formspree. Check your connection, browser privacy extensions, and try again.";
+     item.status="pending";
+     write();break;
+    }
    }
   }finally{sendingPromise=null;}
  })();
@@ -147,6 +176,6 @@ function certificatePrint(state,foundationReady,casesDone){
 }
 function resetProgress(){record.reports=[];record.completedAt="";record.sessionId="cw"+Date.now().toString(36)+Math.random().toString(36).slice(2,9);write();}
 function forgetLearner(){try{localStorage.removeItem(STORAGE);}catch(e){}record=baseline();}
-global.CWC_LEARNER={ready,enrollHero,enroll,notice,queue,flush,resetProgress,forgetLearner,chapterCompleted,submitChapter,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
+global.CWC_LEARNER={ready,enrollHero,enroll,notice,queue,flush,reportError,resetProgress,forgetLearner,chapterCompleted,submitChapter,assessmentSubmitted,facilitatorReviewed,certificateEligible,certificateAction,certificatePrint,profile:()=>({...record})};
 if(configured()&&ready())global.addEventListener("load",()=>void flush());
 })(window);
