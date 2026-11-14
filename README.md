@@ -36,7 +36,7 @@ Each foundational chapter now ends with a **Review and Submit Chapter** checkpoi
 
 The surrounding chapter count updates from secure same-origin messages from the embedded lesson engine; it no longer remains stuck at 0/5 when a learner completes Chapter 1. Reporting events use distinct `chapter-submit-request` and `chapter-submit-status` messages so a chapter is not emailed merely by navigating onward.
 
-The seven applied-case starting conditions now select **15 scenario adjustments** across the three long-form simulations. The variant changes actual question wording, situation details, and relevant response wording while preserving consistent scoring and essential safety duties.
+The seven applied-case starting conditions now select **25 scenario adjustments** across the three long-form simulations. The variant changes actual question wording, situation details, and relevant response wording while preserving consistent scoring and essential safety duties.
 
 Seven editorial photo banners reuse pictures already included in `images/` across applied cases, the staffing simulation, the evidence journal, the competency assessment and facilitator review.
 
