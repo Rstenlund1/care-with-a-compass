@@ -3,7 +3,7 @@
 (function(global){
 "use strict";
 const STORAGE="cwc-learner-record-v1";
-const VERSION="9.8.7";
+const VERSION="9.9.0";
 const MAX_REPORTS=100;
 function baseline(){return {name:"",organization:"",consent:false,sessionId:"",registeredAt:"",completedAt:"",reports:[]};}
 function read(){try{const o=JSON.parse(localStorage.getItem(STORAGE)||"null");return o&&typeof o==="object"?{...baseline(),...o,reports:Array.isArray(o.reports)?o.reports.slice(-MAX_REPORTS).map(r=>r.kind==="chapter"&&!String(r.key||"").includes("-detailed-")&&r.status!=="sent"?{...r,status:"superseded"}:r):[]}:baseline();}catch(e){return baseline();}}
@@ -194,7 +194,7 @@ function facilitatorReviewed(r){
   diagnosticScore:s.diagnostic??"Pending",capstoneScore:s.capstone??"Pending",transferScore:s.transfer??"Pending",
   totalScore:s.total??"Pending",objectiveOneCorrect:m.objective1??"Pending",
   objectiveFourCorrect:m.objective4??"Pending",criticalSafetyErrors:m.criticalSafetyErrors??"Pending",
-  provisionalResult:m.provisionalStatus||"Pending"
+  provisionalResult:m.provisionalStatus||"Pending",reviewVerification:"Unverified facilitator simulation in a public browser; not an independently authenticated competency outcome"
  });
 }
 function certificateEligible(state,foundationReady,casesDone){
