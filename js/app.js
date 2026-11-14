@@ -322,7 +322,7 @@ function chapterSubmissionView(){
  <div class="chapter-submission-metrics"><div><strong>${firstCorrect}/${items.length}</strong><span>Preferred on first try</span></div><div><strong>${finalCorrect}/${items.length}</strong><span>Preferred after practice</span></div><div><strong>${h.length}</strong><span>Total attempts</span></div></div>
  ${state.needsWorkshop[ch]||coaching.length?`<p class="note">Bring these topics to the next live session: ${esc(coaching.length?coaching.join(", "):"a previous item requiring extra practice")}.</p>`:'<p class="note">No unanswered preferred-response items remain. Your instructor can still review first-attempt gaps.</p>'}
  <div class="chapter-submit-actions">
- <button class="action" type="button" onclick="submitChapterResults(${ch})" ${current==="sending"?'disabled':""}>Submit Chapter ${ch} Results to Instructor</button>
+ <button class="action" type="button" onclick="submitChapterResults(${ch})" id="chapterSubmitButton" ${current==="sending"?'disabled':""}>Submit Chapter ${ch} Results to Instructor</button>
  <button class="action secondary" type="button" onclick="continueAfterChapterSubmit()">Continue to ${ch<CHAPTERS?"Chapter "+(ch+1):"the foundation capstone"} → <small>(testing)</small></button>
  </div><p class="chapter-submit-status" id="chapterSubmitStatus" role="status" aria-live="polite">${esc(chapterReportStatusText(current)+(current!=="sent"&&error?" "+error:""))}</p>
  <p class="meta">In this pilot, you may continue without submitting. For a scheduled live course, your instructor can later require submission before opening the next chapter.</p></section>`);
@@ -332,6 +332,7 @@ function submitChapterResults(ch){
  state.chapterReporting??={pending:null,status:{}};
  state.chapterReporting.status[ch]="sending";
  save();
+ const submittingButton=document.getElementById("chapterSubmitButton");if(submittingButton)submittingButton.disabled=true;
  const status=document.getElementById("chapterSubmitStatus");
  if(status)status.textContent=chapterReportStatusText("sending");
  const payload=window.CWC_CHAPTER_REPORT?.summary(ch);
@@ -353,6 +354,7 @@ function chapterResultStatus(ch,status,error=""){
  save();
  const text=document.getElementById("chapterSubmitStatus");
  if(text)text.textContent=chapterReportStatusText(status)+(status==="sent"?"":state.chapterReporting.errors[ch]?" "+state.chapterReporting.errors[ch]:"");
+ const submitBtn=document.getElementById("chapterSubmitButton");if(submitBtn)submitBtn.disabled=false;
  const marker=document.getElementById("chapterReminderStatus"+ch);
  if(marker)marker.textContent=chapterReportStatusText(status)+(status==="sent"?"":state.chapterReporting.errors[ch]?" "+state.chapterReporting.errors[ch]:"");
  window.CWC_CHAPTER_REPORT?.notifyProgress();
