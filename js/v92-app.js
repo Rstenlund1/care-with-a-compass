@@ -132,7 +132,7 @@ function iconCard(value,name,small=""){return `<div class="metric"><strong>${esc
 function overview(){
  const chapters=courseProgress();
  const cards=D.cases.map(c=>{const w=work(c.id),n=w.step>=c.stages.length?"Complete":w.chosen.length?`Stage ${Math.min(w.step+1,c.stages.length)} of ${c.stages.length}`:"Not started";return `<article class="case-tile"><div class="case-tag">${esc(c.tag)}</div><h3>${esc(c.title)}</h3><p>${esc(c.subtitle)}</p><div class="tile-end"><span>${n}</span><span class="tiny muted">Part of applied training</span></div></article>`;}).join("");
- return `<section class="hero"><div class="hero-copy"><span class="eyebrow light">Version 9.7.0 · One guided leadership program</span><h2>One facility. One ordinary day.<br><em>A dozen consequences.</em></h2><p>One leadership program combines five foundational chapters, consequential simulations, staffing and evidence labs, and a facilitator-reviewed competency assessment for aspiring supervisors and directors.</p><div class="hero-actions">${hButton("start-training",courseReady()||chapters.done>0?"Continue Training →":"Start Training →","primary-light")}</div></div><div class="hero-mark" aria-hidden="true"><span>09</span><small>director<br>edition</small></div></section>
+ return `<section class="hero"><div class="hero-copy"><span class="eyebrow light">Version 9.7.1 · One guided leadership program</span><h2>One facility. One ordinary day.<br><em>A dozen consequences.</em></h2><p>One leadership program combines five foundational chapters, consequential simulations, staffing and evidence labs, and a facilitator-reviewed competency assessment for aspiring supervisors and directors.</p><div class="hero-actions">${hButton("start-training",courseReady()||chapters.done>0?"Continue Training →":"Start Training →","primary-light")}</div></div><div class="hero-mark" aria-hidden="true"><span>09</span><small>director<br>edition</small></div></section>
  <div class="program-roadmap"><div class="roadmap-step"><span class="roadmap-no">01</span><div><h3>Learn the leadership foundations</h3><p>Five chapters, 72 applied questions, 36 follow-ups, and the original four-stage capstone. ${chapters.done} of 5 chapters completed.</p><span class="roadmap-desc">Part of the guided learning journey</span></div></div><div class="roadmap-step"><span class="roadmap-no">02</span><div><h3>Manage real consequences</h3><p>Explore three long-form cases, staffing resilience, and evidence evaluation.</p><span class="roadmap-desc">Applied cases follow the foundation lessons</span></div></div><div class="roadmap-step"><span class="roadmap-no">03</span><div><h3>Demonstrate the learning</h3><p>Complete diagnostics, a new cascading capstone, and a facilitator-reviewed workplace plan.</p><span class="roadmap-desc">Human-scored pilot assessment and feedback</span></div></div></div><section class="training-rationale" aria-labelledby="training-rationale-title"><div class="rationale-eyebrow">Why supervisory preparation matters · EDACE 830</div><h2 id="training-rationale-title">Experience is not the same as preparation.</h2><p>California's Child Development Permit pathways recognize education and professional experience, and some require administration or adult-supervision coursework. Those qualifications are important, but they do not automatically demonstrate the judgment needed when child safety, staff supervision, family concerns, and licensing obligations collide.</p><p>Drawing on Katz's (1974) technical, human, and conceptual leadership skills, and on adult learning through application and reflection, <em>Care with a Compass</em> moves beyond knowing what a leader should do. Learners evaluate evidence, make consequential choices, confront unexpected developments, and consider how to transfer those lessons to their own programs.</p><p class="rationale-bottom"><strong>The goal is not simply to find the right answer. It is to make a responsible decision, then know how to lead when the next problem begins.</strong></p></section>
  <div class="section-top"><div><div class="kicker">01 · Scenario studio</div><h2>The director does not get to reset the day.</h2></div><p>Each response changes the recorded conditions, evidence trail, and next development.</p></div>
  <div class="case-grid">${cards}</div>
@@ -187,8 +187,30 @@ function staffModel(){
  const gap=Math.max(0,floor-available);
  const hours={minimum:0,overlap:3,relief:6,combined:9}[s.plan]??0;
  const wage=Math.max(18,Math.min(45,Number(s.wage)||23));
- const cost=hours*wage;
- return {attendance,scheduled,floor,backup,lost,available,gap,ok:gap===0,cost,weekCost:cost*5,monthCost:cost*22,extraPerChild:cost/attendance,enhanced:s.support==="enhanced",overlapActive};
+ const cost=hours*wage; // Additional reserve cost, not baseline payroll.
+ const baseHours=scheduled*8; // Illustrative eight-hour paid shift for each scheduled qualified teacher.
+ const baseCost=baseHours*wage;
+ const totalDaily=baseCost+cost;
+ return {attendance,scheduled,floor,backup,lost,available,gap,ok:gap===0,wage,hours,baseHours,baseCost,cost,totalDaily,weekCost:cost*5,monthCost:cost*22,totalWeekCost:totalDaily*5,totalMonthCost:totalDaily*22,extraPerChild:cost/attendance,enhanced:s.support==="enhanced",overlapActive};
+}
+function money(v){return "$"+Math.round(v).toLocaleString("en-US");}
+function refreshStaffBudgetPreview(){
+ const m=staffModel();
+ const updates={
+  staffWageValue:money(m.wage),
+  staffBaseHours:String(m.baseHours),
+  staffExtraHours:String(m.hours),
+  staffBaseCost:money(m.baseCost),
+  staffExtraCost:money(m.cost),
+  staffTotalCost:money(m.totalDaily),
+  staffFiveDayCost:money(m.totalWeekCost),
+  staffMonthCost:money(m.totalMonthCost),
+  staffExtraPerChild:"$"+m.extraPerChild.toFixed(2)
+ };
+ for(const [id,val] of Object.entries(updates)){
+  const el=document.getElementById(id);
+  if(el)el.textContent=val;
+ }
 }
 function staffView(){
  const m=staffModel(),s=state.staffing;
@@ -212,9 +234,17 @@ function staffView(){
  <div><label for="staffWindow">When does the incident occur?</label><select id="staffWindow" data-change="staff-window"><option value="during" ${s.window!=="outside"?"selected":""}>During scheduled overlap</option><option value="outside" ${s.window==="outside"?"selected":""}>Outside the overlap window</option></select></div>
  <div><label for="staffSupport">Individualized supervision considerations</label><select id="staffSupport" data-change="staff-support"><option value="routine" ${s.support!=="enhanced"?"selected":""}>Routine group needs</option><option value="enhanced" ${s.support==="enhanced"?"selected":""}>Child needs intensive individualized support</option></select></div>
  </div></div>
- <div class="staff-section"><h4>3. Budget for the relief arrangement</h4><label for="staffWage">Illustrative fully loaded cost per staff-hour: <strong>$${s.wage}</strong></label><input id="staffWage" type="range" min="18" max="45" step="1" value="${s.wage}" data-change="staff-wage">
- <div class="lab-results"><div><span>Additional daily labor</span><strong>$${m.cost}</strong></div><div><span>Five-day estimate</span><strong>$${m.weekCost}</strong></div><div><span>22-day estimate</span><strong>$${m.monthCost.toLocaleString()}</strong></div></div>
- <p class="tiny muted">Assumed additional paid hours: minimum 0, overlapping 3, relief 6, combined 9 per day. These are examples, not actual quoted labor budgets or staffing schedules. Added daily expense per attending child: $${m.extraPerChild.toFixed(2)}.</p></div>
+ <div class="staff-section"><h4>3. Budget for the relief arrangement</h4>
+ <label for="staffWage">Illustrative fully loaded cost per paid staff-hour: <strong id="staffWageValue">${money(m.wage)}</strong></label>
+ <input id="staffWage" type="range" min="18" max="45" step="1" value="${s.wage}" data-change="staff-wage" aria-describedby="staffBudgetMethod">
+ <div class="lab-results" aria-live="polite" aria-atomic="true">
+  <div><span>Base daily labor</span><strong id="staffBaseCost">${money(m.baseCost)}</strong></div>
+  <div><span>Added daily relief labor</span><strong id="staffExtraCost">${money(m.cost)}</strong></div>
+  <div><span>Total daily labor</span><strong id="staffTotalCost">${money(m.totalDaily)}</strong></div>
+  <div><span>Five-day labor estimate</span><strong id="staffFiveDayCost">${money(m.totalWeekCost)}</strong></div>
+  <div><span>22-day labor estimate</span><strong id="staffMonthCost">${money(m.totalMonthCost)}</strong></div>
+ </div>
+ <p class="tiny muted" id="staffBudgetMethod">Illustrative baseline: ${m.scheduled} scheduled qualified teacher(s) × 8 paid hours per day = <strong id="staffBaseHours">${m.baseHours}</strong> baseline paid hours. Additional paid relief hours: minimum 0, overlapping 3, relief 6, combined 9; currently <strong id="staffExtraHours">${m.hours}</strong> per day. Changing the hourly cost updates all estimates. Figures exclude unmodeled personnel, overtime, and variable payroll costs; they are examples rather than an actual staffing budget. Added daily cost per attending child: <strong id="staffExtraPerChild">${m.extraPerChild.toFixed(2)}</strong>.</p></div>
  <div class="staff-section"><h4>4. Evaluate the decision</h4>
  <div class="coverage-summary" aria-live="polite">
  <div><span>Scheduled teachers</span><strong>${m.scheduled}</strong></div>
@@ -292,8 +322,8 @@ function facilitatorView(){
 function render(){
  const app=$("#app"),views={overview,chapters:chaptersView,cases:casesView,staff:staffView,evidence:evidenceView,assessment:assessmentView,facilitator:facilitatorView};
  const key=moduleKey(),content=state.page!=="cases"&&L.modules?.[key]&&!state.introSeen[key]?introductoryLesson(key):views[state.page]();
- app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.7.0</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button></div></div></header><main id="main" tabindex="-1">${content}</main><footer><span>Care with a Compass · Supervisor Leadership Program · v9.7.0</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
- document.title="Care with a Compass | Supervisor Leadership Program v9.7.0";
+ app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v9.7.1</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button></div></div></header><main id="main" tabindex="-1">${content}</main><footer><span>Care with a Compass · Supervisor Leadership Program · v9.7.1</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
+ document.title="Care with a Compass | Supervisor Leadership Program v9.7.1";
 }
 function returnHome(){go("overview");}
 function startOverTraining(){
@@ -312,7 +342,7 @@ function go(page){if(!canOpen(page))return;if(page==="cases"&&!canOpenCase(state
 function download(name,body,type){const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function report(){
  const a=state.assessment,r=assessScores();
- return {application:"Care with a Compass",version:"9.7.0",generatedAt:new Date().toISOString(),participant:a.name||"Anonymous local participant",scores:{diagnostic:r.partA,capstone:r.partB,transfer:r.manual,total:r.manual===null?null:r.total},mastery:{objective1:r.skillCorrect,objective4:r.causeCorrect,criticalSafetyErrors:r.critical,provisionalStatus:r.manual===null?"facilitator review pending":r.pass?"all pilot gates met":"remediation required"},responses:{diagnostic:a.diagnostic,capstone:a.capstone,transferPlan:a.transfer},facilitator:{reviewer:a.reviewer,notes:a.facilitatorNote},warning:"Local practice demonstration only; not an accredited or verified competency certificate."};
+ return {application:"Care with a Compass",version:"9.7.1",generatedAt:new Date().toISOString(),participant:a.name||"Anonymous local participant",scores:{diagnostic:r.partA,capstone:r.partB,transfer:r.manual,total:r.manual===null?null:r.total},mastery:{objective1:r.skillCorrect,objective4:r.causeCorrect,criticalSafetyErrors:r.critical,provisionalStatus:r.manual===null?"facilitator review pending":r.pass?"all pilot gates met":"remediation required"},responses:{diagnostic:a.diagnostic,capstone:a.capstone,transferPlan:a.transfer},facilitator:{reviewer:a.reviewer,notes:a.facilitatorNote},warning:"Local practice demonstration only; not an accredited or verified competency certificate."};
 }
 function csv(x){return '"'+String(x??"").replace(/"/g,'""')+'"';}
 document.addEventListener("click",e=>{
@@ -381,6 +411,13 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")hideDefinitions();})
  save();render();
 });
 document.addEventListener("input",e=>{
+ if(e.target?.dataset?.change==="staff-wage"){
+  state.staffing.wage=Math.max(18,Math.min(45,Number(e.target.value)||23));
+  state.sequence.staffTouched=true;
+  save();
+  refreshStaffBudgetPreview();
+  return;
+ }
  if(e.target?.dataset?.change==="assess-transfer"){state.assessment.transfer=e.target.value;save();const button=$('button[data-action="submit-assessment"]');if(button)button.disabled=!assessmentReady();}
 });
 window.addEventListener("message",e=>{const frame=document.getElementById("chaptersFrame");if(!frame||e.source!==frame.contentWindow)return;const data=e.data;if(data?.app==="care-with-a-compass"&&data.kind==="course-height"&&Number.isFinite(Number(data.height))){frame.style.height=Math.max(650,Math.min(25000,Number(data.height)+25))+"px";}});
