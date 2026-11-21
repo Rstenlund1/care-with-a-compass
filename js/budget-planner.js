@@ -122,25 +122,28 @@ function helpTip(key,label){
  return '<details class="budget-info"><summary title="'+esc(explanation)+'" aria-label="Help: '+esc(label)+'"><span aria-hidden="true">i</span></summary><span class="budget-info-popup">'+esc(explanation)+'</span></details>';
 }
 function helpHeading(key,label){
- return '<span class="budget-field-heading"><span>'+esc(label)+'</span>'+helpTip(key,label)+'</span>';
+ return '<span class="budget-field-heading"><label for="budget-'+esc(key)+'">'+esc(label)+'</label>'+helpTip(key,label)+'</span>';
+}
+function resultHeading(key,label){
+ return '<span class="budget-result-heading"><span>'+esc(label)+'</span>'+helpTip(key,label)+'</span>';
 }
 function unavailabilityControl(){
  const options=[["none","No one unavailable (0)"],["restroom","Restroom break (1)"],["sick","Sick call (1)"],["emergency","Emergency assistance (1)"],["two","Two staff unavailable (2)"]];
- return '<label class="budget-compact-field">'+helpHeading("staffUnavailable","Staff temporarily unavailable")+'<select data-budget-key="staffUnavailable">'+
-  options.map(([id,label])=>'<option value="'+esc(id)+'"'+(state.values.staffUnavailable===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></label>';
+ return '<div class="budget-compact-field">'+helpHeading("staffUnavailable","Staff temporarily unavailable")+'<select id="budget-staffUnavailable" data-budget-key="staffUnavailable">'+
+  options.map(([id,label])=>'<option value="'+esc(id)+'"'+(state.values.staffUnavailable===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></div>';
 }
 function availabilityText(c){
  if(c.availablePeople===0)return '0 staff available. Arrange appropriate relief before anyone steps away or continue only when safe supervision is restored.';
  return c.availablePeople+' staff available after the selected interruption (director included). Verify actual on-site supervision and licensing requirements.';
 }
-function field(key,label,step=1,help=""){
- return '<label class="budget-compact-field">'+helpHeading(key,label)+'<input type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'">'+'</label>';
+function field(key,label,step=1){
+ return '<div class="budget-compact-field">'+helpHeading(key,label)+'<input id="budget-'+esc(key)+'" type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></div>';
 }
 function breakdown(c){
- const line=(name,n)=>'<div><dt>'+esc(name)+'</dt><dd>'+cash(n)+'</dd></div>';
- return '<details class="budget-breakdown"><summary>Monthly expense breakdown</summary><dl>'+
-  line("Classroom staff",c.staffPayroll)+line("Director salary",c.director)+line("Rent",c.rent)+
-  line("Utilities",c.utilities)+line("Insurance",c.insurance)+'</dl></details>';
+ const line=(name,n,key)=>'<div><dt>'+esc(name)+helpTip(key,name)+'</dt><dd>'+cash(n)+'</dd></div>';
+ return '<details class="budget-breakdown"><summary title="'+esc(BUDGET_HELP.breakdown)+'">Monthly expense breakdown</summary><dl>'+
+  line("Classroom staff",c.staffPayroll,"staffPayroll")+line("Director salary",c.director,"directorSalary")+line("Rent",c.rent,"rent")+
+  line("Utilities",c.utilities,"utilities")+line("Insurance",c.insurance,"insurance")+'</dl></details>';
 }
 function view(){
  const c=calculate(),county=state.values.county||"San Bernardino";
@@ -151,34 +154,33 @@ function view(){
  '<span>Surplus<strong id="b-mobile-profit">'+cash(c.surplus)+'</strong></span></div>'+
  '<div class="budget-compact-editor">'+
  '<div class="budget-compact-heading"><h3>Will the center support your goals?</h3><p>Choose a county to prefill an editable tuition estimate. Results update as you type.</p></div>'+
- '<label class="budget-compact-field budget-county-selector"><span>California county</span><select data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></label>'+
+ '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div>'+
  '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county,state.tuitionManual)+'</p>'+
  '<div class="budget-enrollment-pair">'+
- '<div class="budget-enrollment-group"><h4>Full-time</h4>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
- '<div class="budget-enrollment-group"><h4>Part-time</h4>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+
- '<small>Starts at 75% of full-time tuition. You can change it.</small></div></div>'+
+ '<div class="budget-enrollment-group"><h4>Full-time '+helpTip("fulltime","Full-time enrollment")+'</h4>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
+ '<div class="budget-enrollment-group"><h4>Part-time '+helpTip("parttime","Part-time enrollment")+'</h4>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
  '<div class="budget-director-first">'+field("directorSalary","Director monthly salary ($)",100)+'</div>'+
  '<div class="budget-compact-fields">'+
  field("staffCount","Additional classroom staff (FTE, excluding director)",.25)+
  unavailabilityControl()+
  field("staffHourly","Hourly staff pay ($)",.5)+
  field("staffWeeklyHours","Paid hours per staff / week")+
- field("rent","Commercial facility rent ($/month)",50,"Home-based care: enter $0. Household rent or mortgage is not included in this simplified model.")+
+ field("rent","Commercial facility rent ($/month)",50)+
  field("utilities","Monthly utilities ($)",25)+
  field("insurance","Monthly insurance ($)",25)+
  '</div>'+
- '<details class="budget-compact-extra"><summary>Optional overnight revenue'+(val("overnightNights")?" (included in totals)":"")+'</summary>'+
+ '<details class="budget-compact-extra"><summary title="'+esc(BUDGET_HELP.overnight)+'">Optional overnight revenue'+(val("overnightNights")?" (included in totals)":"")+'</summary>'+
  '<div class="budget-compact-fields">'+field("overnightNights","Overnight stays / month")+field("overnightFee","Fee per stay ($)",5)+'</div>'+
  '<p class="budget-smallprint">If overnight care requires additional paid staff, increase your staffing estimate accordingly. This simplified calculator does not automatically add night shifts.</p></details>'+
  '<div class="budget-compact-footer"><button type="button" class="btn outline" data-budget-reset="1">Restore example figures</button>'+
  '<p>Food and meal-program costs and reimbursements are excluded. This is an illustrative budget, not a licensing determination.</p></div></div>'+
  '<aside class="budget-compact-live" aria-label="Live monthly financial results"><div class="kicker">Monthly results</div>'+
  '<div class="budget-compact-numbergrid" aria-live="polite">'+
- '<div><span>Revenue</span><strong id="b-income">'+cash(c.revenue)+'</strong></div>'+
- '<div><span>Expenses including director pay</span><strong id="b-expenses">'+cash(c.expenses)+'</strong></div>'+
- '<div class="budget-surplus"><span>Surplus / shortfall</span><strong id="b-profit">'+cash(c.surplus)+'</strong></div>'+
- '<div class="budget-goal-result"><span>Break-even full-time tuition</span><strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child")+'</strong></div></div>'+
- '<p id="b-staff-availability" class="budget-staff-availability'+(c.availablePeople===0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p>'+
+ '<div>'+resultHeading("revenue","Revenue")+'<strong id="b-income">'+cash(c.revenue)+'</strong></div>'+
+ '<div>'+resultHeading("expenses","Expenses including director pay")+'<strong id="b-expenses">'+cash(c.expenses)+'</strong></div>'+
+ '<div class="budget-surplus">'+resultHeading("surplus","Surplus / shortfall")+'<strong id="b-profit">'+cash(c.surplus)+'</strong></div>'+
+ '<div class="budget-goal-result">'+resultHeading("tuitionRequired","Break-even full-time tuition")+'<strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child")+'</strong></div></div>'+
+ '<div class="budget-availability-block"><span class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</span><p id="b-staff-availability" class="budget-staff-availability'+(c.availablePeople===0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p></div>'+
  '<div id="b-verdict" class="budget-compact-verdict">'+(c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.")+'</div>'+
  '<div id="b-breakdown">'+breakdown(c)+'</div>'+
  '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. Staff availability is a simplified headcount scenario, not a staffing-ratio determination; partial FTEs are excluded from its headcount. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
