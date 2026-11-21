@@ -141,7 +141,7 @@ function chaptersView(){
  const p=courseProgress();
  return `<div class="section-top"><div><div class="kicker">01 · Learning chapters</div><h2>Five chapters. One leadership foundation.</h2><p>Technical, human, and conceptual leadership skills, taught through the original applied question bank, branching follow-ups, guided recovery, chapter labs, and reflection.</p></div><span class="pill neutral" id="chapterCompletedCount" aria-live="polite">${p.done}/5 completed</span></div>
  <div class="note"><strong>Your earlier progress is preserved.</strong> This is the same curriculum, now part of the single supervisor/director learning program. Continue where you last stopped.</div>
- <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.0.1&build=aligned-lessons" loading="eager" title="Five learning chapters for new supervisors and directors"></iframe></div>`;
+ <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.0.1&build=aligned-72-final" loading="eager" title="Five learning chapters for new supervisors and directors"></iframe></div>`;
 }
 function caseConditions(c,w){
  const out={safety:"Under review",coverage:"Under review",family:"Under review",evidence:"Not yet reviewed",finance:"Not reviewed"};
