@@ -1,3 +1,11 @@
+# Care with a Compass — The Director's Desk · v10.7.18
+
+**Live optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.18&page=staff
+
+**Improved conditional-capacity messaging:** The old alarming sentence about “no numerical coverage gap” is replaced by concise headcount feedback, such as “7 children · 2 staff members available. No staffing shortage in this planning estimate.” For the small family care 7–8 exception, the school-age/infant/notification criteria are displayed as a separate neutral note rather than an orange error. The orange warning style is now reserved exclusively for actual headcount shortages and capacity or age-mix violations. Large-family 13–14 and centers with infants similarly use a neutral note about conditions. Visual and calculation behavior unchanged otherwise. The current model includes the director as first supervising person and automatically budgets additional staff at enrollment thresholds, but still does not verify actual legal eligibility, schedules, or qualifications.
+
+---
+
 # Care with a Compass — The Director's Desk · v10.7.17
 
 **Optional calculator:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.17&page=staff
