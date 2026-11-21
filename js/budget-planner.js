@@ -16,7 +16,7 @@ function countyRateFor(county){
 
 const DEFAULTS={
  students:14,tuition:923,partStudents:0,partTuition:692,county:"San Bernardino",
- staffCount:4,staffHourly:23,staffWeeklyHours:40,
+ staffCount:0,staffHourly:23,staffWeeklyHours:40,
  rent:0,utilities:0,insurance:0,directorSalary:6500,
  overnightNights:0,overnightFee:95
 };
@@ -107,14 +107,14 @@ function view(){
  '<div class="budget-enrollment-group"><h4>Full-time</h4>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
  '<div class="budget-enrollment-group"><h4>Part-time</h4>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+
  '<small>Starts at 75% of full-time tuition. You can change it.</small></div></div>'+
+ '<div class="budget-director-first">'+field("directorSalary","Director monthly salary ($)",100)+'</div>'+
  '<div class="budget-compact-fields">'+
- field("staffCount","Classroom staff (FTE)",.25)+
+ field("staffCount","Additional classroom staff (FTE, excluding director)",.25)+
  field("staffHourly","Hourly staff pay ($)",.5)+
  field("staffWeeklyHours","Paid hours per staff / week")+
  field("rent","Monthly rent ($)",50)+
  field("utilities","Monthly utilities ($)",25)+
  field("insurance","Monthly insurance ($)",25)+
- field("directorSalary","Director monthly salary ($)",100)+
  '</div>'+
  '<details class="budget-compact-extra"><summary>Optional overnight revenue'+(val("overnightNights")?" (included in totals)":"")+'</summary>'+
  '<div class="budget-compact-fields">'+field("overnightNights","Overnight stays / month")+field("overnightFee","Fee per stay ($)",5)+'</div>'+
