@@ -125,7 +125,8 @@ const BUDGET_HELP={
 function helpTip(key,label){
  const explanation=BUDGET_HELP[key];
  if(!explanation)return "";
- return '<details class="budget-info"><summary title="'+esc(explanation)+'" aria-label="Help: '+esc(label)+'"><span aria-hidden="true">i</span></summary><span class="budget-info-popup">'+esc(explanation)+'</span></details>';
+ // Hover displays the visual explanation. Keyboard focus and touch also work without a click-to-toggle control.
+ return '<span class="budget-info" tabindex="0" role="note" aria-label="Help for '+esc(label)+': '+esc(explanation)+'"><span class="budget-info-icon" aria-hidden="true">i</span><span class="budget-info-popup" aria-hidden="true">'+esc(explanation)+'</span></span>';
 }
 function helpHeading(key,label){
  return '<div class="budget-field-heading"><label for="budget-'+esc(key)+'">'+esc(label)+'</label>'+helpTip(key,label)+'</div>';
