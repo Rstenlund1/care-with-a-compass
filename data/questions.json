@@ -152,7 +152,7 @@
         "Ask both employees to keep detailed task logs for two weeks before making any change to assignments.",
         "Temporarily assign the high performer to the intensive role so you can compare how each employee handles it.",
         "Give the colleague additional coaching first, then change staffing only if the complaint is confirmed.",
-        "Review observed workload and the child’s plan, rebalance relief coverage, and then evaluate staff performance fairly.",
+        "Check workloads and the child’s plan, then arrange fair coverage and performance review.",
         "Meet with the complainant first and let them recommend a permanent reallocation of the difficult assignments."
       ],
       "answer": "D",
@@ -197,7 +197,7 @@
         "Approve the departure for the semester, and ask the room team to absorb the coverage during its normal routine.",
         "Decline the request for the term, explaining that established schedules should not change during enrollment.",
         "Reassign the floater every Tuesday, and review any effect on the other rooms after the semester ends.",
-        "Verify qualified coverage and predictable child handoffs, pilot the change, and review the impact across rooms.",
+        "Pilot the schedule only after confirming qualified coverage for both classrooms.",
         "Approve a coworker swap when both employees agree, and record the revised assignment after the first week."
       ],
       "answer": "D",
@@ -333,7 +333,7 @@
       "objective": 1,
       "scenario": "A respected senior teacher says, “Come on, don’t go corporate on me,” when you ask her to document repeated late handoffs. Other staff are watching. What is your first response?",
       "choices": [
-        "Explain privately that documentation protects children and staff, ask what makes the process difficult, and set a clear expectation.",
+        "Explain why records matter, hear concerns privately and establish expectations.",
         "Let it pass publicly but quietly begin documenting every minor mistake she makes.",
         "Ask the staff group to vote on whether handoff documentation is worth the time.",
         "Suspend the teacher immediately for questioning the supervisor in front of others.",
@@ -424,7 +424,7 @@
         "Adopt a uniform consequence for every child whose behavior interrupts activities, then track compliance.",
         "Have the most experienced educator write neutral notes while newer staff observe for a few weeks.",
         "Schedule a family meeting to discuss behavior at home before reviewing what happened at the program.",
-        "Coach staff to record observable antecedents, behavior and supports, then review the individualized plan."
+        "Review observed triggers, supports and the child’s individualized plan with staff."
       ],
       "answer": "E",
       "rationale": "Coach staff to separate the child from the behavior, record observable facts, and use those facts to improve supports.",
@@ -610,7 +610,7 @@
       "objective": 1,
       "scenario": "A four-year-old whose family is unhoused arrives repeatedly with severely soiled clothing. Today staff observe dried feces on the child’s skin and receive credible information about an immediate street-safety threat. The parent has declined one shelter option. What is the director’s reporting response?",
       "choices": [
-        "Make the required child-protection report now and complete the written SCAR within 36 hours, while ensuring immediate care.",
+        "Protect the child and make the mandated report, including required written follow-up.",
         "Call the child-protection hotline for informal advice and file the SCAR only if the worker confirms neglect is proven.",
         "Coordinate hygiene supplies and housing outreach first, then report if the child arrives in unsafe conditions again.",
         "Send Community Care Licensing an unusual-incident report and let licensing determine whether a SCAR is necessary.",
@@ -705,7 +705,7 @@
       "objective": 2,
       "scenario": "A staff member reports that another employee slapped a child, but you did not see it and the accused employee denies it. There is no video.",
       "choices": [
-        "Remove the employee from child contact pending risk review, protect the child, report promptly, and preserve relevant facts.",
+        "Protect the child, report reasonable suspicion and preserve the original evidence.",
         "Temporarily reassign the accused employee and ask the family whether they want a formal investigation.",
         "Document the complaint and request a same-day licensing consultation before alerting child-protection authorities.",
         "Refer both staff for coaching while increasing observation, because no injury is visible and the account is disputed.",
@@ -887,7 +887,8 @@
       "objective": 1,
       "scenario": "An employee wants to send a video of an autistic child’s distress to an outside training consultant. The clip includes the child’s voice and classmates. What should the director authorize?",
       "choices": [
-        "Show the recording in a private staff meeting and ask a qualified consultant to describe possible supports.",        "Provide a written account of what happened, including only child-relevant details, and seek a documented consultation.",
+        "Show the recording in a private staff meeting and ask a qualified consultant to describe possible supports.",
+        "Provide a written account of what happened, including only child-relevant details, and seek a documented consultation.",
         "Share a short clip that blurs the child’s face through the employee’s private professional account.",
         "Ask the family to approve the clip by text, then send it to the specialist through whichever platform is easiest.",
         "Use a nonidentifying summary through approved channels and review permissions before sharing any recording."
@@ -931,7 +932,7 @@
       "objective": 2,
       "scenario": "A person who says they are the child's other parent arrives demanding pickup. The enrolled guardian has not listed that person as authorized, and the visitor threatens to call police. Which response is strongest?",
       "choices": [
-        "Verify legal authority and pickup records while keeping the child supervised and managing any escalation safely.",
+        "Verify legal release authority and identity while keeping the child supervised.",
         "Call the listed guardian first and release the child if the visitor provides a matching identification card.",
         "Invite the visitor into the office while staff verify the file and arrange for a second adult to observe.",
         "Ask the visitor to obtain a court document electronically and let them wait with the child meanwhile.",
@@ -1250,7 +1251,7 @@
       "choices": [
         "Continue normal operations with bottled drinking water and postpone bathroom use.",
         "Move children to a playground while waiting for the utility to call back.",
-        "Activate the emergency operations plan, assess sanitation and safe-care capacity, arrange prompt family pickup or approved relocation, and review notification duties.",
+        "Activate the water-outage plan and arrange safe care or pickup as indicated.",
         "Ask teachers to carry buckets from the outdoor pool to flush the toilets.",
         "Keep only the older children because they can wait longer to use the restroom."
       ],
@@ -1522,7 +1523,7 @@
         "Schedule an earlier departure to reduce crowds and place a second adult near bus doors at each stop.",
         "Cancel the child’s participation until they have completed a therapy program for following adult directions.",
         "Assign a familiar caregiver to stay beside the child on the outing while the driver handles the other children.",
-        "Review the child’s elopement plan, secure transportation roles, and verify restraints and headcounts at transitions.",
+        "Check the child’s elopement plan, transport roles and head counts.",
         "Obtain family approval for the trip and allow the child to use a wearable location tracker as the main safeguard."
       ],
       "answer": "D",
@@ -1705,7 +1706,7 @@
       "choices": [
         "Preserve the available video for the neurologist and limit the incident report to facts staff directly observed.",
         "Allow the child to rest in a quiet area under supervision while staff gather more descriptions of the episode.",
-        "Follow the seizure action plan, obtain indicated help, record observations and support the child’s communication.",
+        "Follow the seizure plan and document objective signs, timing and recovery.",
         "Call the parent for permission before using the documented emergency plan if the child is no longer convulsing.",
         "Ask the trained first-aid lead to evaluate symptoms and initiate the plan only when another adult confirms them."
       ],
@@ -1797,7 +1798,7 @@
         "Call licensing before providing the medication and record the analyst’s verbal advice as sufficient authority.",
         "Use the parent’s text as interim consent because it documents the family’s intent and contains a dosage.",
         "Have the experienced lead caregiver supervise the new employee while the medication is administered.",
-        "Pause unauthorized administration, verify written orders and qualified staff, and escalate urgent health needs safely."
+        "Hold unauthorized medication and verify orders, staff eligibility and urgent needs."
       ],
       "answer": "E",
       "rationale": "A director verifies authority and safe procedure without improvising medical care.",
@@ -1886,7 +1887,8 @@
         "Document the near miss and submit an unusual incident report automatically because an elopement plan exists.",
         "Secure the gate, rebrief staff on the elopement plan and document, review and correct the handoff failure.",
         "Tell the substitute to review all files before the next shift and make them responsible for locating safety plans.",
-        "Ask the family whether the child can skip outdoor activities until every substitute is trained.",        "Assign a familiar adult to the child during outdoor play and check the gate before every transition."
+        "Ask the family whether the child can skip outdoor activities until every substitute is trained.",
+        "Assign a familiar adult to the child during outdoor play and check the gate before every transition."
       ],
       "answer": "B",
       "rationale": "Near misses are an opportunity to change systems before an injury occurs.",
@@ -2021,7 +2023,7 @@
         "Delay only the affected child’s snack until a safe item and an authorized adult are verified.",
         "Ask the substitute to follow general allergy protocols and document any incident if symptoms appear.",
         "Ask a trained veteran teacher to monitor the snack while the substitute learns the allergy plan afterward.",
-        "Verify the written allergy plan and safe snack, brief the substitute, and check emergency readiness first."
+        "Verify the allergy plan, safe snack and substitute’s emergency readiness."
       ],
       "answer": "E",
       "rationale": "Before potentially unsafe food is served, verify the individualized plan and communicate it to those providing care.",
@@ -2252,7 +2254,7 @@
         "Ask the family to choose one staff member’s approach, then instruct everyone to follow that choice.",
         "Let the child opt out of the noisiest transition and introduce gradual supported participation afterward.",
         "Provide all staff a sensory-support workshop and postpone direct observation until everyone completes training.",
-        "Observe the trigger, review the child’s support plan and coach staff on an individualized de-escalation approach."
+        "Observe triggers, review the child’s support plan and coach individualized care."
       ],
       "answer": "E",
       "rationale": "Strong supervision uses observed needs, professional input, and clear roles rather than treating disagreement as disloyalty.",
@@ -2295,7 +2297,7 @@
       "choices": [
         "Accept the child without confirming medication because the school remains responsible.",
         "Ask the family to keep the child home indefinitely until the agencies agree.",
-        "Coordinate a written, workable emergency and medication handoff with the family and responsible professionals, protect the child immediately, and evaluate reporting obligations if harm or neglect is suspected.",
+        "Protect immediate care and coordinate a lawful medication handoff across settings.",
         "Ask the preschool teacher to rewrite the allergist’s orders so the school will accept them.",
         "Stop documenting school communications to avoid becoming involved in the dispute."
       ],
@@ -2747,7 +2749,7 @@
       "objective": 2,
       "scenario": "A parent discovers that another parent livestreamed her child during a classroom visit. The public recording remains online, and the family demands action. What is the strongest initial response?",
       "choices": [
-        "Stop further recording, document the incident, request removal, notify affected families appropriately, and review any licensing notification duty.",
+        "Stop recording, preserve evidence, seek removal and notify affected families.",
         "Explain that the center’s signed photo release covers other parents recording during a classroom visit.",
         "Ask the visitor to remove the post, but avoid documenting the incident until the family files a formal complaint.",
         "Stop the recording, secure the classroom, and ask the visitor to remove the post before deciding what else is necessary.",
@@ -2794,7 +2796,7 @@
       "scenario": "During a lawful classroom inspection, a parent records and questions another family’s four-year-old about a neighborhood dispute. The parent refuses to stop, citing inspection rights. What should the director do?",
       "choices": [
         "Tell all parents that inspections are suspended until a new visitor policy is approved.",
-        "Intervene to protect the child, stop the questioning, offer a lawful inspection without the interference, and restrict access if conduct presents a risk.",
+        "Stop questioning the child while preserving the visitor’s lawful inspection rights.",
         "Have the classroom teacher take the parent to the office while the other children remain in free play.",
         "Allow the parent to finish because inspection rights include questioning anyone present.",
         "Separate the child from the visitor and move the conversation to reception, then follow up on the privacy incident."
@@ -2841,7 +2843,7 @@
       "choices": [
         "Explain that parents lose all inspection rights once their child is signed out.",
         "Permit the family to stay in the classroom if they remain near the doorway.",
-        "Distinguish waiting from inspection, offer a suitable waiting area, and facilitate any genuine lawful inspection without disrupting care.",
+        "Distinguish waiting from inspection and offer a suitable non-classroom space.",
         "Require an inspection appointment the following morning before allowing observation.",
         "Offer a brief, supervised observation and then explain the separate waiting-area policy."
       ],
@@ -2885,7 +2887,8 @@
       "objective": 2,
       "scenario": "Four parents arrive together asking to inspect two preschool classrooms. Each classroom is at its minimum staffing ratio, and teachers cannot leave supervision. What is the best response?",
       "choices": [
-        "Have the classroom teachers escort the parents while children work independently.",        "Verify identities and facilitate prompt, safe observation using available administrative coverage without diverting classroom teachers from supervision.",
+        "Have the classroom teachers escort the parents while children work independently.",
+        "Verify identities and arrange observation without taking teachers from supervision.",
         "Postpone all visits until the afternoon because several requests arrived together.",
         "Require a separate background-cleared escort for each parent as a condition of entry.",
         "Coordinate quiet observations in small groups while the director remains available and staff continue supervision."
@@ -2933,7 +2936,7 @@
         "Admit him to reception to verify his identity away from the classroom.",
         "Keep the entrance secured, move the child away from the doorway, and telephone the mother while the man waits outside.",
         "Accept his identification and ask him to sign the child out while you contact the mother.",
-        "Keep the entrance secured, protect the child, deny release, direct him to leave, and call emergency services if the threat continues.",
+        "Secure the entrance, protect the child and escalate if the threat continues.",
         "Send a staff member outside to explain the pickup form and request he return later."
       ],
       "answer": "D",
@@ -2977,7 +2980,7 @@
       "scenario": "Ten minutes before closing, caller ID shows a mother’s name. The caller says an unlisted boyfriend will collect her child. The center requires written pickup changes. What should staff do?",
       "choices": [
         "Record the caller’s name and permit pickup after the boyfriend signs the attendance sheet.",
-        "Obtain an authenticated written change, independently verify through a trusted contact method, check government photo ID, and document release.",
+        "Authenticate the pickup change, check identification and record the release.",
         "Ask the caller for the child’s birth date and compare it with the enrollment form.",
         "Decline the change unless authentication can be completed; maintain supervision until an authorized adult arrives.",
         "Ask the boyfriend to send a photograph of his license to the number shown on caller ID."
@@ -3068,7 +3071,7 @@
       "objective": 2,
       "scenario": "Nine infants are awake in an infant room with two qualified infant teachers. A cleared preschool aide offers to cover one teacher’s break. Before the break, what must the supervisor establish?",
       "choices": [
-        "Review the actual 1:4 infant staffing requirement, aide substitution conditions, and staff qualifications; secure compliant coverage before anyone leaves.",
+        "Verify infant qualifications and arrange lawful relief before a teacher leaves.",
         "Allow the aide to substitute because two adults are present, regardless of infant qualifications.",
         "Allow one teacher to supervise nine infants for a short break if most are in cribs.",
         "Ask the toddler teacher to observe through an open half-door while supervising toddlers.",
@@ -3160,7 +3163,7 @@
       "scenario": "An audit reveals a substitute released a child to an unlisted adult after an unauthenticated telephone call. The mother denies making the call. What system change most directly addresses the failure?",
       "choices": [
         "Require staff to retake an annual online course about authorized pickup.",
-        "Use documented, authenticated pickup updates; independent verification; printed lists at the entrance; photo ID; and accurate sign-out.",
+        "Verify pickup changes through a trusted channel and check IDs at release.",
         "Permit only biological parents to pick up children, regardless of the authorization record.",
         "Replace printed pickup lists with a cloud-only spreadsheet to prevent outdated copies.",
         "Require a director to approve each alternate pickup and check identification, while keeping the existing telephone-change practice."
@@ -3207,7 +3210,7 @@
       "choices": [
         "Ask the caregiver to make the account private and crop the photo later.",
         "Require removal, document the incident, and coach staff on consent checks.",
-        "Require immediate removal, preserve the record, inform the affected family appropriately, evaluate licensing duties, and improve the posting workflow.",
+        "Remove the post, preserve evidence, notify the family and fix the posting process.",
         "File a child-abuse report solely because the photograph was posted without consent.",
         "Remove the post quietly and avoid contacting the family unless they discover it."
       ],
@@ -3251,7 +3254,7 @@
       "scenario": "A supervisor proposes limiting parent classroom inspections to Tuesdays from 10–11 a.m. with 24 hours’ notice. What should the director do?",
       "choices": [
         "Adopt the rule if all parents sign the updated enrollment agreement.",
-        "Reject the fixed-hour and advance-notice limits; develop conduct-based procedures that preserve lawful unannounced inspection.",
+        "Preserve unannounced inspection rights using conduct-based safety procedures.",
         "Change the rule to a short daily window just before closing.",
         "Reject the time limit and allow inspections, while developing a safety and privacy procedure later.",
         "Ask licensing for a waiver permitting a one-hour weekly inspection window."
