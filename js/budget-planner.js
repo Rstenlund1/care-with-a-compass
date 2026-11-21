@@ -42,7 +42,7 @@ function migrate(v){
 function load(){
  try{
   const saved=JSON.parse(localStorage.getItem(KEY)||"null");
-  if(saved&&typeof saved==="object")return {values:migrate(saved.values),touched:!!saved.touched};
+  if(saved&&typeof saved==="object"){if(!saved.touched&&saved.values&&!Object.prototype.hasOwnProperty.call(saved.values,"students"))return {values:{...DEFAULTS},touched:false};return {values:migrate(saved.values),touched:!!saved.touched};}
  }catch(_){}
  return {values:{...DEFAULTS},touched:false};
 }
@@ -104,7 +104,7 @@ function view(){
  field("directorSalary","Director monthly salary ($)",100)+
  field("profitGoal","Monthly profit goal ($)",100)+
  '</div>'+
- '<details class="budget-compact-extra"><summary>Additional care revenue and payroll settings</summary>'+
+ '<details class="budget-compact-extra"><summary>Additional care revenue and payroll settings'+(v.partStudents||v.overnightNights||v.respiteHours?' (included in totals)':'')+'</summary>'+
  '<div class="budget-compact-fields">'+
  field("partStudents","Part-time children")+
  field("partTuition","Monthly part-time tuition ($)",25)+
