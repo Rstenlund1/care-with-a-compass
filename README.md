@@ -1,3 +1,11 @@
+# Care with a Compass — The Director's Desk · v10.7.16
+
+**Planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.16&page=staff
+
+**Enrollment-heading and icon-alignment polish:** The older-child counts now show “Full-time children” and “Part-time children” on one line, with a numerical input immediately beneath each heading. This matches the infant layout without duplicating the word “Children.” All info icons use fixed 22-pixel circles and explicit flex centering for the “i” glyph, including tooltips within financial result cards where generic span rules previously added margins. Count fields remain accessible with aria-labelledby; no calculations or values changed.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.15
 
 **Live optional calculator:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.15&page=staff
