@@ -8,7 +8,7 @@
       "choices": [
         "Arrange safe coverage while you promptly assess the statement, the employee’s conduct and the child’s experience.",
         "Meet privately after the shift to explore possible burnout, while allowing current assignments to continue.",
-        "Remove the employee from this classroom immediately and send a final disciplinary notice before hearing their account.",
+        "Reassign the caregiver permanently at the end of the day without addressing the child’s immediate safety.",
         "Increase random classroom observations and address the comment only if an additional complaint appears.",
         "Ask the employee to apologize to the group, then document the apology as evidence that the issue is resolved."
       ],
@@ -25,7 +25,7 @@
         },
         "C": {
           "type": "review",
-          "text": "Temporary reassignment can be appropriate, but final discipline without an informed review bypasses basic fairness."
+          "text": "A later reassignment does not address the child’s current safety or establish facts about the employee’s conduct."
         },
         "D": {
           "type": "review",
@@ -335,7 +335,7 @@
       "choices": [
         "Explain why records matter, hear concerns privately and establish expectations for the entire team.",
         "Let it pass publicly but quietly begin documenting every minor mistake she makes.",
-        "Ask the staff group to vote on whether handoff documentation is worth the time.",
+        "Let the senior teacher use verbal handoffs this week, then review whether staff actually need written records.",
         "Suspend the teacher immediately for questioning the supervisor in front of others.",
         "Offer to waive the records requirement if she agrees to mentor newer staff."
       ],
@@ -352,7 +352,7 @@
         },
         "C": {
           "type": "review",
-          "text": "A vote cannot waive accurate handoff documentation. Safety obligations are not optional when colleagues find them inconvenient."
+          "text": "A temporary waiver leaves recurring handoffs untraceable and risks normalizing a seniority-based exception."
         },
         "D": {
           "type": "review",
@@ -564,7 +564,7 @@
         "Conduct repeated detailed interviews with the child to resolve discrepancies before agencies become involved.",
         "Address independent mandated-reporting duties and assess any separate licensing notice.",
         "Secure the child’s immediate safety and review whether an employee’s access needs to change.",
-        "Hold the external report until surveillance confirms that an assault actually occurred."
+        "Ask the reporting employee to sign a witness statement before contacting child-protection authorities."
       ],
       "answer": "A|C|D",
       "answerSet": [
@@ -593,7 +593,7 @@
         },
         "E": {
           "type": "review",
-          "text": "Reasonable suspicion does not require complete proof or a video record."
+          "text": "An internal signed statement may help records, but cannot delay a report based on reasonable suspicion."
         }
       },
       "family": "c2-o1",
@@ -708,7 +708,7 @@
         "Protect the child, report reasonable suspicion and preserve the original evidence.",
         "Temporarily reassign the accused employee and ask the family whether they want a formal investigation.",
         "Document the complaint and request a same-day licensing consultation before alerting child-protection authorities.",
-        "Refer both staff for coaching while increasing observation, because no injury is visible and the account is disputed.",
+        "Place the accused employee on paid leave only if the parent requests an external investigation.",
         "Separately interview the accuser and accused, then file only if their accounts reveal corroboration."
       ],
       "answer": "A",
@@ -728,7 +728,7 @@
         },
         "D": {
           "type": "review",
-          "text": "An allegation of physical abuse cannot be reduced to coaching based solely on lack of visible injury."
+          "text": "Immediate safeguarding and mandated-reporting duties cannot depend on whether a parent demands an investigation."
         },
         "E": {
           "type": "review",
@@ -1252,7 +1252,7 @@
         "Continue normal operations with bottled drinking water and postpone bathroom use.",
         "Move children to a playground while waiting for the utility to call back.",
         "Activate the water-outage plan and arrange safe care or pickup as indicated.",
-        "Ask teachers to carry buckets from the outdoor pool to flush the toilets.",
+        "Keep care operating with hand sanitizer and packaged snacks until families arrive at regular pickup.",
         "Keep only the older children because they can wait longer to use the restroom."
       ],
       "answer": "C",
@@ -1272,7 +1272,7 @@
         },
         "D": {
           "type": "review",
-          "text": "Using pool water for toilet flushing introduces avoidable contamination and does not restore required handwashing or food preparation facilities."
+          "text": "Sanitizer and prepackaged food cannot necessarily replace required toilets, handwashing and safe sanitation."
         },
         "E": {
           "type": "review",
@@ -1391,7 +1391,7 @@
         "Allow pickup after checking photo identification and request a complete electronic signature later that day.",
         "Have a second teacher witness the release and attach an explanatory note to the incomplete sign-out entry.",
         "Verify that the grandparent is authorized, then record the time yourself and ask for initials on the next visit.",
-        "Accept the nickname if the child recognizes the grandparent and the daily attendance total stays accurate."
+        "Accept the nickname today if the grandparent is on the authorization list; post a sign-out reminder tomorrow."
       ],
       "answer": "A",
       "rationale": "California center sign-out rules require a full legal signature and recorded time from the person removing the child.",
@@ -1414,7 +1414,7 @@
         },
         "E": {
           "type": "review",
-          "text": "Familiarity does not establish compliance with required legal-signature and sign-out records."
+          "text": "Being authorized to collect a child does not waive the required accurate time and full signature."
         }
       },
       "family": "c3-o1",
@@ -1910,12 +1910,14 @@
           "text": "Blanket exclusion can deny access; supervisors should build safe coverage and reasonable supports."
         },
         "E": {
-          "type": "review",
-          "text": "Additional direct support is useful, but a missing plan handoff and broken access control still need correction."
+          "type": "acceptable",
+          "text": "A familiar adult and gate checks reduce immediate risk, but the missing substitute handoff and access-control failure still require a systematic correction."
         }
       },
       "family": "c4-o3",
-      "acceptable": {},
+      "acceptable": {
+        "E": "A familiar adult and gate checks reduce immediate risk, but the missing substitute handoff and access-control failure still require a systematic correction."
+      },
       "refs": [
         "ada2026",
         "supervision",
@@ -2162,7 +2164,7 @@
         "Call the family to describe that the child was located safely, then file only if the parent requests a formal report.",
         "Ask the group leader to write a statement and report after the director confirms whether any injury occurred.",
         "Confirm safety, notify required parties and promptly file the applicable incident report, then correct the system.",
-        "File an LIC 624 and note that quick recovery prevents any potential licensing citation for the temporary absence.",
+        "Complete an internal near-miss review and tell the family at pickup; reserve licensing reports for injuries.",
         "Record the temporary absence in the field-trip log and ask staff to repeat headcounts at the next outing."
       ],
       "answer": "C",
@@ -2182,7 +2184,7 @@
         },
         "D": {
           "type": "review",
-          "text": "Reporting is essential, but it does not automatically excuse inadequate supervision or prevent a citation."
+          "text": "A temporary loss of supervision may meet an unusual-incident threshold even without physical injury."
         },
         "E": {
           "type": "review",
