@@ -360,3 +360,67 @@ body.gloss-open .glossbtn:focus-visible::after{display:none!important}
 @media(prefers-reduced-motion:reduce){
  .study-topic-chevron{transition:none}
 }
+
+
+/* v10.7.22 | Unified lesson reading measure and photo proportions */
+.card.lesson{
+ --lesson-reading-width:880px;
+}
+.card.lesson>.photo-grid-two,
+.card.lesson>.chapter-hero-wrap,
+.card.lesson>.chapter-hero-photo,
+.card.lesson>p,
+.card.lesson>h2,
+.card.lesson>h3,
+.card.lesson>h4,
+.card.lesson>ul,
+.card.lesson>ol,
+.card.lesson>blockquote,
+.card.lesson>.v8-worked-example,
+.card.lesson>.deeper-lesson,
+.card.lesson>.director-guide,
+.card.lesson>.lens,
+.card.lesson>.note,
+.card.lesson>.v8-independent{
+ width:100%;
+ max-width:var(--lesson-reading-width);
+ margin-left:auto;
+ margin-right:auto;
+ box-sizing:border-box;
+}
+.card.lesson>p{
+ max-width:var(--lesson-reading-width);
+ font-size:clamp(15px,1.45vw,17px);
+ line-height:1.75!important;
+ margin-bottom:17px;
+}
+.card.lesson>.photo-grid-two{
+ gap:14px;
+ margin-top:0;
+ margin-bottom:23px;
+}
+.card.lesson>.photo-grid-two figure{
+ padding:6px;
+ border-radius:12px;
+ overflow:hidden;
+}
+.card.lesson>.photo-grid-two img{
+ display:block;
+ width:100%;
+ height:auto;
+ aspect-ratio:16/9;
+ object-fit:cover;
+ border-radius:8px;
+ margin:0;
+}
+.card.lesson>.photo-grid-two figcaption{
+ padding:7px 5px 3px;
+}
+.card.lesson>.chapter-hero-photo img{
+ max-height:340px;
+}
+@media(max-width:650px){
+ .card.lesson>.photo-grid-two{grid-template-columns:1fr;gap:10px}
+ .card.lesson>.photo-grid-two img{aspect-ratio:16/9}
+ .card.lesson>p{font-size:15px}
+}
