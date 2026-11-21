@@ -148,7 +148,7 @@ function overview(){
 function chaptersView(){
  const p=courseProgress();
  return `<div class="section-top"><div><div class="kicker">01 · Learning chapters</div><h2>Six chapters. One leadership foundation.</h2><p>Learn to lead staff, support families, protect children, and make difficult decisions through realistic practice and reflection.</p></div><span class="pill neutral" id="chapterCompletedCount" aria-live="polite">${p.done}/6 completed</span></div>
- <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.7.3&build=aligned-84-equity${pendingChapterJump?"&chapter="+pendingChapterJump:""}" loading="eager" title="Six learning chapters for new supervisors and directors"></iframe></div>`;
+ <div class="note"><strong>Your earlier progress is preserved.</strong> Continue where you last stopped.</div>\n <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.7.3&build=aligned-84-equity${pendingChapterJump?"&chapter="+pendingChapterJump:""}" loading="eager" title="Six learning chapters for new supervisors and directors"></iframe></div>`;
 }
 function caseConditions(c,w){
  const out={safety:"Under review",coverage:"Under review",family:"Under review",evidence:"Not yet reviewed",finance:"Not reviewed"};
