@@ -406,3 +406,10 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-help{font-size:.84rem;color:#575062;line-height:1.5}
 @media(max-width:680px){.course-progress{padding:12px 15px}.budget-fields{grid-template-columns:1fr}.budget-steps{display:block}.budget-steps>*{display:inline-block;margin:0 4px 5px 0}.budget-top{padding:13px}.budget-result strong{font-size:1.12rem}}
 @media(max-width:390px){.budget-results{grid-template-columns:1fr 1fr}.budget-result{padding:9px}.budget-result span{font-size:.75rem}.budget-result strong{font-size:1rem}.course-progress-label{display:block}.course-progress-label span{display:block;margin-top:4px}}
+
+
+.budget-square-slider input[type="range"]{width:100%;padding:0;accent-color:#6b4d8b;cursor:pointer}
+.budget-breakdown{margin-top:12px;border:1px solid #e3dce9;border-radius:10px;padding:10px 12px;background:#fff}
+.budget-breakdown summary{cursor:pointer;font-weight:700;font-size:.85rem;color:#42324e}
+.budget-breakdown dl{margin:11px 0 2px}.budget-breakdown dl div{display:flex;justify-content:space-between;gap:15px;padding:8px 2px;border-top:1px solid #ede7f1}
+.budget-breakdown dt{font-size:.82rem;color:#554d62}.budget-breakdown dd{margin:0;text-align:right;font-size:.84rem;font-weight:750;color:#372645;white-space:nowrap}
