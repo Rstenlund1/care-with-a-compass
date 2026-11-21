@@ -3304,7 +3304,7 @@
         "Ask both families to meet together before reviewing the actual incident.",
         "Require identical disciplinary outcomes without considering each child's actions.",
         "Review the facts, correct unsupported descriptions, and coach staff on consistent documentation.",
-        "Check both accounts and observations, then document each child's actions using the same standard."
+        "Compare both accounts and document each child's observed actions."
       ],
       "answer": "E",
       "rationale": "The director needs verified observations and a consistent standard. Correcting one label alone is not enough: review both children's actions, document fairly, and address the process that produced unequal treatment.",
@@ -3391,7 +3391,7 @@
       "objective": 1,
       "scenario": "A parent arrives 25 minutes late after an unexpected shift extension. A staff member proposes recording the family as 'neglectful' because they are paid hourly and rely on subsidized care. What should you do?",
       "choices": [
-        "Apply the same pickup procedure, verify the child's safe care, document actual times, and discuss options privately.",
+        "Verify safety, record the actual pickup time, and speak with the family privately.",
         "Waive fees automatically for families receiving assistance.",
         "Remind the family about closing hours in front of other parents.",
         "File a neglect report based on the parent's job schedule and subsidy status.",
@@ -3437,7 +3437,7 @@
       "objective": 2,
       "scenario": "A teacher marks a bilingual family's communication as 'unresponsive' because they rarely answer English-only email. The family speaks Spanish at pickup and has asked for a phone call. What changes first?",
       "choices": [
-        "Ask their preferred language and contact method, then arrange understandable communication and verify receipt.",
+        "Ask the family's preferred language and contact method; use both.",
         "Continue the email-only policy until parents provide a translator.",
         "Assign the child's older sibling to translate complex behavior reports.",
         "Ask the parent to attend a weekly English-language conference.",
@@ -3484,7 +3484,7 @@
       "choices": [
         "Assume bias caused the decision without speaking to the employee.",
         "Remove the boy from outdoor play until the staff member agrees he is calm.",
-        "Review the safety facts for both children and how the label shaped the response.",
+        "Compare the observed conduct and the different labels.",
         "Have another adult conduct structured observations over several transitions.",
         "Discard the incident because both children were ultimately stopped."
       ],
@@ -3528,7 +3528,7 @@
       "objective": 2,
       "scenario": "A teacher writes 'violent and defiant' in a daily report. The underlying log says only that a child dropped blocks after being told to move. Which report belongs in the child's file?",
       "choices": [
-        "Record what happened, the antecedent, adult response, safety implications, and follow-up support.",
+        "Describe the actual behavior, context, adult response and next steps.",
         "Retain the original label because the caregiver knows the child well.",
         "Ask parents whether they consider the child defiant and use their answer.",
         "Delete the incident entirely because no one was physically injured.",
@@ -3620,7 +3620,7 @@
       "objective": 3,
       "scenario": "A three-month audit shows that 6 of 20 Black children received incident reports, compared with 8 of 80 other children. The incidents range widely in severity. What is the responsible interpretation?",
       "choices": [
-        "Flag the difference, then compare circumstances and reporting practices before drawing conclusions.",
+        "Investigate the difference in reports without assuming intent.",
         "Conclude the staff intentionally discriminated because the percentages differ.",
         "Require equal numbers of incident reports for each group next month.",
         "Ignore the difference because the sample is too small to evaluate.",
@@ -3669,7 +3669,7 @@
         "Ask the child to remind the grandmother that school meetings come first.",
         "Offer one evening conference but still score the family negatively for earlier absences.",
         "Invite the family to use a phone or video conference and ask what schedule works.",
-        "Offer flexible, confidential ways to participate and measure engagement by actual communication."
+        "Offer accessible meeting options and recognize existing family communication."
       ],
       "answer": "E",
       "rationale": "Participation should be assessed through meaningful contact and two-way communication, not a single daytime meeting format. The director can maintain instructional expectations while removing unnecessary barriers.",
@@ -3710,7 +3710,7 @@
       "objective": 4,
       "scenario": "A caregiver fears a child may be neglected because the child sometimes wears the same clothes and their family lives temporarily with relatives. There is no additional evidence of unmet basic care or harm. What should the director instruct?",
       "choices": [
-        "Document specific observations, offer appropriate support, and apply the legal reporting threshold to actual facts.",
+        "Document observed facts, offer support and assess the legal reporting threshold.",
         "Wait until a family admits financial hardship before documenting anything.",
         "Report suspected abuse immediately based on housing instability alone.",
         "Tell staff poverty is never relevant, so no future safety concern should be assessed.",
@@ -3756,7 +3756,7 @@
       "objective": 4,
       "scenario": "A parent asks whether a Black child is 'the one causing all the problems' after hearing playground rumors. The child's family and conduct records are confidential. How should the director respond?",
       "choices": [
-        "Discuss safety procedures without identifying another child, then investigate the specific concern.",
+        "Protect the other child's privacy and investigate the concern.",
         "Show anonymized incident counts that make the child identifiable.",
         "Confirm the child's name but promise not to share details.",
         "Say there is no problem so the parent will not complain again.",
