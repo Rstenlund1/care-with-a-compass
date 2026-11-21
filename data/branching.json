@@ -549,6 +549,116 @@
         ],
         "takeaway": "A punitive reporting culture can hide hazards; accountability must encourage timely, factual disclosure."
       }
+    },
+    "6": {
+      "0": {
+        "lead": "Both teachers give separate factual accounts. One adult says the Black child started the pushing, while another says the children acted at nearly the same time. The parent asks why the child's file says 'aggressive' when the other report does not.",
+        "prompt": "What do you do before finalizing the records?",
+        "options": [
+          {
+            "text": "Retain both original accounts; add the verified observations and explain any unresolved differences privately.",
+            "level": 2,
+            "why": "A defensible record preserves sources, recognizes uncertainty and gives families an accurate explanation."
+          },
+          {
+            "text": "Hold a joint staff meeting to choose one account and issue a single corrected summary.",
+            "level": 1,
+            "why": "Collaborative fact-finding can help but risks creating an artificial consensus and losing independent accounts."
+          },
+          {
+            "text": "Delete both records since the differing accounts suggest staff bias.",
+            "level": 0,
+            "why": "The conduct and safety response still deserve accurate records; removing evidence is not equitable."
+          },
+          {
+            "text": "Keep the harsher description because it is the safest response to an uncertain incident.",
+            "level": 0,
+            "why": "A stigmatizing conclusion without supporting observations is not a justified safety safeguard."
+          }
+        ],
+        "takeaway": "A pattern can raise a concern without establishing intent. Keep original evidence, correct unsupported claims and explain what remains unknown."
+      },
+      "1": {
+        "lead": "The new template has been announced, but the parent received yesterday's unrevised report. The staff member says changing old language is unfair to employees who were doing their best.",
+        "prompt": "Which corrective approach balances accountability with learning?",
+        "options": [
+          {
+            "text": "Give the family a factual addendum, retain the original, and coach the employee through an observed re-write.",
+            "level": 2,
+            "why": "A transparent correction protects record integrity and makes the adult-learning response measurable."
+          },
+          {
+            "text": "Create a revised report and attach it to the child's file without contacting the family.",
+            "level": 1,
+            "why": "Improves documentation but leaves a negative unsupported impression with the family."
+          },
+          {
+            "text": "Remove the employee from all documentation duties indefinitely, without practice or feedback.",
+            "level": 0,
+            "why": "Avoidance does not demonstrate that the employee has learned objective documentation."
+          },
+          {
+            "text": "Wait until the next parent conference before addressing the unfair label.",
+            "level": 0,
+            "why": "The family continues to hold an inaccurate report while the director delays a known issue."
+          }
+        ],
+        "takeaway": "A neutral template is only useful when staff apply it, families receive accurate information, and feedback continues."
+      },
+      "2": {
+        "lead": "The employee says they feel publicly accused of racism and other staff stop raising concerns for fear of being judged. Meanwhile the child's family still has not received a correction.",
+        "prompt": "What is the next defensible leadership step?",
+        "options": [
+          {
+            "text": "Separate immediate record correction from a fair personnel review, protect confidentiality and arrange independent observations.",
+            "level": 2,
+            "why": "Corrects the child's record while safeguarding a fair inquiry and staff's ability to report genuine concerns."
+          },
+          {
+            "text": "Apologize to the employee and postpone addressing the family's report until the next month.",
+            "level": 1,
+            "why": "May rebuild staff trust but leaves the child and family with a known documentation problem."
+          },
+          {
+            "text": "Announce a zero-tolerance policy against any staff member whose notes show racial differences.",
+            "level": 0,
+            "why": "Punishing unexamined disparities without context can distort reporting and obscure legitimate safety issues."
+          },
+          {
+            "text": "Ask the family to stop complaining because the original staff member may have felt misunderstood.",
+            "level": 0,
+            "why": "The employee's perspective cannot override the child's right to fair and accurate reporting."
+          }
+        ],
+        "takeaway": "Equity work must be fair to staff as well as children; evidence and a consistent process carry the discussion."
+      },
+      "3": {
+        "lead": "The family receives a letter recommending exclusion based on the repeated 'aggression' reports. They ask whether the center considered a support plan and why the other child was not also reviewed.",
+        "prompt": "How does the director repair the decision process?",
+        "options": [
+          {
+            "text": "Pause the unsupported exclusion, protect immediate safety, review original facts and supports, and apply the actual program rules.",
+            "level": 2,
+            "why": "An exclusion is not validated by a file full of prior labels. Immediate supervision and individualized legal obligations still apply."
+          },
+          {
+            "text": "Offer a two-day suspension while staff complete a neutral incident review.",
+            "level": 1,
+            "why": "A temporary removal may itself be restricted and cannot simply substitute for an individualized inquiry."
+          },
+          {
+            "text": "Approve the exclusion because the repeated reports establish a consistent reputation.",
+            "level": 0,
+            "why": "Repeated unsupported reports cannot replace evidence and applicable exclusion standards."
+          },
+          {
+            "text": "Refuse to consider any protective restriction even if the child presents an immediate danger to peers.",
+            "level": 0,
+            "why": "Fairness does not eliminate the need for protective action when a specific, documented threat exists."
+          }
+        ],
+        "takeaway": "An exclusion decision requires verified facts and applicable law, not reputation or pressure from other adults."
+      }
     }
   },
   "capstone": {
