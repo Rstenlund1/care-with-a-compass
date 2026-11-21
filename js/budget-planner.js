@@ -97,8 +97,8 @@ function availabilityText(c){
  if(c.availablePeople===0)return '0 staff available. Arrange appropriate relief before anyone steps away or continue only when safe supervision is restored.';
  return c.availablePeople+' staff available after the selected interruption (director included). Verify actual on-site supervision and licensing requirements.';
 }
-function field(key,label,step=1){
- return '<label class="budget-compact-field"><span>'+esc(label)+'</span><input type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></label>';
+function field(key,label,step=1,help=""){
+ return '<label class="budget-compact-field"><span>'+esc(label)+'</span><input type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'">'+(help?'<small class="budget-rent-note">'+esc(help)+'</small>':'')+'</label>';
 }
 function breakdown(c){
  const line=(name,n)=>'<div><dt>'+esc(name)+'</dt><dd>'+cash(n)+'</dd></div>';
@@ -127,7 +127,7 @@ function view(){
  unavailabilityControl()+
  field("staffHourly","Hourly staff pay ($)",.5)+
  field("staffWeeklyHours","Paid hours per staff / week")+
- field("rent","Monthly rent ($)",50)+
+ field("rent","Commercial facility rent ($/month)",50,"Home-based care: enter $0. Household rent or mortgage is not included in this simplified model.")+
  field("utilities","Monthly utilities ($)",25)+
  field("insurance","Monthly insurance ($)",25)+
  '</div>'+
