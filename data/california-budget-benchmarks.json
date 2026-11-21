@@ -4,8 +4,8 @@
   "units": "USD per usable square foot per month",
   "basis": "Commercial retail asking rents (typically NNN), not child care-specific leases. May exclude additional rent/CAM, taxes, and utilities.",
   "statewide": {
-    "monthlyRate": 2.37,
-    "method": "Unweighted mean of eight published California retail market/listing observations, rounded to cents. An illustrative planning fallback, NOT an official statewide or child care lease average.",
+    "monthlyRate": 2.4,
+    "method": "Unweighted mean of eight published regional retail asking-rent benchmarks (2026 Q3), not an official California statewide commercial rent index or child care property rent average. All eight markets carry equal weight.",
     "period": "2026-Q3 / Nov 2026"
   },
   "counties": [
@@ -100,10 +100,10 @@
       "counties": [
         "Orange"
       ],
-      "monthlyRate": 2.69,
+      "monthlyRate": 2.68,
       "period": "2026-Q3",
-      "source": "CBRE",
-      "url": "https://www.cbre.com/insights/figures/orange-county-retail-figures-q3-2026",
+      "source": "Cushman & Wakefield",
+      "url": "https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/orange-county-marketbeats/retail",
       "scale": 1
     },
     {
@@ -132,15 +132,15 @@
     },
     {
       "id": "sanFrancisco",
-      "name": "San Francisco retail listing average",
+      "name": "San Francisco retail market",
       "counties": [
         "San Francisco"
       ],
-      "monthlyRate": 2.77,
-      "period": "2026-11",
-      "source": "PropertyShark listing sample",
-      "url": "https://www.propertyshark.com/cre/retail/us/ca/san-francisco/",
-      "scale": 12
+      "monthlyRate": 3.05,
+      "period": "2026-Q3",
+      "source": "Kidder Mathews",
+      "url": "https://kidder.com/market-reports/san-francisco-retail-market-report/",
+      "scale": 1
     },
     {
       "id": "siliconValley",
