@@ -148,7 +148,7 @@ function calculate(){
 }
 function countyRateNote(county){
  const type=programType(),info=countyRates(county,type),label=type==="preschool"?"center":"family home";
- return '<span>'+esc(county)+' County estimated '+esc(label)+' monthly prices: older children '+cash(info.child)+', infants '+cash(info.infant)+'. Both tuition fields are editable.</span> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">County price source</a><span class="budget-county-method">2026 estimates based on the DOL 2022 full-time medians for preschool-age children and infants; rates for home and center care differ. These are not provider quotes.</span>';
+ return '<span>'+esc(county)+' County estimated '+esc(label)+' monthly prices: older children '+cash(info.child)+', infants '+cash(info.infant)+'. Both tuition fields are editable.</span> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">(PayByTown, 2026)</a><span class="budget-county-method">Estimated 2026 county medians derived from 2022 U.S. Department of Labor data and adjusted for day-care price inflation. Infant and preschool data differ by center or family-home care; these figures are not provider quotes.</span>';
 }
 const BUDGET_HELP={
  "county": "Select the county for estimated 2026 full-time tuition prices. Family homes and preschool centers use different medians, and infants have their own rate. You can edit the rates.",
@@ -243,6 +243,10 @@ function view(){
  '<div class="budget-program-county-row">'+programControl()+
  '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div></div>'+
  '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county)+'</p>'+
+  '<details class="budget-data-reference"><summary>Tuition source, limitations, and APA reference</summary>'+
+  '<p><strong>Reference:</strong> PayByTown. (2026, October 18). <em>Childcare costs in California by county (2026 estimates).</em> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">https://paybytown.com/childcare/california/</a></p>'+
+  '<p><strong>Method:</strong> PayByTown applies a 23.3% BLS day-care price adjustment to 2022 county medians from the U.S. Department of Labor Women\'s Bureau National Database of Childcare Prices; monthly figures use weekly price × 52 ÷ 12. <a href="https://paybytown.com/methodology/" target="_blank" rel="noopener noreferrer">Publisher methodology</a> · <a href="https://www.dol.gov/agencies/wb/topics/featured-childcare" target="_blank" rel="noopener noreferrer">Original federal database</a>.</p>'+
+  '<p>These are illustrative estimates, not actual tuition quotes or licensing reimbursement rates. The preschool source age band is 36–54 months and the infant band is 0–23 months; children ages 24–35 months may require a separate toddler price.</p></details>'+
  '<div class="budget-enrollment-pair">'+
  '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4 id="budget-child-full-heading">Full-time Children (over age 2)</h4>'+helpTip("fulltime","Full-time children")+'</div>'+infantCountField("students","budget-child-full-heading")+field("tuition","Monthly tuition ($)",25)+'</div>'+
  '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4 id="budget-child-part-heading">Part-time Children (over age 2)</h4>'+helpTip("parttime","Part-time children")+'</div>'+infantCountField("partStudents","budget-child-part-heading")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
