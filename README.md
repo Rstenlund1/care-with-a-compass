@@ -1,3 +1,15 @@
+# Care with a Compass — The Director’s Desk · v10.6.0
+
+**Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.6.0
+
+**New in v10.6.0:** A persistent overall training progress bar and integrated Staffing & Tuition Planner. The existing staffing-safety exercise remains intact. The financial tool separately models paid teachers, aides, desired director salary, and a business profit target; full-time, part-time, overnight-only and respite income; staffing taxes and benefits, rent, utilities, insurance, food and incidentals; target tuition and estimated break-even enrollment. Learners can use examples or retain their real scenario independently, select any California county, use square-footage rent estimates and a source-dated eight-region retail rent proxy, or override with their actual rent. **Financial data are examples, not audited facility averages or guaranteed tuition recommendations.** The statewide fallback is an unweighted regional planning estimate, not a published state series. The page reads the current JSON benchmark file at each load; external publisher updates currently require source verification and a JSON update. The calculator does not automatically scrape brokerage websites. Overnight supervision requirements vary by child care license type; the model assumes no extra overnight payroll only if appropriate paid coverage is already separately included.
+
+**Testing completed:** Syntax, arithmetic, scenario switching, director salary separation, 58-county options, offline rent fallback, and guided control logic were programmatically checked. A real mobile/browser, screen-reader, live Formspree, and user usability test remain necessary before deployment.
+
+**Independent review prompt:** [docs/GEMINI_REVIEW_v10.6.0.txt](docs/GEMINI_REVIEW_v10.6.0.txt)
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.5.0
 
 **Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.5.0
