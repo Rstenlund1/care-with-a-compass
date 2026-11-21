@@ -280,6 +280,7 @@ function startOverTraining(){
    store.removeItem(KEY);
    store.removeItem("care-with-a-compass-supervisor-v72-72q");
    store.removeItem("cwc-consequence-lab-v10");
+    store.removeItem("cwc-consequence-lab-v10.7.19");
    store.removeItem("cwc-consequence-lab-completed");
    store.removeItem("cwc-consequence-lab-guided-v10");
   }
