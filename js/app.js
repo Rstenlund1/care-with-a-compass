@@ -20,7 +20,22 @@ function passes(ch){const map=latestResults(ch);const ids=chItems(ch).map(q=>q.i
 function chapterReady(ch){let ready=passes(ch);let capped=history(ch).length>=Math.max(MAX_DECISIONS,chItems(ch).length+8);if(capped&&!ready)state.needsWorkshop[ch]=true;return ready||capped}
 function chapterProgress(ch){if(state.done.includes(ch)||chapterReady(ch))return 100;let seen=unique(ch);if(!seen)return 0;let latest=latestResults(ch);let correct=Object.values(latest).filter(Boolean).length;let raw=Math.min(97,Math.round(66*seen/chItems(ch).length+25*correct/chItems(ch).length+6*Math.max(0,history(ch).length-chItems(ch).length)/6));state.maxProgress[ch]=Math.max(state.maxProgress[ch]||0,raw);return state.maxProgress[ch]}
 function progressHtml(ch){let v=chapterProgress(ch);return `<section class="chapterprogress" aria-label="Chapter ${ch} progress"><div class="progressline"><span>Chapter progress</span><span>${v===100?'Complete':v===0?'Ready to begin':'In progress'}</span></div><div class="bar" role="progressbar" aria-label="Chapter ${ch} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v}"><div class="fill" style="width:${v}%"></div></div><p class="progresshint">${v===100?'Supervisory decisions complete.':'Keep exploring supervisory decisions and evidence.'}</p></section>`}
-function nav(){let n=document.getElementById('nav');n.innerHTML=DATA.lessons.map((l,i)=>{const ch=i+1,done=state.done.includes(ch),cur=ch===state.chapter,v=chapterProgress(ch);return `<div class="navitem ${cur?'current':''} ${done?'done':''}" ${cur?'aria-current="step"':''}><span class="round">${done?'✓':ch}</span><div class="navcopy"><span class="navlabel">${esc(l.title)}</span><div class="navtrack" role="progressbar" aria-label="Chapter ${ch}: ${esc(l.title)} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v}"><span class="navfill" style="width:${v}%"></span></div></div></div>`}).join('');if(window.innerWidth<=830){let a=n.querySelector('.navitem.current');if(a){n.scrollLeft=Math.max(0,a.offsetLeft-n.offsetLeft-n.clientWidth/2+a.clientWidth/2)}}}
+function nav(){let n=document.getElementById('nav');n.innerHTML=DATA.lessons.map((l,i)=>{const ch=i+1,done=state.done.includes(ch),cur=ch===state.chapter,v=chapterProgress(ch);return `<button type="button" class="navitem ${cur?'current':''} ${done?'done':''}" onclick="openChapter(${ch})" ${cur?'aria-current="step"':''} aria-label="Open Chapter ${ch}: ${esc(l.title)}"><span class="round" aria-hidden="true">${done?'✓':ch}</span><span class="navcopy"><span class="navlabel">${esc(l.title)}</span><span class="navtrack" role="progressbar" aria-label="Chapter ${ch}: ${esc(l.title)} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v}"><span class="navfill" style="width:${v}%"></span></span></span></button>`}).join('');if(window.innerWidth<=830){let a=n.querySelector('.navitem.current');if(a){n.scrollLeft=Math.max(0,a.offsetLeft-n.offsetLeft-n.clientWidth/2+a.clientWidth/2)}}}
+function openChapter(ch){
+ ch=Number(ch);
+ if(!Number.isInteger(ch)||ch<1||ch>CHAPTERS)return;
+ // Jumping into a chapter never marks it complete or awards assessment credit.
+ state.chapter=ch;
+ state.current=null;
+ state.lastAnswer=null;
+ state.selectedMulti=[];
+ state.branchPending=null;
+ state.chapterReporting.pending=null;
+ state.homeFrom=null;
+ state.phase='lesson';
+ save();
+ lesson();
+}
 function hydratePhotos(){document.querySelectorAll('img[data-photo]').forEach(img=>{const k=img.getAttribute('data-photo');if(IMG[k]){img.src=IMG[k];img.loading='lazy';img.decoding='async';}})}
 function navigationTools(){return `<nav class="global-navigation" aria-label="Training navigation"><button class="global-home" type="button" onclick="goHome()" aria-label="Return to home page without losing progress">⌂ <span>Home</span></button><button class="global-restart" type="button" onclick="restart()">↻ <span>Start Over</span></button></nav>`}
 function goHome(){state.homeFrom=state.phase;if(window.location.search.includes('embedded=1'))return resume();welcome()}
