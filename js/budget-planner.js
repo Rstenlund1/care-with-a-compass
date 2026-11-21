@@ -231,8 +231,8 @@ function view(){
  '<span>Surplus<strong id="b-mobile-profit">'+cash(c.surplus)+'</strong></span></div>'+
  '<div class="budget-compact-editor">'+
  '<div class="budget-compact-heading"><h3>Will the center support your goals?</h3><p>Select your program type and county. Infant and older-child tuition and staffing update as enrollment changes.</p></div>'+
- programControl()+
- '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div>'+
+ '<div class="budget-program-county-row">'+programControl()+
+ '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div></div>'+
  '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county)+'</p>'+
  '<div class="budget-group-label"><strong>Children (over age 2)</strong></div>'+
  '<div class="budget-enrollment-pair">'+
