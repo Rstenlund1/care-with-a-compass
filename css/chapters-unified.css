@@ -424,3 +424,9 @@ body.gloss-open .glossbtn:focus-visible::after{display:none!important}
  .card.lesson>.photo-grid-two img{aspect-ratio:16/9}
  .card.lesson>p{font-size:15px}
 }
+
+/* Mobile-friendly chapter entry point, without removing the end-of-lesson action. */
+.lesson-quick-start{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:14px 0 18px;padding:15px 18px;border:1px solid #dacde5;border-radius:12px;background:#f8f4fb}
+.lesson-quick-start p{margin:0;color:#4a3a58;font-size:14px;line-height:1.5}
+.lesson-quick-start .action{flex:0 0 auto;min-height:44px;white-space:normal;text-align:center}
+@media(max-width:680px){.lesson-quick-start{flex-direction:column;align-items:stretch;padding:14px;gap:11px}.lesson-quick-start .action{width:100%}}
