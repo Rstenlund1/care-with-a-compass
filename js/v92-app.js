@@ -231,7 +231,7 @@ function refreshStaffBudgetPreview(){
 function staffView(){
  const m=staffModel(),s=state.staffing;
  const tabs='<div class="budget-tabs" role="group" aria-label="Staffing and budget exercises"><button type="button" data-action="staff-tab" data-tab="coverage" class="'+(s.activeTab!=="budget"?"active":"")+'">1. Staffing decisions</button><button type="button" data-action="staff-tab" data-tab="budget" class="'+(s.activeTab==="budget"?"active":"")+'">2. Operating budget & tuition</button></div>';
- if(s.activeTab==="budget")return tabs+(window.CWC_BUDGET?.view()||'<p>Budget planner unavailable.</p>');
+ if(s.activeTab==="budget")return tabs+(window.CWC_BUDGET?.view()||'<p>Budget planner unavailable.</p>')+'<div class="actions journey-next">'+journeyButton()+'</div>';
  const plans=[["minimum","No extra teacher (0 hours)","Only regular scheduled coverage"],["overlap","Extra teacher for busy hours (3 hours)","One additional qualified teacher during a three-hour period"],["relief","Scheduled backup teacher (6 hours)","One qualified floating teacher for a six-hour shift"],["combined","Both extra-coverage options (9 hours)","Two additional qualified teachers during the three-hour period; one otherwise"]];
  const coverageExplainers={
   minimum:"No extra teacher is scheduled. Additional coverage costs $0, but the regularly scheduled teachers still have their normal labor cost.",
