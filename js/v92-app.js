@@ -10,7 +10,7 @@ let facilitatorDemoUnlocked=false; // Display-only reviewer workflow. This is no
 const pages=["overview","chapters","cases","staff","evidence","assessment","facilitator"];
 const navLabels={overview:"Program overview",chapters:"Learning chapters",cases:"Applied simulations",staff:"Staffing Lab",evidence:"Evidence Journal",assessment:"Competency assessment",facilitator:"Facilitator review"};
 const navIcons={overview:"⌂",chapters:"◫",cases:"◈",staff:"♟",evidence:"▤",assessment:"◉",facilitator:"▣"};
-function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23,attendance:12,qualifiedTeachers:1,window:"during",support:"routine"},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false},orderSeed:Math.floor(Math.random()*2147483647)};}
+function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23,attendance:12,qualifiedTeachers:1,window:"during",support:"routine"},simulationMode:"random",assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false},orderSeed:Math.floor(Math.random()*2147483647)};}
 function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},orderSeed:Number.isFinite(raw.orderSeed)?raw.orderSeed:z.orderSeed,introSeen:raw.introSeen||{},sequence:{...z.sequence,...raw.sequence},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
 let state=restore();
 try{const direct=new URLSearchParams(window.location.search);const requested=direct.get("case");if(requested&&D.cases.some(c=>c.id===requested)){state.caseId=requested;state.page="cases";}const page=direct.get("page");if(page&&pages.includes(page))state.page=page;}catch(e){}
@@ -124,7 +124,7 @@ function canOpenCase(id){
 }
 function resumeLinear(){
  const next=nextRequired();
- if(next.caseId)state.caseId=next.caseId;
+ if(next.caseId){state.caseId=next.caseId;state.simulationMode="guided";}
  return go(next.page);
 }
 function hButton(action,label,kind="secondary",extra=""){return `<button type="button" data-action="${esc(action)}" class="btn ${kind}" ${extra}>${label}</button>`;}
@@ -136,7 +136,6 @@ function overview(){
  const cards=D.cases.map(c=>{const w=work(c.id),n=w.step>=c.stages.length?"Complete":w.chosen.length?`Stage ${Math.min(w.step+1,c.stages.length)} of ${c.stages.length}`:"Not started";return `<article class="case-tile"><div class="case-tag">${esc(c.tag)}</div><h3>${esc(c.title)}</h3><p>${esc(c.subtitle)}</p><div class="tile-end"><span>${n}</span><span class="tiny muted">Part of applied training</span></div></article>`;}).join("");
  return `<section class="hero ${window.CWC_LEARNER?.ready()?"":"hero-enrollment"}"><div class="hero-copy"><span class="eyebrow light">Version 10.0.1 · One guided leadership program + advanced practice lab</span><h2>One facility. One ordinary day.<br><em>A dozen consequences.</em></h2><p>One leadership program combines five foundational chapters, consequential simulations, staffing and evidence labs, and a facilitator-reviewed competency assessment for aspiring supervisors and directors.</p><p class="hero-author">Created and developed by <strong>Richard Lawrence Stenlund</strong></p>${window.CWC_LEARNER?.ready()?`<div class="hero-welcome"><p>Welcome back, <strong>${esc(window.CWC_LEARNER.profile().name)}</strong>.</p><div class="hero-actions">${hButton("start-training",courseReady()||chapters.done>0?"Continue Training →":"Start Training →","primary-light")}</div></div>`:window.CWC_LEARNER?.enrollHero()||""}</div><div class="hero-mark" aria-hidden="true"><span>09</span><small>director<br>edition</small></div></section>
  <div class="program-roadmap"><div class="roadmap-step"><span class="roadmap-no">01</span><div><h3>Learn the leadership foundations</h3><p>Five chapters, 72 applied questions, 36 follow-ups, and the original four-stage capstone. ${chapters.done} of 5 chapters completed.</p><span class="roadmap-desc">Part of the guided learning journey</span></div></div><div class="roadmap-step"><span class="roadmap-no">02</span><div><h3>Manage real consequences</h3><p>Explore three long-form cases, staffing resilience, and evidence evaluation.</p><span class="roadmap-desc">Applied cases follow the foundation lessons</span></div></div><div class="roadmap-step"><span class="roadmap-no">03</span><div><h3>Demonstrate the learning</h3><p>Complete diagnostics, a new cascading capstone, and a facilitator-reviewed workplace plan.</p><span class="roadmap-desc">Human-scored pilot assessment and feedback</span></div></div></div><section class="training-rationale" aria-labelledby="training-rationale-title"><div class="rationale-eyebrow">Why supervisory preparation matters · EDACE 830</div><h2 id="training-rationale-title">Experience is not the same as preparation.</h2><p>California's Child Development Permit pathways recognize education and professional experience, and some require administration or adult-supervision coursework. Those qualifications are important, but they do not automatically demonstrate the judgment needed when child safety, staff supervision, family concerns, and licensing obligations collide.</p><p>Drawing on Katz's (1974) technical, human, and conceptual leadership skills, and on adult learning through application and reflection, <em>Care with a Compass</em> moves beyond knowing what a leader should do. Learners evaluate evidence, make consequential choices, confront unexpected developments, and consider how to transfer those lessons to their own programs.</p><p class="rationale-bottom"><strong>The goal is not simply to find the right answer. It is to make a responsible decision, then know how to lead when the next problem begins.</strong></p></section>
- <section class="training-rationale" aria-labelledby="random-lab-heading" style="border:2px solid #bfa0d2;background:#f9f6fc"><div class="rationale-eyebrow">NEW · OPTIONAL ADVANCED PRACTICE · VERSION 10.0.1</div><h2 id="random-lab-heading">Twelve decisions deep. Three cases you cannot predict.</h2><p>The new Consequence Lab selects three cases in a shuffled order from eight supervisory dilemmas, including a nosebleed with uncertain medical history and themes adapted from Head Start training. Each case continues for twelve decisions after right or wrong answers. Family reactions, reportable incidents, changing staffing coverage and unexpected adverse events can arise even after appropriate care.</p><p><a href="consequence-lab.html?v=10.0.1" target="_blank" rel="noopener" style="display:inline-block;border-radius:10px;padding:12px 18px;background:#382849;color:#fff;font-weight:700;text-decoration:none">Open the randomized Consequence Lab ↗</a></p><p class="rationale-bottom"><strong>This is optional formative practice, not part of the existing 100-point scored capstone or completion gate. It is a fictional academic prototype requiring clinical, legal and accessibility review before field use.</strong></p></section>
  <div class="section-top"><div><div class="kicker">01 · Scenario studio</div><h2>The director does not get to reset the day.</h2></div><p>Each response changes the recorded conditions, evidence trail, and next development.</p></div>
  <div class="case-grid">${cards}</div>
  <div class="feature-grid"><article class="feature-card"><span class="feature-glyph">♟</span><h3>Staffing resilience</h3><p>Test extra teacher coverage, backup staffing, and the costs of predictable disruptions.</p><span class="roadmap-desc">Included in the guided training</span></article><article class="feature-card"><span class="feature-glyph">▤</span><h3>Evidence before assumption</h3><p>Separate directly observed events, recordings, allegations, inferences, and predictions.</p><span class="roadmap-desc">Included in the guided training</span></article><article class="feature-card"><span class="feature-glyph">◉</span><h3>Demonstrate judgment</h3><p>Try a separately scored assessment with a facilitator-reviewed transfer plan.</p><span class="roadmap-desc">Included in the guided training</span></article></div>
@@ -164,7 +163,24 @@ function caseStage(c,index){
  return {...base,lead:adjustment.lead||base.lead,question:adjustment.question||base.question,
   options:base.options.map(o=>({...o,text:adjustment.optionText?.[o.id]||o.text}))};
 }
-function casesView(){
+function simulationSelector(){
+ const mode=state.simulationMode==="guided"?"guided":"random";
+ return `<section class="panel" aria-label="Applied simulation selection" style="margin-bottom:16px">
+ <div class="kicker">Applied simulations</div>
+ <h2>Choose how you want to practice.</h2>
+ <div class="actions" role="group" aria-label="Simulation sets">
+  <button type="button" data-action="simulation-mode" data-mode="random" class="btn ${mode==="random"?"primary":"outline"}" aria-pressed="${mode==="random"}">Three randomized cases · 12 decisions each</button>
+  <button type="button" data-action="simulation-mode" data-mode="guided" class="btn ${mode==="guided"?"primary":"outline"}" aria-pressed="${mode==="guided"}">Three original guided cases</button>
+ </div></section>`;
+}
+function randomSimulationView(){
+ return `<section class="panel" aria-labelledby="random-cases-heading">
+ <div class="section-top"><div><div class="kicker">Applied simulations · Randomized practice</div><h2 id="random-cases-heading">Three situations. Thirty-six decisions. No predictable order.</h2><p>Set classroom staffing, then respond to three different cases randomly chosen from eight. Every decision receives an explanation, and the situation continues after mistakes.</p></div></div>
+ <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.0.1&embedded=1" title="Three randomized applied supervisory scenarios" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
+ <div class="actions"><a href="consequence-lab.html?v=10.0.1" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
+}
+function casesView(){return simulationSelector()+(state.simulationMode==="guided"?guidedCasesView():randomSimulationView());}
+function guidedCasesView(){
  const c=getCase(state.caseId),w=work(c.id),finished=w.step>=c.stages.length,variant=selectedVariant(c);
  if(!state.introSeen["case:"+c.id])return `<div class="section-top"><div><div class="kicker">Supervisor applied case · Lesson first</div><h2>${esc(c.title)}</h2><p>${esc(c.subtitle)}</p></div></div>${introductoryLesson("case:"+c.id)}`;
  const casePosition=D.cases.findIndex(x=>x.id===c.id)+1;
@@ -392,7 +408,8 @@ document.addEventListener("click",e=>{
  if(action==="journey-next")return continueJourney();
  if(action==="review-lesson"){const key=moduleKey();delete state.introSeen[key];save();return render();}
  if(action==="nav")return go(btn.dataset.page);
- if(action==="enter-cases")return go("cases");
+ if(action==="simulation-mode"){if(!["random","guided"].includes(btn.dataset.mode))return;state.simulationMode=btn.dataset.mode;save();return render();}
+  if(action==="enter-cases")return go("cases");
  if(action==="go-chapters")return go("chapters");
  if(action==="go-staff")return go("staff");
  if(action==="go-evidence")return go("evidence");
@@ -457,7 +474,8 @@ document.addEventListener("input",e=>{
  }
  if(e.target?.dataset?.change==="assess-transfer"){state.assessment.transfer=e.target.value;save();const button=$('button[data-action="submit-assessment"]');if(button)button.disabled=!assessmentReady();}
 });
-window.addEventListener("message",e=>{const frame=document.getElementById("chaptersFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin)return;const data=e.data;if(data?.app!=="care-with-a-compass")return;if(data.kind==="chapter-progress"){const numbers=Array.isArray(data.done)?[...new Set(data.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=5))]:[];const badge=document.getElementById("chapterCompletedCount");if(badge)badge.textContent=numbers.length+"/5 completed";return;}
+window.addEventListener("message",e=>{const frame=document.getElementById("consequenceLabFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin||e.data?.app!=="cwc-consequence-lab"||e.data.kind!=="lab-height")return;const h=Number(e.data.height);if(Number.isFinite(h)&&h>200)frame.style.height=Math.min(30000,Math.ceil(h+20))+"px";});
+ window.addEventListener("message",e=>{const frame=document.getElementById("chaptersFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin)return;const data=e.data;if(data?.app!=="care-with-a-compass")return;if(data.kind==="chapter-progress"){const numbers=Array.isArray(data.done)?[...new Set(data.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=5))]:[];const badge=document.getElementById("chapterCompletedCount");if(badge)badge.textContent=numbers.length+"/5 completed";return;}
 if(data.kind==="chapter-submit-request"){
  const payload=data.payload||{},ch=Number(payload.chapter);
  const actual=courseProgress().done;
