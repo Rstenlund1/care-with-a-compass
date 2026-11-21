@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.9
+
+**Live planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.9&page=staff
+
+**Financial planner clarification:** “Director monthly salary ($)” now appears above “Additional classroom staff (FTE, excluding director)” rather than alongside it in the same grid row. Additional classroom staff default to 0 FTE for new or untouched planner sessions, while previously entered values remain saved until reset. This avoids automatically counting a classroom employee in addition to the director. Calculations and licensing-specific staffing caveat remain unchanged.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.8
 
 **Optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.8&page=staff
