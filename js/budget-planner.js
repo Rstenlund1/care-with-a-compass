@@ -1,238 +1,180 @@
 (function(){
 "use strict";
-/* Budget & Tuition Planner. All monetary values are monthly USD unless stated. */
+/* Compact optional operating calculator. All financial figures are monthly USD unless labelled otherwise. */
 const KEY="cwc-budget-planner-v1";
-const COUNTIES="Alameda|Alpine|Amador|Butte|Calaveras|Colusa|Contra Costa|Del Norte|El Dorado|Fresno|Glenn|Humboldt|Imperial|Inyo|Kern|Kings|Lake|Lassen|Los Angeles|Madera|Marin|Mariposa|Mendocino|Merced|Modoc|Mono|Monterey|Napa|Nevada|Orange|Placer|Plumas|Riverside|Sacramento|San Benito|San Bernardino|San Diego|San Francisco|San Joaquin|San Luis Obispo|San Mateo|Santa Barbara|Santa Clara|Santa Cruz|Shasta|Sierra|Siskiyou|Solano|Sonoma|Stanislaus|Sutter|Tehama|Trinity|Tulare|Tuolumne|Ventura|Yolo|Yuba".split("|");
 const DEFAULTS={
- mode:"example",county:"San Bernardino",rentMode:"area",sqft:2400,rateOverride:0,rentActual:4200,leaseExtras:0,nnnSqft:.35,
- capacity:24,fullChildren:14,fullTuition:1300,partChildren:4,partTuition:1000,
- nightChildren:2,nightsPerChild:12,nightPrice:95,extraNightHours:0,
- respiteHours:40,respiteRate:30,otherRevenue:0,
- teachersFte:3,teacherWage:24,aidesFte:1,aideWage:20,weeklyHours:40,payrollBurden:22,
- directorSalary:6500,utilitiesPct:15,insurance:500,foodPerChild:90,overnightSupplies:7,respiteSupplies:2,
- includeCoverageCost:"yes",coverageDays:22,
- cleaning:300,marketing:150,incidentals:650,profitGoal:3000
+ students:14,tuition:1300,staffCount:4,staffHourly:23,staffWeeklyHours:40,
+ rent:4200,utilities:600,insurance:500,directorSalary:6500,profitGoal:3000,
+ payrollBurden:22,partStudents:0,partTuition:1000,overnightNights:0,overnightFee:95,
+ respiteHours:0,respiteRate:30,extraNightHours:0,includeBackup:false,backupDays:22
 };
-let benchmarks={
- statewide:{monthlyRate:2.40,period:"Q3 2026",method:"Illustrative, unweighted mean of eight California retail market observations, not an official statewide rent average"},
- regions:[
- {counties:["Riverside","San Bernardino"],monthlyRate:1.77,name:"Inland Empire retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/inland-empire-retail-figures-q3-2026"},
- {counties:["Los Angeles"],monthlyRate:2.87,name:"Los Angeles retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/los-angeles-retail-figures-q3-2026"},
- {counties:["Orange"],monthlyRate:2.68,name:"Orange County retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/orange-county-marketbeats/retail"},
- {counties:["Sacramento"],monthlyRate:1.49,name:"Sacramento retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/sacramento-retail-figures-q3-2026"},
- {counties:["San Diego"],monthlyRate:2.27,name:"San Diego retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/san-diego-marketbeats/retail"},
- {counties:["San Francisco"],monthlyRate:3.05,name:"San Francisco retail market",period:"2026 Q3",source:"Kidder Mathews",url:"https://kidder.com/market-reports/san-francisco-retail-market-report/"},
- {counties:["Santa Clara"],monthlyRate:2.66,name:"Silicon Valley retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/silicon-valley-marketbeats/retail"},
- {counties:["Alameda","Contra Costa"],monthlyRate:2.41,name:"East Bay retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/oakland-marketbeats/retail"}
- ],lastReviewed:"2026-11-21"
-};
+function clamp(value,min,max){const n=Number(value);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):min;}
+function migrate(v){
+ if(!v||typeof v!=="object")return {...DEFAULTS};
+ if(Object.prototype.hasOwnProperty.call(v,"students"))return {...DEFAULTS,...v};
+ const teachers=Math.max(0,Number(v.teachersFte)||0),aides=Math.max(0,Number(v.aidesFte)||0);
+ const team=teachers+aides;
+ const wage=team?((teachers*(Number(v.teacherWage)||0)+aides*(Number(v.aideWage)||0))/team):DEFAULTS.staffHourly;
+ const oldRent=v.rentMode==="actual"?Number(v.rentActual):Number(v.sqft)*(Number(v.rateOverride)>0?Number(v.rateOverride):1.77);
+ const rent=Number.isFinite(oldRent)?oldRent:DEFAULTS.rent;
+ const extras=v.rentMode==="actual"?Number(v.leaseExtras)||0:(Number(v.sqft)||0)*(Number(v.nnnSqft)||0);
+ return {
+  ...DEFAULTS,students:clamp(v.fullChildren??DEFAULTS.students,0,1000),
+  tuition:clamp(v.fullTuition??DEFAULTS.tuition,0,1000000),
+  staffCount:team||DEFAULTS.staffCount,staffHourly:wage||DEFAULTS.staffHourly,
+  staffWeeklyHours:clamp(v.weeklyHours??40,0,80),
+  rent:Math.max(0,rent+extras),
+  utilities:Math.max(0,rent*(Number(v.utilitiesPct)||0)/100),
+  insurance:clamp(v.insurance??DEFAULTS.insurance,0,1000000),
+  directorSalary:clamp(v.directorSalary??DEFAULTS.directorSalary,0,1000000),
+  profitGoal:clamp(v.profitGoal??DEFAULTS.profitGoal,0,1000000),
+  payrollBurden:clamp(v.payrollBurden??22,0,200),
+  partStudents:clamp(v.partChildren??0,0,1000),
+  partTuition:clamp(v.partTuition??1000,0,1000000),
+  overnightNights:Math.max(0,(Number(v.nightChildren)||0)*(Number(v.nightsPerChild)||0)),
+  overnightFee:clamp(v.nightPrice??95,0,1000000),
+  respiteHours:clamp(v.respiteHours??0,0,1000000),
+  respiteRate:clamp(v.respiteRate??30,0,1000000),
+  extraNightHours:clamp(v.extraNightHours??0,0,1000000),
+  includeBackup:v.includeCoverageCost==="yes",backupDays:clamp(v.coverageDays??22,0,31)
+ };
+}
+function load(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(saved&&typeof saved==="object")return {values:migrate(saved.values),touched:!!saved.touched};
+ }catch(_){}
+ return {values:{...DEFAULTS},touched:false};
+}
 let state=load();
-function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||"null");if(x&&typeof x==="object")return {values:{...DEFAULTS,...x.values},actual:x.actual||null,touched:!!x.touched};}catch(e){}return {values:{...DEFAULTS},actual:null,touched:false};}
-function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
-function html(x){return String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function cash(n){return (n<0?"−":"")+"$"+Math.abs(Math.round(n)).toLocaleString("en-US");}
-function nval(key,limit=1000000){let n=Number(state.values[key]);return Number.isFinite(n)?Math.max(0,Math.min(limit,n)):0;}
-function countyRate(){
- const county=state.values.county;
- const reg=(benchmarks.regions||[]).find(v=>Array.isArray(v.counties)&&v.counties.includes(county)&&Number(v.monthlyRate)>0);
- if(reg)return {rate:Number(reg.monthlyRate),name:reg.name,period:reg.period,source:reg.source,url:reg.url,fallback:false};
- const activeRates=(benchmarks.regions||[]).map(v=>Number(v.monthlyRate)).filter(v=>Number.isFinite(v)&&v>0);
- const dynamicRate=activeRates.length?Math.round(activeRates.reduce((sum,x)=>sum+x,0)/activeRates.length*100)/100:Number(benchmarks.statewide.monthlyRate)||2.40;
- return {rate:dynamicRate,name:"California statewide planning fallback",period:benchmarks.statewide.period||"2026",source:"Unweighted mean of "+activeRates.length+" published California regional retail benchmarks; not an official statewide index",url:"",fallback:true};
-}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){}}
+function fmt(n){return (n<0?"−":"")+"$"+Math.abs(Math.round(n)).toLocaleString("en-US");}
+function escapeHtml(s){return String(s==null?"":s).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
+function num(k){return clamp(state.values[k],0,1000000);}
 function calculate(){
- const v=state.values,rateInfo=countyRate();
- const perSf=nval("rateOverride")>0?nval("rateOverride"):rateInfo.rate;
- const rent=v.rentMode==="actual"?nval("rentActual"):nval("sqft")*perSf;
- const leaseExtras=v.rentMode==="actual"?nval("leaseExtras"):nval("sqft")*nval("nnnSqft");
- const full=nval("fullChildren"),part=nval("partChildren"),day=full+part;
- const nights=nval("nightChildren")*nval("nightsPerChild"),nightRevenue=nights*nval("nightPrice");
- const fullRevenue=full*nval("fullTuition"),partRevenue=part*nval("partTuition");
- const respiteRevenue=nval("respiteHours")*nval("respiteRate");
- const monthlyRevenue=fullRevenue+partRevenue+nightRevenue+respiteRevenue+nval("otherRevenue");
- const monthWeeks=52/12;
- const teacherPayroll=nval("teachersFte")*nval("weeklyHours")*monthWeeks*nval("teacherWage")*(1+nval("payrollBurden")/100);
- const aidePayroll=nval("aidesFte")*nval("weeklyHours")*monthWeeks*nval("aideWage")*(1+nval("payrollBurden")/100);
- /* Extra overnight HOURS represent paid hours not already counted in regular FTEs. */
- const nightPayroll=nval("extraNightHours")*nval("teacherWage")*(1+nval("payrollBurden")/100);
- const director=nval("directorSalary"),utility=rent*nval("utilitiesPct")/100;
- const practiceCoverage=typeof window.CWC_STAFFING==="function"?window.CWC_STAFFING():null;
- const practiceCoverageCost=state.values.includeCoverageCost==="yes"&&practiceCoverage?practiceCoverage.cost*nval("coverageDays"):0;
- const dayConsumables=day*nval("foodPerChild");
- const nightConsumables=nights*nval("overnightSupplies");
- const respiteConsumables=nval("respiteHours")*nval("respiteSupplies");
- const fixed=rent+leaseExtras+utility+nval("insurance")+nval("cleaning")+nval("marketing")+nval("incidentals")+teacherPayroll+aidePayroll+nightPayroll+practiceCoverageCost+director;
- const variable=dayConsumables+nightConsumables+respiteConsumables;
- const expenses=fixed+variable,profit=monthlyRevenue-expenses;
- const otherNet=nightRevenue+respiteRevenue+nval("otherRevenue")-nightConsumables-respiteConsumables;
- const avgDayFee=day>0?(fullRevenue+partRevenue)/day:0;
- const dayContribution=avgDayFee-nval("foodPerChild");
- const breakEven=dayContribution>0?Math.max(0,Math.ceil((fixed-otherNet)/dayContribution)):null;
- const targetSeats=dayContribution>0?Math.max(0,Math.ceil((fixed+nval("profitGoal")-otherNet)/dayContribution)):null;
- const tuitionNeeded=full>0?Math.max(0,(expenses+nval("profitGoal")-partRevenue-nightRevenue-respiteRevenue-nval("otherRevenue"))/full):null;
- return {v,rateInfo,perSf,rent,leaseExtras,full,part,day,nights,nightRevenue,fullRevenue,partRevenue,respiteRevenue,monthlyRevenue,teacherPayroll,aidePayroll,nightPayroll,director,utility,dayConsumables,nightConsumables,respiteConsumables,fixed,variable,expenses,profit,otherNet,breakEven,targetSeats,tuitionNeeded,practiceCoverageCost,margin:monthlyRevenue?profit/monthlyRevenue*100:0,preDirectorProfit:profit+director,capacity:nval("capacity")};
+ const v=state.values;
+ const full=num("students"),part=num("partStudents"),night=num("overnightNights"),respite=num("respiteHours");
+ const revenue=full*num("tuition")+part*num("partTuition")+night*num("overnightFee")+respite*num("respiteRate");
+ const staffPayroll=num("staffCount")*num("staffWeeklyHours")*(52/12)*num("staffHourly")*(1+num("payrollBurden")/100);
+ const overnightPayroll=num("extraNightHours")*num("staffHourly")*(1+num("payrollBurden")/100);
+ const coverage=typeof window.CWC_STAFFING==="function"?window.CWC_STAFFING():null;
+ const backup=v.includeBackup&&coverage?coverage.cost*num("backupDays"):0;
+ const director=num("directorSalary"),rent=num("rent"),utilities=num("utilities"),insurance=num("insurance");
+ const expenses=staffPayroll+overnightPayroll+backup+director+rent+utilities+insurance;
+ const surplus=revenue-expenses;
+ const other=part*num("partTuition")+night*num("overnightFee")+respite*num("respiteRate");
+ const goal=num("profitGoal");
+ const tuitionRequired=full>0?Math.max(0,(expenses+goal-other)/full):null;
+ const totalEnrollment=full+part;
+ const avgTuition=totalEnrollment>0?(full*num("tuition")+part*num("partTuition"))/totalEnrollment:0;
+ const breakEven=avgTuition>0?Math.ceil(Math.max(0,(expenses-(revenue-(full*num("tuition")+part*num("partTuition"))))/avgTuition)):null;
+ return {revenue,expenses,surplus,tuitionRequired,breakEven,staffPayroll,overnightPayroll,backup,director,rent,utilities,insurance,goal,full,part,night,respite};
 }
-function numeric(key,label,step,help){
- const a=state.values;
- return '<label class="budget-field"><span>'+html(label)+'</span><input type="number" data-budget-key="'+html(key)+'" inputmode="decimal" min="0" step="'+(step||1)+'" value="'+html(a[key])+'">'+(help?'<small>'+html(help)+'</small>':'')+'</label>';
-}
-function select(key,label,options){
+function field(key,title,step=1){
  const value=state.values[key];
- return '<label class="budget-field"><span>'+html(label)+'</span><select data-budget-key="'+html(key)+'">'+options.map(([a,b])=>'<option value="'+html(a)+'"'+(a===value?' selected':'')+'>'+html(b)+'</option>').join('')+'</select></label>';
+ return '<label class="budget-compact-field"><span>'+escapeHtml(title)+'</span><input type="number" data-budget-key="'+key+'" min="0" max="1000000" step="'+step+'" inputmode="decimal" value="'+escapeHtml(value)+'"></label>';
 }
-function fieldset(title,items,open){
- return '<details class="budget-section" '+(open?'open':'')+'><summary>'+html(title)+'</summary><div class="budget-fields">'+items.join('')+'</div></details>';
-}
-function card(label,id,value){
- return '<div class="budget-result"><span>'+html(label)+'</span><strong id="'+id+'">'+value+'</strong></div>';
-}
+function detailRow(name,val){return '<div><dt>'+name+'</dt><dd>'+fmt(val)+'</dd></div>';}
 function breakdown(c){
- return '<details class="budget-breakdown"><summary>See where the money goes each month</summary><dl>'+
- '<div><dt>Rent, CAM/NNN and utilities</dt><dd>'+cash(c.rent+c.leaseExtras+c.utility)+'</dd></div>'+
- '<div><dt>Teacher wages, taxes and benefits</dt><dd>'+cash(c.teacherPayroll)+'</dd></div>'+
- '<div><dt>Aide wages, taxes and benefits</dt><dd>'+cash(c.aidePayroll)+'</dd></div>'+
- '<div><dt>Extra paid overnight labor</dt><dd>'+cash(c.nightPayroll)+'</dd></div>'+ 
- '<div><dt>Backup coverage selected above</dt><dd>'+cash(c.practiceCoverageCost)+'</dd></div>'+
- '<div><dt>Director’s desired salary</dt><dd>'+cash(c.director)+'</dd></div>'+
- '<div><dt>Insurance, food and other expenses</dt><dd>'+cash(c.expenses-c.rent-c.leaseExtras-c.utility-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.practiceCoverageCost-c.director)+'</dd></div>'+
+ return '<details class="budget-breakdown"><summary>View monthly cost breakdown</summary><dl>'+
+ detailRow("Classroom staff payroll",c.staffPayroll)+
+ (c.overnightPayroll?detailRow("Additional overnight staffing",c.overnightPayroll):"")+
+ (c.backup?detailRow("Extra backup shifts",c.backup):"")+
+ detailRow("Director salary",c.director)+
+ detailRow("Rent",c.rent)+
+ detailRow("Utilities",c.utilities)+
+ detailRow("Insurance",c.insurance)+
  '</dl></details>';
 }
-function overview(c){
- return '<div class="budget-results" aria-live="polite">'+
- card("Total monthly income","b-income",cash(c.monthlyRevenue))+
- card("Employees: teachers and aides","b-payroll",cash(c.teacherPayroll+c.aidePayroll+c.nightPayroll+c.practiceCoverageCost))+
- card("Director's desired salary","b-director",cash(c.director))+
- card("Other operating costs","b-othercost",cash(c.expenses-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.practiceCoverageCost-c.director))+
- card("Monthly surplus after director pay","b-profit",cash(c.profit))+
- '</div><div class="budget-verdict" id="b-verdict">'+verdict(c)+'</div><div id="b-breakdown">'+breakdown(c)+'</div>';
-}
-function verdict(c){
- if(c.day>c.capacity)return '<strong>Capacity warning:</strong> This estimate counts full-time and part-time children as present together. Actual peak attendance must stay within licensed capacity.';
- if(c.profit<0)return '<strong>Projected shortfall.</strong> Try adjusting enrollment, rates, or expenses. Check coverage before changing staff.';
- return '<strong>Projected surplus.</strong> Check your staff schedules, occupancy assumptions, and whether the tuition is affordable locally.';
-}
-function sourceLine(c){
- const a=c.rateInfo;
- return 'County benchmark: '+html(a.name)+' · '+html(a.period)+' · '+html(a.source)+'. '+
- (a.fallback?'No county/regional figure was loaded, so the statewide planning fallback is used. ':'')+
- (a.url?'<a href="'+html(a.url)+'" target="_blank" rel="noopener noreferrer">Source</a>. ':'')+
- 'Retail asking rent is a proxy, not an average licensed child care lease. Estimate NNN/CAM separately.';
-}
-function tuition(c){
- const needed=c.tuitionNeeded==null?"Add at least one full-time child":cash(c.tuitionNeeded)+" / full-time child / month";
- const breakEven=c.breakEven==null?"Not calculable":c.breakEven+" daytime children";
- const target=c.targetSeats==null?"Not calculable":c.targetSeats+" daytime children";
- return '<div class="budget-results budget-tu">>'+
- card("Full-time tuition needed for profit goal","b-tuition",needed)+
- card("Daytime enrollments to break even","b-break",breakEven)+
- card("Enrollments for target profit","b-target",target)+
- '</div><p id="b-caveat" class="budget-help">'+
- (c.breakEven!==null&&c.breakEven>c.capacity?'Warning: break-even enrollment exceeds the licensed capacity entered. ':'')+
- 'Needed tuition holds other revenue and current enrollment constant. Break-even enrollment holds the current part-time/full-time mix, rates, fixed staffing and other revenue constant; actual staffing costs can increase as enrollment rises.'+
- '</p>';
-}
-function goalHeader(){
- return '<section class="panel budget-goal" aria-label="Your income goals">'+
- '<div class="kicker">Start with your goal</div><h2>What do you want this center to earn?</h2>'+
- '<p>Set your desired director salary first. Then set how much profit the business should earn <strong>after paying you</strong>. Both goals shape the tuition estimate below.</p>'+
- '<div class="budget-fields">'+numeric("directorSalary","Director’s desired monthly salary ($)",100,"Your pay as director, separate from staff payroll and business profit.")+
- numeric("profitGoal","Desired monthly business profit ($)",100,"The surplus you want after all expenses, including director salary.")+
- '</div></section>';
-}
 function view(){
- const c=calculate(),v=c.v;
- const countyOpts=COUNTIES.map(x=>[x,x+" County"]);
- return '<section class="budget-page" id="cwc-budget"><div class="section-top"><div><div class="kicker">Operating budget and tuition</div><h2>Will the center support your goals?</h2><p>Start with example numbers or use your own. Change any number and see the monthly results. Your entries remain in this browser and are not included in assessment submissions.</p></div></div>'+
- '<div class="budget-top"><div class="budget-steps"><strong>What comes in?</strong><span>What goes out?</span><span>What tuition works?</span></div>'+
- overview(c)+'</div>'+
- '<div class="panel budget-form-panel"><div class="budget-choice">'+
- select("mode","Your planning numbers",[["example","Example numbers (editable)"],["actual","My real center numbers"]])+
- '<button type="button" class="btn outline" data-budget-reset="1">Restore examples</button></div>'+
- fieldset("1. Children and income",[
- numeric("capacity","Licensed simultaneous capacity",1),
- numeric("fullChildren","Full-time children",1),numeric("fullTuition","Full-time monthly tuition ($)",25),
- numeric("partChildren","Part-time children",1),numeric("partTuition","Part-time monthly tuition ($)",25),
- numeric("nightChildren","Overnight-only children",1),numeric("nightsPerChild","Nights per child per month",1),
- numeric("nightPrice","Price per overnight stay ($)",5),
- numeric("respiteHours","Respite hours billed each month",1),numeric("respiteRate","Respite hourly rate ($)",1),
- numeric("otherRevenue","Other center revenue each month ($)",25)
- ],true)+
- fieldset("2. Teachers, aides, and overnight coverage",[
- numeric("teachersFte","Teachers (full-time equivalents)",.25),numeric("teacherWage","Teacher hourly wage ($)",.5),
- numeric("aidesFte","Aides (full-time equivalents)",.25),numeric("aideWage","Aide hourly wage ($)",.5),
- numeric("weeklyHours","Weekly paid hours per full-time position",1),
- numeric("payrollBurden","Benefits and payroll taxes (%)",1),
- numeric("extraNightHours","Additional overnight paid staff hours per month",1,"Enter 0 only if qualified, paid overnight supervision is already included in the positions above."),
- select("includeCoverageCost","Include backup staffing selected above in monthly expenses?",[["yes","Yes, these hours are extra"],["no","No, they are already included in payroll"]]),
- numeric("coverageDays","Days per month this extra coverage runs",1,"Only applies if extra backup coverage is included. Use 22 for an average weekday month.")
- ],true)+
- fieldset("3. Rent and building expenses",[
- select("county","California county",countyOpts),
- select("rentMode","How to calculate rent",[["area","Estimate by square footage"],["actual","Enter actual monthly rent"]]),
- (v.rentMode==="area"?numeric("sqft","Building square footage",100)+'<label class="budget-field budget-square-slider"><span>Drag to change building size</span><input type="range" data-budget-key="sqft" min="500" max="50000" step="100" value="'+html(v.sqft)+'"></label>'+numeric("rateOverride","Your own rent rate ($/sq. ft./month; 0 = county benchmark)",.01)+numeric("nnnSqft","Extra CAM/NNN charges ($/sq. ft./month)",.05):
- numeric("rentActual","Actual monthly base rent ($)",100)+numeric("leaseExtras","Extra monthly lease charges ($)",25)),
- numeric("utilitiesPct","Utilities (% of base rent)",1),numeric("insurance","Insurance each month ($)",25)
- ],false)+
- '<p id="b-rentsource" class="budget-source">'+sourceLine(c)+'</p>'+
- fieldset("4. Food and other operating expenses",[
- numeric("foodPerChild","Daytime food and supplies per child/month ($)",5),
- numeric("overnightSupplies","Overnight consumables per night ($)",1),
- numeric("respiteSupplies","Respite consumables per billed hour ($)",1),
- numeric("cleaning","Cleaning per month ($)",25),
- numeric("marketing","Marketing per month ($)",25),
- numeric("incidentals","Other overhead, upkeep, incidentals ($)",25)
- ],false)+
+ const c=calculate(),v=state.values;
+ return '<section class="budget-compact" id="cwc-budget" aria-label="Tuition and expenses calculator">'+
+ '<div class="budget-compact-editor">'+
+ '<div class="budget-compact-heading"><h3>Tuition &amp; expenses</h3><p>Change any number. Results update as you type.</p></div>'+
+ '<div class="budget-compact-fields">'+
+ field("students","Full-time children")+
+ field("tuition","Monthly tuition per child ($)",25)+
+ field("staffCount","Classroom staff (FTE)",.25)+
+ field("staffHourly","Hourly staff pay ($)",.5)+
+ field("staffWeeklyHours","Paid hours per staff member / week")+
+ field("rent","Monthly rent ($)",50)+
+ field("utilities","Monthly utilities ($)",25)+
+ field("insurance","Monthly insurance ($)",25)+
+ field("directorSalary","Director monthly salary ($)",100)+
+ field("profitGoal","Monthly profit goal ($)",100)+
  '</div>'+
- '<section class="panel budget-tuition"><h3>5. Tuition planner</h3><p>What would you need to charge to cover your costs, pay the director, and earn a sustainable operating profit?</p>'+
- 
- tuition(c)+
- '<p class="budget-help"><strong>Director pay is not the same as profit.</strong> The director’s salary is included in monthly expenses before the business-profit target is calculated.</p><p class="budget-help">Overnight care may add revenue without additional payroll <em>only if the required qualified, paid staff are already scheduled and counted in the budget</em>. Sleeping children do not eliminate California supervision obligations. Check your license type, overnight approval, and staffing plan. <a href="https://www.law.cornell.edu/regulations/california/22-CCR-102426" target="_blank" rel="noopener noreferrer">Family child care home overnight rules</a> · <a href="https://www.law.cornell.edu/regulations/california/22-CCR-101230" target="_blank" rel="noopener noreferrer">Child care center napping rules</a>.</p>'+
- '<p class="budget-help">Illustrative planning only. Tuition affordability, subsidized/reimbursement rates, debt service, depreciation, taxes, staffing thresholds, occupancy and local rent vary. No figure here establishes regulatory compliance or a guaranteed profit.</p>'+
- '</section></section>';
+ '<details class="budget-compact-extra"><summary>Additional care revenue and payroll settings</summary>'+
+ '<div class="budget-compact-fields">'+
+ field("partStudents","Part-time children")+
+ field("partTuition","Monthly part-time tuition ($)",25)+
+ field("overnightNights","Overnight stays per month")+
+ field("overnightFee","Fee per overnight stay ($)",5)+
+ field("respiteHours","Respite billable hours per month")+
+ field("respiteRate","Respite hourly fee ($)")+
+ field("payrollBurden","Payroll taxes and benefits (%)")+
+ field("extraNightHours","Additional overnight staff hours / month")+
+ field("backupDays","Days per month of extra backup coverage")+
+ '</div><label class="budget-compact-check"><input type="checkbox" data-budget-key="includeBackup" '+(v.includeBackup?"checked":"")+'><span>Include optional backup-shift costs from the staffing example</span></label>'+
+ '<p class="budget-smallprint">Backup costs are excluded unless selected. Avoid counting the same shifts twice.</p></details>'+
+ '<div class="budget-compact-footer"><button type="button" class="btn outline" data-budget-reset="1">Restore example figures</button><p>Food and meal-program costs or reimbursements are outside this tuition model. Staffing and supervision rules depend on the program.</p></div>'+
+ '</div>'+
+ '<aside class="budget-compact-live" aria-label="Live monthly financial results">'+
+ '<div class="kicker">Monthly results</div>'+
+ '<div class="budget-compact-numbergrid" aria-live="polite">'+
+ '<div><span>Revenue</span><strong id="b-income">'+fmt(c.revenue)+'</strong></div>'+
+ '<div><span>Expenses, including director pay</span><strong id="b-expenses">'+fmt(c.expenses)+'</strong></div>'+
+ '<div class="budget-surplus"><span>Surplus / shortfall</span><strong id="b-profit">'+fmt(c.surplus)+'</strong></div>'+
+ '<div class="budget-goal-result"><span>Tuition to reach profit goal</span><strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time enrollment":fmt(c.tuitionRequired)+"/child")+'</strong></div>'+
+ '</div>'+
+ '<div id="b-verdict" class="budget-compact-verdict">'+(c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.")+'</div>'+
+ '<p class="budget-compact-substat">Approx. full-time-equivalent break-even enrollment: <strong id="b-break">'+(c.breakEven==null?"Not calculable":String(c.breakEven))+'</strong></p>'+
+ '<div id="b-breakdown">'+breakdown(c)+'</div>'+
+ '<p class="budget-smallprint">Tuition assumes current attendance and other care fees. Enrollment estimates hold staffing costs and the current tuition mix fixed. Planning estimates, not a licensing or financial guarantee.</p>'+
+ '</aside></section>';
 }
 function update(){
- const root=document.getElementById("cwc-budget");if(!root)return;
- const c=calculate();
- const vals={"b-income":cash(c.monthlyRevenue),"b-payroll":cash(c.teacherPayroll+c.aidePayroll+c.nightPayroll+c.practiceCoverageCost),
- "b-director":cash(c.director),"b-othercost":cash(c.expenses-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.practiceCoverageCost-c.director),
- "b-profit":cash(c.profit),"b-tuition":c.tuitionNeeded==null?"Add at least one full-time child":cash(c.tuitionNeeded)+" / full-time child / month",
- "b-break":c.breakEven==null?"Not calculable":c.breakEven+" daytime children",
- "b-target":c.targetSeats==null?"Not calculable":c.targetSeats+" daytime children"};
- Object.keys(vals).forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=vals[id];});
- const v=document.getElementById("b-verdict");if(v)v.innerHTML=verdict(c);
- const caveat=document.getElementById("b-caveat");
- if(caveat)caveat.textContent=(c.breakEven!==null&&c.breakEven>c.capacity?"Break-even enrollment exceeds your entered licensed capacity. ":"")+"These calculations hold current rates and staffing costs fixed while you compare possible enrollment levels.";
- const source=document.getElementById("b-rentsource");if(source)source.innerHTML=sourceLine(c);
- const detail=document.getElementById("b-breakdown");if(detail){const wasOpen=!!detail.querySelector("details")?.open;detail.innerHTML=breakdown(c);const box=detail.querySelector("details");if(box)box.open=wasOpen;}
+ if(!document.getElementById("cwc-budget"))return;
+ const c=calculate(),values={
+  "b-income":fmt(c.revenue),"b-expenses":fmt(c.expenses),"b-profit":fmt(c.surplus),
+  "b-tuition":c.tuitionRequired==null?"Add full-time enrollment":fmt(c.tuitionRequired)+"/child",
+  "b-break":c.breakEven==null?"Not calculable":String(c.breakEven)
+ };
+ for(const [id,value] of Object.entries(values)){const el=document.getElementById(id);if(el)el.textContent=value;}
+ const banner=document.getElementById("b-verdict");if(banner)banner.textContent=c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.";
+ const details=document.getElementById("b-breakdown");
+ if(details){
+  const open=!!details.querySelector("details")?.open;
+  details.innerHTML=breakdown(c);
+  const pane=details.querySelector("details");
+  if(pane)pane.open=open;
+ }
 }
 function updateField(input){
- const key=input.dataset.budgetKey;if(!key||!(key in DEFAULTS))return;
- const val=input.value;
- if(key==="mode"){
-  if(val==="actual"){state.values={...(state.actual||state.values),mode:"actual"};}
-  else {if(state.values.mode==="actual")state.actual={...state.values};state.values={...DEFAULTS,mode:"example"};}
- }else{
-  state.values[key]=typeof DEFAULTS[key]==="number"?(val===""?0:Math.max(0,Math.min(1000000,Number(val)||0))):val;
-  if(state.values.mode==="actual")state.actual={...state.values};
- }
- state.touched=true;persist();
- if(key==="sqft"){document.querySelectorAll('[data-budget-key="sqft"]').forEach(el=>{if(el!==input)el.value=state.values.sqft;});}
+ const key=input.dataset.budgetKey;
+ if(!Object.prototype.hasOwnProperty.call(DEFAULTS,key))return;
+ state.values[key]=key==="includeBackup"?!!input.checked:clamp(input.value,0,1000000);
+ state.touched=true;
+ persist();
  update();
  document.dispatchEvent(new Event("cwc-budget-changed"));
 }
-document.addEventListener("input",function(e){if(e.target&&e.target.dataset.budgetKey&&e.target.tagName==="INPUT")updateField(e.target);});
-document.addEventListener("change",function(e){
- const el=e.target;if(!el||!el.dataset.budgetKey)return;updateField(el);
- if(el.dataset.budgetKey==="rentMode"||el.dataset.budgetKey==="mode"){const root=document.getElementById("cwc-budget");if(root){root.outerHTML=view();}}
+document.addEventListener("input",e=>{
+ if(e.target&&e.target.dataset?.budgetKey&&e.target.type!=="checkbox")updateField(e.target);
 });
-document.addEventListener("click",function(e){const el=e.target.closest("[data-budget-reset]");if(!el)return;state={values:{...DEFAULTS},actual:state.actual,touched:false};persist();const root=document.getElementById("cwc-budget");if(root)root.outerHTML=view();});
-function reset(){state={values:{...DEFAULTS},actual:null,touched:false};persist();}
-function loadBenchmarks(){
- if(typeof fetch!=="function")return;
- fetch("data/california-budget-benchmarks.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("market data unavailable");return r.json();}).then(data=>{
- if(data&&data.statewide&&Number(data.statewide.monthlyRate)>0&&Array.isArray(data.regions)){benchmarks=data;update();}
- }).catch(()=>{});
-}
+document.addEventListener("change",e=>{
+ if(e.target&&e.target.dataset?.budgetKey)updateField(e.target);
+});
+document.addEventListener("click",e=>{
+ const btn=e.target.closest("[data-budget-reset]");
+ if(!btn)return;
+ state={values:{...DEFAULTS},touched:false};persist();
+ const root=document.getElementById("cwc-budget");
+ if(root)root.outerHTML=view();
+ document.dispatchEvent(new Event("cwc-budget-changed"));
+});
+function reset(){state={values:{...DEFAULTS},touched:false};persist();}
+function goalHeader(){return "";}
+function loadBenchmarks(){return undefined;}
+function countyRate(){return null;}
 window.CWC_BUDGET={view,goalHeader,calculate,update,touched:()=>state.touched,reset,loadBenchmarks,countyRate};
-loadBenchmarks();
 })();
