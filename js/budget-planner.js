@@ -234,11 +234,11 @@ function view(){
  programControl()+
  '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div>'+
  '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county)+'</p>'+
- '<div class="budget-group-label"><strong>Children (not infants)</strong><span>Count infants separately below.</span></div>'+
+ '<div class="budget-group-label"><strong>Children (over age 2)</strong></div>'+
  '<div class="budget-enrollment-pair">'+
  '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Full-time</h4>'+helpTip("fulltime","Full-time children")+'</div>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
  '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Part-time</h4>'+helpTip("parttime","Part-time children")+'</div>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
- '<div class="budget-group-label"><strong>Infants (under age 2)</strong><span>Separate tuition and lower staffing ratios.</span></div>'+
+ '<div class="budget-group-label"><strong>Infants (under age 2)</strong></div>'+
  '<div class="budget-enrollment-pair budget-infants-pair">'+
  '<div class="budget-enrollment-group"><h4>Full-time infants</h4>'+field("infantFull","Infants")+field("infantTuition","Monthly infant tuition ($)",25)+'</div>'+
  '<div class="budget-enrollment-group"><h4>Part-time infants</h4>'+field("infantPart","Infants")+field("infantPartTuition","Monthly infant tuition ($)",25)+'</div></div>'+
