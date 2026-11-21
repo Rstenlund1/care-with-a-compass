@@ -216,6 +216,9 @@ function availabilityText(c){
 function field(key,label,step=1){
  return '<div class="budget-compact-field">'+helpHeading(key,label)+'<input id="budget-'+esc(key)+'" type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></div>';
 }
+function infantCountField(key,headingId){
+ return '<div class="budget-compact-field budget-infant-count"><input id="budget-'+esc(key)+'" type="number" aria-labelledby="'+esc(headingId)+'" data-budget-key="'+key+'" inputmode="numeric" min="0" max="1000000" step="1" value="'+esc(state.values[key])+'"></div>';
+}
 function breakdown(c){
  const line=(name,n,key)=>'<div><dt>'+esc(name)+'</dt><dd>'+cash(n)+helpTip(key,name)+'</dd></div>';
  return '<details class="budget-breakdown"><summary title="'+esc(BUDGET_HELP.breakdown)+'">Monthly expense breakdown</summary><dl>'+
@@ -240,8 +243,8 @@ function view(){
  '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Part-time</h4>'+helpTip("parttime","Part-time children")+'</div>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
  '<div class="budget-group-label"><strong>Infants (under age 2)</strong></div>'+
  '<div class="budget-enrollment-pair budget-infants-pair">'+
- '<div class="budget-enrollment-group"><h4>Full-time infants</h4>'+field("infantFull","Infants")+field("infantTuition","Monthly infant tuition ($)",25)+'</div>'+
- '<div class="budget-enrollment-group"><h4>Part-time infants</h4>'+field("infantPart","Infants")+field("infantPartTuition","Monthly infant tuition ($)",25)+'</div></div>'+
+ '<div class="budget-enrollment-group"><h4 id="budget-infant-full-heading">Full-time infants</h4>'+infantCountField("infantFull","budget-infant-full-heading")+field("infantTuition","Monthly infant tuition ($)",25)+'</div>'+
+ '<div class="budget-enrollment-group"><h4 id="budget-infant-part-heading">Part-time infants</h4>'+infantCountField("infantPart","budget-infant-part-heading")+field("infantPartTuition","Monthly infant tuition ($)",25)+'</div></div>'+
  '<div class="budget-director-first">'+field("directorSalary","Director monthly salary ($)",100)+'</div>'+
  '<div class="budget-compact-fields">'+
  field("staffCount","Additional classroom staff (FTE, excluding director)",.25)+
