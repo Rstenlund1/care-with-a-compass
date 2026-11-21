@@ -572,3 +572,11 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-infants-pair{background:#faf7fc;border:1px solid #e4dbe9;padding:10px;border-radius:9px;margin-bottom:14px}
 .budget-infants-pair .budget-enrollment-group h4{font-size:12px}
 @media(max-width:650px){.budget-program-selector{max-width:100%}.budget-group-label{align-items:start}.budget-infants-pair{padding:8px}}
+
+/* v10.7.15 — keep program type and county on one tidy row, without crowded infant labels. */
+.budget-program-county-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start;margin:2px 0 12px;min-width:0}
+.budget-program-county-row .budget-program-selector,.budget-program-county-row .budget-county-selector{width:100%;max-width:none;min-width:0;margin:0}
+.budget-program-county-row select{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+.budget-infants-pair .budget-enrollment-group{gap:9px}
+.budget-infants-pair .budget-infant-count{margin-top:0}
+@media(max-width:560px){.budget-program-county-row{grid-template-columns:1fr;gap:10px}}
