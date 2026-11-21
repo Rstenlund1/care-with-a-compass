@@ -16,7 +16,13 @@ let benchmarks={
  statewide:{monthlyRate:2.40,period:"Q3 2026",method:"Illustrative, unweighted mean of eight California retail market observations, not an official statewide rent average"},
  regions:[
  {counties:["Riverside","San Bernardino"],monthlyRate:1.77,name:"Inland Empire retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/inland-empire-retail-figures-q3-2026"},
- {counties:["Los Angeles"],monthlyRate:2.87,name:"Los Angeles retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/los-angeles-retail-figures-q3-2026"}
+ {counties:["Los Angeles"],monthlyRate:2.87,name:"Los Angeles retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/los-angeles-retail-figures-q3-2026"},
+ {counties:["Orange"],monthlyRate:2.68,name:"Orange County retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/orange-county-marketbeats/retail"},
+ {counties:["Sacramento"],monthlyRate:1.49,name:"Sacramento retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/sacramento-retail-figures-q3-2026"},
+ {counties:["San Diego"],monthlyRate:2.27,name:"San Diego retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/san-diego-marketbeats/retail"},
+ {counties:["San Francisco"],monthlyRate:3.05,name:"San Francisco retail market",period:"2026 Q3",source:"Kidder Mathews",url:"https://kidder.com/market-reports/san-francisco-retail-market-report/"},
+ {counties:["Santa Clara"],monthlyRate:2.66,name:"Silicon Valley retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/silicon-valley-marketbeats/retail"},
+ {counties:["Alameda","Contra Costa"],monthlyRate:2.41,name:"East Bay retail market",period:"2026 Q3",source:"Cushman & Wakefield",url:"https://www.cushmanwakefield.com/en-united-states/insights/us-marketbeats/oakland-marketbeats/retail"}
  ],lastReviewed:"2026-11-21"
 };
 let state=load();
