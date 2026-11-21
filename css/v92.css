@@ -562,3 +562,13 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
  .budget-info:focus{z-index:1000}
 }
 @media(prefers-reduced-motion:reduce){.budget-info-popup{transition:none}}
+
+/* v10.7.14 — compact program type and separate infant enrollment, same planner width. */
+.budget-program-selector{max-width:460px;margin:2px 0 12px}
+.budget-program-selector select{width:100%;min-height:40px}
+.budget-group-label{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;margin:13px 0 8px;color:#3d2c50}
+.budget-group-label strong{font:750 13px/1.35 system-ui,sans-serif}
+.budget-group-label span{font:500 11px/1.4 system-ui,sans-serif;color:#6a6074}
+.budget-infants-pair{background:#faf7fc;border:1px solid #e4dbe9;padding:10px;border-radius:9px;margin-bottom:14px}
+.budget-infants-pair .budget-enrollment-group h4{font-size:12px}
+@media(max-width:650px){.budget-program-selector{max-width:100%}.budget-group-label{align-items:start}.budget-infants-pair{padding:8px}}
