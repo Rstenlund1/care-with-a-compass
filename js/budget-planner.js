@@ -56,7 +56,7 @@ function programRule(type,older,infants){
   return {required:n?(assistantNeeded?2:1):0,additional:assistantNeeded?1:0,limit:14,needsSpecial:n>12&&n<=14,invalid,infantLimit:n>12?3:4,rule:"Large family home: up to 12 with an assistant and no more than 4 infants, or 13–14 only with qualifying school-age children and no more than 3 infants. Without an assistant, small-home limits apply."};
  }
  const infantNeeded=Math.ceil(infants/4),olderNeeded=Math.ceil(older/12),required=infantNeeded+olderNeeded;
- return {required,additional:Math.max(0,required-1),limit:null,needsSpecial:infants>0,invalid:false,infantLimit:null,rule:"Preschool center: one qualified teacher per 12 preschool children; infant groups require one qualified infant-care teacher per 4 infants and an authorized infant-care component. The director counts in only one group when properly qualified and working directly with those children."};
+ return {required,additional:Math.max(0,required-1),limit:null,needsSpecial:infants>0,invalid:false,infantLimit:null,rule:"Preschool center: one qualified teacher per 12 preschool-age children; infant groups require one qualified infant-care teacher per 4 infants and an authorized infant-care component. Two-year-old toddler groups may have different requirements. The director counts in only one group when properly qualified and working directly with those children."};
 }
 
 const DEFAULTS={
@@ -152,7 +152,7 @@ function countyRateNote(county){
 }
 const BUDGET_HELP={
  "county": "Select the county for estimated 2026 full-time tuition prices. Family homes and preschool centers use different medians, and infants have their own rate. You can edit the rates.",
- "programType": "Small family home: six usual or up to eight conditionally. Large family home: twelve usual or up to fourteen conditionally, with assistant. Preschool center: one qualified teacher per 12 preschool children and one qualified caregiver per four infants in a separately authorized infant component. Staff and infant limits apply.",
+ "programType": "Small family home: six usual or up to eight conditionally. Large family home: twelve usual or up to fourteen conditionally, with assistant. Preschool center: one qualified teacher per 12 preschool-age children and one qualified infant-care teacher per four infants in a separately authorized component; toddler groups have different rules. Staff and infant limits apply.",
  "infantFull": "Full-time infants under 24 months. These are in addition to the older children entered above; do not count an infant twice.",
  "infantPart": "Part-time infants under 24 months, counted separately from older children and full-time infants. The staffing check conservatively assumes all groups could attend together.",
  "infantTuition": "Editable full-time infant monthly tuition. Defaults to the county's estimated median infant fee for the selected home or center type.",
@@ -234,7 +234,7 @@ function view(){
  programControl()+
  '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div>'+
  '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county)+'</p>'+
- '<div class="budget-group-label"><strong>Children (ages 2+)</strong><span>Count infants separately below.</span></div>'+
+ '<div class="budget-group-label"><strong>Children (not infants)</strong><span>Count infants separately below.</span></div>'+
  '<div class="budget-enrollment-pair">'+
  '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Full-time</h4>'+helpTip("fulltime","Full-time children")+'</div>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
  '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Part-time</h4>'+helpTip("parttime","Part-time children")+'</div>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
