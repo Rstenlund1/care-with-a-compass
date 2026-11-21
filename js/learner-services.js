@@ -1,4 +1,4 @@
-/* Care with a Compass v10.7.6 · opt-in learner records and Formspree-ready reporting.
+/* Care with a Compass v10.7.7 · opt-in learner records and Formspree-ready reporting.
    Public website code never contains an email password or private API key. */
 (function(global){
 "use strict";
