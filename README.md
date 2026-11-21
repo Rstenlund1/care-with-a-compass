@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.4
+
+**Live review:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.4
+
+**Scenario-placement correction:** The parent inspection/recording scenario now appears in Chapter 3 (Licensing, Ratios & Daily Operations), rather than Chapter 6 (Fairness, Bias & Belonging). The unauthorized pickup scenario now belongs to Chapter 4; the fairness chapter has a new relevant case about selective surveillance of a Black child. The multiple-perspective exercises are explicitly mapped to their matching chapters, and the former Chapter 5 extra-lens rendering path was removed. Includes v10.7.3 single-navigation and concise progress-notice corrections. This is a source-level correction; independent live-browser and expert validation are still required.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.3
 
 **Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.3
