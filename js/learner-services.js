@@ -1,4 +1,4 @@
-/* Care with a Compass v9.8 · opt-in learner records and Formspree-ready reporting.
+/* Care with a Compass v10.7.5 · opt-in learner records and Formspree-ready reporting.
    Public website code never contains an email password or private API key. */
 (function(global){
 "use strict";
@@ -137,7 +137,7 @@ function flush(targetKey=null){
 }
 function chapterCompleted(payload){
  const ch=Number(payload?.chapter);
- if(!Number.isInteger(ch)||ch<1||ch>5||!payload||typeof payload!=="object")return false;
+ if(!Number.isInteger(ch)||ch<1||ch>6||!payload||typeof payload!=="object")return false;
  const safe={
   chapter:ch,chapterTitle:String(payload.title||"").slice(0,120),
   uniqueQuestions:Number(payload.uniqueQuestions)||0,totalQuestions:Number(payload.totalQuestions)||0,
@@ -167,7 +167,7 @@ function chapterCompleted(payload){
 }
 async function submitChapter(payload){
  const ch=Number(payload?.chapter);
- if(!Number.isInteger(ch)||ch<1||ch>5||!ready())return "failed";
+ if(!Number.isInteger(ch)||ch<1||ch>6||!ready())return "failed";
  chapterCompleted(payload);
  const key="chapter-"+ch+"-detailed-v1";
  await flush(key);
@@ -196,7 +196,7 @@ function facilitatorReviewed(r){
  });
 }
 function certificateEligible(state,foundationReady,casesDone){
- return ready()&&!!foundationReady&&!!casesDone&&!!state?.sequence?.staffTouched&&!!state?.sequence?.staffCompleted&&!!state?.evidenceReviewed&&!!state?.assessment?.submitted;
+ return ready()&&!!foundationReady&&!!casesDone&&!!state?.evidenceReviewed&&!!state?.assessment?.submitted;
 }
 function certificateAction(state,foundationReady,casesDone){
  return certificateEligible(state,foundationReady,casesDone)
@@ -212,7 +212,7 @@ function certificatePrint(state,foundationReady,casesDone){
  +'<article class="certificate"><div><p class="brand">CARE WITH A COMPASS</p><p class="kicker">THE DIRECTOR&#39;S DESK · SUPERVISORY LEADERSHIP</p></div>'
  +'<div><h1 class="title">Certificate of Completion</h1><div class="kicker">PRESENTED TO</div><div class="named">'+esc(record.name)+'</div>'
  +(record.organization?'<p class="kicker">'+esc(record.organization)+'</p>':'')
- +'<p class="body">For completing the five guided leadership chapters, applied case simulations, staffing and evidence exercises, and the final assessment of <em>Care with a Compass: The Director&#39;s Desk</em>.</p></div>'
+ +'<p class="body">For completing the six guided leadership chapters, applied case simulations, the evidence journal, and the final assessment of <em>Care with a Compass: The Director&#39;s Desk</em>.</p></div>'
  +'<div><div class="sign"><span>'+esc(when)+'<br><small>Date completed</small></span><span>Richard Lawrence Stenlund<br><small>Program creator</small></span></div>'
  +'<p class="disclaimer">This certificate acknowledges completion of an independent educational prototype. It does not establish professional competence, licensing, mandated-reporter certification or accredited continuing-education hours.</p></div>'
  +'</article></body></html>';
