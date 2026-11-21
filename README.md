@@ -1,3 +1,19 @@
+# Care with a Compass — The Director's Desk · v10.7.19
+
+**Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.19
+
+**Fresh standalone simulation:** https://rstenlund1.github.io/care-with-a-compass/consequence-lab-v10.7.19.html?v=10.7.19
+
+**Gemini audit remediation:** Fixed the Chapter 6 reflection crash, broken embedded Chapter 6 reporting/progress range, missing Chapter 6 study guide and concept coaching, the tuition planner's custom-staffing reset, linked part-time infant tuition migration, and fractional enrollment entry. Rebalanced question follow-up and branching option lengths without changing scoring, repaired C3Q10 transportation guidance, and retained the formal PayByTown tuition reference and in-text citations.
+
+**License and child age model:** Family child care simulations now use separate **children age 2 and older** and **infants under age 2** selectors; the displayed total and legal capacity check count **both**. Infant slider limits adapt to the selected license and older-child enrollment. A four-infant-only small-home group has zero older children; a small home with eight older children cannot also admit infants. Qualifying school-age/parent-notification conditions are assumed for instructional capacity checks, with no checkbox or extra assumption line.
+
+**Adaptive simulation:** Selected license category, total attendance, infant mix and available adults now affect scenario pools, displayed facts, preferred response wording, rationale, coverage warnings and event consequences. A separate v10.7.19 HTML filename and cache-busted imports prevent the browser from silently loading the earlier v10.7.18 interface. The new version stores its practice session separately so stale local progress cannot mask new start controls.
+
+**Review boundary:** Scenario and financial estimates are educational planning exercises; deployed page execution and professional regulatory review remain separate validation steps.
+
+---
+
 # Care with a Compass — The Director's Desk · v10.7.18
 
 **Live optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.18&page=staff
