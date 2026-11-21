@@ -140,7 +140,7 @@ function field(key,label,step=1){
  return '<div class="budget-compact-field">'+helpHeading(key,label)+'<input id="budget-'+esc(key)+'" type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></div>';
 }
 function breakdown(c){
- const line=(name,n,key)=>'<div><dt>'+esc(name)+helpTip(key,name)+'</dt><dd>'+cash(n)+'</dd></div>';
+ const line=(name,n,key)=>'<div><dt>'+esc(name)+'</dt><dd>'+cash(n)+helpTip(key,name)+'</dd></div>';
  return '<details class="budget-breakdown"><summary title="'+esc(BUDGET_HELP.breakdown)+'">Monthly expense breakdown</summary><dl>'+
   line("Classroom staff",c.staffPayroll,"staffPayroll")+line("Director salary",c.director,"directorSalary")+line("Rent",c.rent,"rent")+
   line("Utilities",c.utilities,"utilities")+line("Insurance",c.insurance,"insurance")+'</dl></details>';
