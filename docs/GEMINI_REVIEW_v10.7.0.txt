@@ -1,0 +1,72 @@
+# GEMINI INDEPENDENT ADVERSARIAL REVIEW — CARE WITH A COMPASS v10.7.0
+Date: November 21, 2026
+Live: https://rstenlund1.github.io/care-with-a-compass/?v=10.7.0
+Source: https://github.com/Rstenlund1/care-with-a-compass
+Budget logic: js/budget-planner.js
+County rent data: data/california-budget-benchmarks.json
+Training shell and progress: js/v92-app.js
+Primary styling: css/v92.css
+Consequence simulation: consequence-lab.html
+
+You are reviewing an academic child care leadership training prototype and proposed financial-planning tool. Be skeptical, specific, and evidence-based. Do not praise or predict a perfect grade. A prior review of v10.5.0 is not evidence that v10.7.0 is correct. Quote exact question text/code and identify file names, steps, and reproduced outcomes.
+
+PRIORITY 1 — NAVIGATION AND ONBOARDING
+Walk the site as a first-time learner. Can a person immediately understand how to enroll, start, continue, explore modules, see remaining work, and resume? Does the overall training progress bar accurately count the six chapters, chapter capstone, three consequence cases, staffing exercise, tuition planner, evidence journal, and assessment? Does progress persist after refresh, switching tabs, using a separate case window, and returning later? Does changing budget data erroneously count as completing staffing? Are Continue buttons visible, enabled appropriately, and focused correctly? Find dead ends, confusing wording, duplicated menus, inaccessible controls, unwanted scroll jumps, and extraneous text.
+
+PRIORITY 2 — REAL VISUAL AND MOBILE REVIEW
+If browser access is available, inspect desktop, 768px tablet, 390px phone, and 320px phone. Examine layout hierarchy, typography, contrast, whitespace, scrolling, navigation, mobile form input sizes, form focus, slider precision, source labels, data-heavy cards, error states, and the prominence of the actual decision question. Test keyboard-only and screen reader announcements if possible. If no browser is available, identify findings as code-derived hypotheses and request screenshots; do not claim live visual verification.
+
+PRIORITY 3 — BUDGET AND TUITION MATHEMATICS
+Test js/budget-planner.js from the source, not simply by reading the displayed sample totals:
+- Verify tuition and respite revenue, part-time attendance, overnight-only children, overnight nights/stays, and supplies.
+- Verify teacher FTE wages, aide FTE wages, payroll load, extra overnight hours, and DIRECTOR SALARY as three clearly separate concepts.
+- The director's desired salary is an operating expense, not teacher/aide payroll and NOT the target business profit. Raising it $1,000 must lower monthly surplus $1,000 and raise required tuition appropriately.
+- Desired operating profit is after director pay. Verify zero-enrollment and extreme-input handling, currency and negative values, real-vs-example scenario isolation, and effect of resetting examples.
+- Test county rent selection for all 58 California counties. Verify published region rate versus statewide fallback, unit conversions for annual/monthly retail asking rents, source labels, data period, and override via actual monthly rent or square-foot footage slider and custom rate.
+- Source records are published-market PROXIES, not a true child care property or official statewide average. The fallback is an unweighted average of eight regional benchmarks and must be recomputed if regional figures change. The site fetches the repository's dated JSON when loaded; this is not proof that it automatically crawls market publishers.
+- Test NNN/CAM, insurance, utilities percentage of rent, food, incidentals and director compensation separately. Identify omissions like taxes, debt service, vacancies and payroll scheduling.
+- Independently calculate monthly break-even enrollment, tuition needed for the profit target, and capacity infeasibility. Challenge every fixed-cost assumption as enrollment increases.
+- Test a 24/7 operator scenario with children who attend only overnight. Do not equate sleeping children with automatically permitted sleeping supervision. Check family child care home vs child care center law and whether paid qualified overnight staffing is actually budgeted.
+- Evaluate whether the financial outputs are understandable to a director who has never studied accounting.
+
+PRIORITY 4 — SCORING AND BRANCHING
+Run all 11 case families, all variants and all 12 decisions. Do not accept mere syntax or 2,256 structural checks as proof of ethical validity. Check realistic distractors, near misses, consequences actually updating state, appropriate factual and regulatory citations, stale incorrect questions, and whether outcomes reflect recovery after a mistake. Recalculate answer-length bias, identifying worst offending questions.
+
+PRIORITY 5 — EXHAUSTIVE WRITING, DESCRIPTIONS AND STORY CONTINUITY
+Audit every learner-facing string, not just sample questions. Check headings, descriptions, chapter lessons, glossary, 72 main questions, 36 follow-up prompts, branching answer alternatives, all 11 scenario families, 12 stages and variants, recovery feedback, staffing exercises, budget fields, rent-source labels, instructions, navigation, progress messaging, completion/debrief text, and final assessment. Look for awkward or unnatural sentences, spelling, grammar, redundant wording, unclear jargon, inexplicable numbering, inconsistent terms and overlong descriptions.
+Treat misleading descriptions and narrative contradictions as functional defects: answer choices not matching a question, an ambulance in a non-medical transport case, an unauthorized adult being described as authorized, a staff member leaving without changing coverage, shifting timelines, different names/pronouns, unsupported facts, feedback describing an action the learner did not choose, or previously resolved problems still being described as active.
+For the finance and licensing screens, verify clarity of enrolled versus present children; monthly versus annual and per-square-foot units; wages versus director salary versus business profit; actual rent versus a regional market proxy or constructed statewide fallback; software loading an updated JSON file versus automatically finding new publisher rates; overnight sleeping versus required qualified supervision; and needed tuition versus a locally affordable/competitive price.
+Give an exact location, verbatim current text, reason it is wrong or confusing, and a revised sentence/button/option for EACH confirmed issue. Sort true factual/narrative errors ahead of subjective style changes. Keep the author's voice and examples rather than making prose generically formal. Explicitly identify uninspected paths. Assess if an inexperienced director can understand each direction without an explanation from the developer.
+
+PRIORITY 6 — APA, ACADEMIC CONSISTENCY AND PRESENTATION
+Compare the short submission paper, portfolio paper, slideshow and speaker notes with v10.7.0 if supplied. Treat old version statements as needing revision, not proof the current site is wrong. Check page limits, scope and references. Evaluate whether the budget and overall progress claims have been adequately incorporated into academic descriptions. Avoid inventing performed pilot studies or learner outcomes.
+
+REPORT FORMAT
+A. Independent product readiness verdict (academic demo vs pilot-ready).
+B. First-time learner journey: every point of confusion, with screenshots when possible.
+C. Screen-by-screen aesthetic and mobile critique.
+D. Reproducible, ranked bug register: severity, exact file/step, expected versus observed, and smallest fix.
+E. Financial-model audit with equations and hand-calculated examples, including tuition, director salary and overnight staffing.
+F. Question-by-question and answer-key assessment defects.
+G. Progress, navigation, accessibility and persistence test results.
+H. Full editorial defect table with exact old and revised wording, including narrative contradictions.
+I. Cross-file academic discrepancies.
+J. Top 15 improvements ranked by learner benefit and implementation effort.
+K. Explicit list of what you could not actually verify.
+
+Be rigorous. Distinguish bugs, poor assumptions, user-experience problems, missing validation, and personal aesthetic preferences.
+
+PRIORITY 6 — FULL EDITORIAL, NARRATIVE AND CULTURAL SENSITIVITY AUDIT
+Review every learner-facing heading, introduction, prompt, answer, feedback, transition, tooltip, lesson, budget field and report. Flag ALL awkward wording, unnatural phrasing, long single-line headings, misleading labels, grammatical errors, inconsistent terms, overly detailed correct options, bland or repetitive explanations and prompts that do not match available answers. For each issue provide the exact original, file/location, the reason it fails and a minimal revised text. Do not conflate quality of writing with mere brevity. Check every response against its preceding question and its next consequence, including whether staff, children, parents, the location, the time and the legal duty remain consistent.
+
+PRIORITY 7 — EQUITY CHAPTER ACCURACY AND RIGOR
+Audit Chapter 6: Fairness, Bias & Belonging (12 questions C6Q01–C6Q12, 8 follow-ups, one four-path two-stage lab). Verify the evidence and citations for 2021–22 CRDC percentages (public preschools only), Yale eye-tracking results, socioeconomic judgment, children of color receiving unequal discipline, disability, language access, family circumstances and parent communications. Ensure bias is investigated rather than presumed, safety duties remain equally protective, and potential disproportionate outcomes are analyzed using denominators, comparable circumstances and privacy safeguards. Check that Head Start 45 CFR §1302.17 and California AB 2806 apply only to covered programs and are described accurately as of the review date. Verify the difference between poor material circumstances and reasonable suspicion of actual neglect or abuse. No racial quotas, no race-specific behavior standards, no blanket exemption from safety rules.
+
+PRIORITY 8 — SINGLE-PAGE FINANCIAL DESIGN
+Verify that Staffing & Tuition Planner no longer switches between two tabs. The director’s desired salary MUST be the first editable financial field in the same continuous page, distinct from teachers, aides, and desired AFTER-salary business profit. Confirm the staffing-coverage plan actually changes the monthly budget if extra payroll is selected, and is not double-counted when already included. Evaluate whether the combined page is understandable without jargon, even on a 320px phone. Check the bottom Continue button and overall progress tracker after doing staffing and budget exercises. The first-run path should be simple: salary goal → safety/coverage → income/expenses → tuition needed and break-even.
+
+PRIORITY 9 — COMPLETION MIGRATION
+Verify that learners who had previously completed five chapters retain their earlier progress but are now directed to complete the new Chapter 6. Verify that the app will not report 100% completion, a certificate, or advance to applied cases based only on an older five-chapter completion. Count six chapters (84 applied questions, 44 follow-ups), and check the display of percentage progress and chapter status after every step.
+
+REQUIRE OUTPUT:
+Add a separate table 'Awkward Wording and Incorrect Descriptions' with exact original language, proposed edit, and the reason the text fails. Include all screen titles and questions—not just a small sample. Aesthetics/navigation should be evaluated as a first-time director rather than someone who has already learned the program. Source files for v10.7.0 must be directly attached or extracted; DO NOT assert a live browser or original Word/PowerPoint review happened unless it really did. End with a top-15 correction roadmap ranked by severity and learner impact.
