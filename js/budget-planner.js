@@ -51,7 +51,7 @@ function programRule(type,older,infants){
   return {required:n?1:0,additional:beyond6?1:0,limit:8,needsSpecial:beyond6&&n<=8,invalid:tooMany,infantLimit:onlyInfants?4:n>6?2:3,rule:"Small family home: 4 infants only; or up to 6 children with no more than 3 infants. Seven or eight require qualifying school-age children and other conditions; adding staff does not waive those rules."};
  }
  if(large){
-  const assistantNeeded=n>6;
+  const assistantNeeded=n>6||(infants>3&&older>0);
   const invalid=n>14||(n>12&&infants>3)||(n<=12&&infants>4);
   return {required:n?(assistantNeeded?2:1):0,additional:assistantNeeded?1:0,limit:14,needsSpecial:n>12&&n<=14,invalid,infantLimit:n>12?3:4,rule:"Large family home: up to 12 with an assistant and no more than 4 infants, or 13–14 only with qualifying school-age children and no more than 3 infants. Without an assistant, small-home limits apply."};
  }
@@ -146,19 +146,23 @@ function calculate(){
  const tuitionRequired=full>0?Math.max(0,(expenses-partIncome-infantIncome-nightIncome)/full):null;
  return {full,part,infantFull,infantPart,older,infants,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance,scheduledPeople,unavailable,availablePeople,daytimeChildren,planningFloor,coverageGap,type,rule,aboveCapacity};
 }
-function countyRateNote(county,manual){
- const info=countyRateFor(county);
- const first=manual?"Custom tuition entered. Choosing a county loads its benchmark.":(info.fallback?"No county price: California reference ":""+esc(county)+" County estimated median: ")+cash(info.monthly)+"/month.";
- return '<span>'+first+'</span> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">County data</a> <span class="budget-county-method">2026 estimate based on DOL 2022 median full-time preschool center prices; some figures modeled. <a href="https://scrillischool.net/guides/preschool-and-daycare-cost/" target="_blank" rel="noopener noreferrer">Statewide fallback source</a>.</span>';
+function countyRateNote(county){
+ const type=programType(),info=countyRates(county,type),label=type==="preschool"?"center":"family home";
+ return '<span>'+esc(county)+' County estimated '+esc(label)+' monthly prices: older children '+cash(info.child)+', infants '+cash(info.infant)+'. Both tuition fields are editable.</span> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">County price source</a><span class="budget-county-method">2026 estimates based on the DOL 2022 full-time medians for preschool-age children and infants; rates for home and center care differ. These are not provider quotes.</span>';
 }
 const BUDGET_HELP={
- "county": "Select a county to load an estimated full-time preschool-center tuition starting point. These are modeled medians, not a quote from a specific program. You can edit the tuition.",
+ "county": "Select the county for estimated 2026 full-time tuition prices. Family homes and preschool centers use different medians, and infants have their own rate. You can edit the rates.",
+ "programType": "Small family home: six usual or up to eight conditionally. Large family home: twelve usual or up to fourteen conditionally, with assistant. Preschool center: one qualified teacher per 12 preschool children and one qualified caregiver per four infants in a separately authorized infant component. Staff and infant limits apply.",
+ "infantFull": "Full-time infants under 24 months. These are in addition to the older children entered above; do not count an infant twice.",
+ "infantPart": "Part-time infants under 24 months, counted separately from older children and full-time infants. The staffing check conservatively assumes all groups could attend together.",
+ "infantTuition": "Editable full-time infant monthly tuition. Defaults to the county's estimated median infant fee for the selected home or center type.",
+ "infantPartTuition": "Editable part-time infant monthly tuition, initially 75% of full-time infant tuition until you change it separately.",
  "students": "How many children pay full-time monthly tuition. This is enrollment for the revenue estimate, not your licensed capacity.",
  "tuition": "The monthly price charged per full-time child. Part-time tuition follows at 75% until you edit the part-time rate separately.",
  "partStudents": "Children paying the part-time monthly fee. Do not count a child here if they are already counted as full-time.",
  "partTuition": "The monthly price per part-time child. Starts at 75% of full-time tuition; a manual change stops automatic linking.",
  "directorSalary": "What the director receives each month. This is an expense, distinct from additional staff payroll and from the operating surplus.",
- "staffCount": "Staff beyond the director, measured as full-time equivalents (FTE). Enter 0 when the director is the only worker. A partial FTE affects payroll but not this simple on-site headcount.",
+ "staffCount": "Additional full-time-equivalent staff beyond the director. The calculator suggests the count when age-group enrollment or program type changes, using 40 paid hours per week. This is a budget estimate, not proof of qualifications or shift coverage; you may manually adjust.",
  "staffUnavailable": "Choose a temporary absence affecting the director or another staff member. Director plus whole additional FTEs form the starting headcount. An absence changes the headcount warning, not payroll.",
  "staffHourly": "Hourly pay for additional classroom staff only. Director pay is entered separately above.",
  "staffWeeklyHours": "Paid hours per week for each additional full-time-equivalent staff member. Monthly pay uses 52 weeks divided by 12 months.",
@@ -171,7 +175,7 @@ const BUDGET_HELP={
  "expenses": "Projected monthly director salary, additional staff wages, commercial rent, utilities and insurance only. Other costs are excluded.",
  "surplus": "Projected revenue minus the listed expenses. Positive surplus is not necessarily take-home profit because taxes and other costs are excluded.",
  "tuitionRequired": "The full-time monthly fee that would cover the listed expenses at your current enrollment, with part-time and overnight fees held constant. It does not add a profit target.",
- "available": "Daytime full-time and part-time children are assumed present together. The alert compares available adults, including the director, with an illustrative one-per-12 threshold. Actual home-based and center rules can be stricter.",
+ "available": "The check includes older children and infants, both full-time and part-time, as if attending together. Family care infant limits and special capacity conditions apply. In a preschool center infant and older-child groups require separate qualified coverage.",
  "breakdown": "A detailed view of the same monthly expenses already included in the total. The lines are not extra charges.",
  "staffPayroll": "Monthly wages for additional classroom staff, excluding the director. FTE × paid hours per week × hourly pay × 52/12.",
  "overnight": "Only use overnight revenue if you can provide safe, authorized staffing. Overnight care may require additional personnel whose cost is not separately included here.",
@@ -191,15 +195,23 @@ function helpHeading(key,label){
 function resultHeading(key,label){
  return '<div class="budget-result-heading"><span>'+esc(label)+'</span>'+helpTip(key,label)+'</div>';
 }
+function programControl(){
+ return '<div class="budget-compact-field budget-program-selector">'+helpHeading("programType","Program type")+
+  '<select id="budget-programType" data-budget-key="programType">'+PROGRAM_TYPES.map(([id,label])=>'<option value="'+esc(id)+'"'+(programType()===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></div>';
+}
 function unavailabilityControl(){
  const options=[["none","No one unavailable (0)"],["restroom","Restroom break (1)"],["sick","Sick call (1)"],["emergency","Emergency assistance (1)"],["two","Two staff unavailable (2)"]];
  return '<div class="budget-compact-field">'+helpHeading("staffUnavailable","Staff temporarily unavailable")+'<select id="budget-staffUnavailable" data-budget-key="staffUnavailable">'+
   options.map(([id,label])=>'<option value="'+esc(id)+'"'+(state.values.staffUnavailable===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></div>';
 }
 function availabilityText(c){
- if(c.daytimeChildren===0)return 'No daytime children entered. Staff availability: '+c.availablePeople+' (director included when present).';
- if(c.coverageGap>0)return 'Potential staffing gap: '+c.daytimeChildren+' daytime children require '+c.planningFloor+' supervising adult'+(c.planningFloor===1?'':'s')+' under this illustrative 1:12 planning check, but only '+c.availablePeople+' '+(c.availablePeople===1?'is':'are')+' available. Arrange sufficient supervision before proceeding.';
- return c.availablePeople+' staff available for '+c.daytimeChildren+' daytime children. No gap under this illustrative 1:12 check, but actual program limits, staffing qualifications, and age-specific ratios may be stricter.';
+ if(c.daytimeChildren===0)return 'No children entered. Director assumed available for care.';
+ let msg=c.availablePeople+' supervising staff available for '+c.daytimeChildren+' children ('+c.infants+' infants). ';
+ if(c.aboveCapacity)msg+='LICENSE MIX OR CAPACITY WARNING: These counts do not fit the selected family child care license. Adding employees does not fix a licensing capacity or infant-limit violation. ';
+ if(c.coverageGap>0)msg+='STAFFING GAP: At least '+c.planningFloor+' supervising adults are modeled; only '+c.availablePeople+' are currently available. ';
+ else msg+='No numerical coverage gap under the selected planning model. ';
+ if(c.rule.needsSpecial)msg+=(c.type==="preschool"?'Infant care requires an authorized center component with separately qualified supervision. ':'Extra home capacity requires qualifying school-age children, infant limits and documented parent notification. ');
+ return msg;
 }
 function field(key,label,step=1){
  return '<div class="budget-compact-field">'+helpHeading(key,label)+'<input id="budget-'+esc(key)+'" type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></div>';
@@ -218,12 +230,18 @@ function view(){
  '<span>Expenses<strong id="b-mobile-expenses">'+cash(c.expenses)+'</strong></span>'+
  '<span>Surplus<strong id="b-mobile-profit">'+cash(c.surplus)+'</strong></span></div>'+
  '<div class="budget-compact-editor">'+
- '<div class="budget-compact-heading"><h3>Will the center support your goals?</h3><p>Choose a county to prefill an editable tuition estimate. Results update as you type.</p></div>'+
+ '<div class="budget-compact-heading"><h3>Will the center support your goals?</h3><p>Select your program type and county. Infant and older-child tuition and staffing update as enrollment changes.</p></div>'+
+ programControl()+
  '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div>'+
- '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county,state.tuitionManual)+'</p>'+
+ '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county)+'</p>'+
+ '<div class="budget-group-label"><strong>Children (ages 2+)</strong><span>Count infants separately below.</span></div>'+
  '<div class="budget-enrollment-pair">'+
- '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Full-time</h4>'+helpTip("fulltime","Full-time enrollment")+'</div>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
- '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Part-time</h4>'+helpTip("parttime","Part-time enrollment")+'</div>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
+ '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Full-time</h4>'+helpTip("fulltime","Full-time children")+'</div>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
+ '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Part-time</h4>'+helpTip("parttime","Part-time children")+'</div>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
+ '<div class="budget-group-label"><strong>Infants (under age 2)</strong><span>Separate tuition and lower staffing ratios.</span></div>'+
+ '<div class="budget-enrollment-pair budget-infants-pair">'+
+ '<div class="budget-enrollment-group"><h4>Full-time infants</h4>'+field("infantFull","Infants")+field("infantTuition","Monthly infant tuition ($)",25)+'</div>'+
+ '<div class="budget-enrollment-group"><h4>Part-time infants</h4>'+field("infantPart","Infants")+field("infantPartTuition","Monthly infant tuition ($)",25)+'</div></div>'+
  '<div class="budget-director-first">'+field("directorSalary","Director monthly salary ($)",100)+'</div>'+
  '<div class="budget-compact-fields">'+
  field("staffCount","Additional classroom staff (FTE, excluding director)",.25)+
@@ -245,10 +263,10 @@ function view(){
  '<div>'+resultHeading("expenses","Expenses including director pay")+'<strong id="b-expenses">'+cash(c.expenses)+'</strong></div>'+
  '<div class="budget-surplus">'+resultHeading("surplus","Surplus / shortfall")+'<strong id="b-profit">'+cash(c.surplus)+'</strong></div>'+
  '<div class="budget-goal-result">'+resultHeading("tuitionRequired","Break-even full-time tuition")+'<strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child")+'</strong></div></div>'+
- '<div class="budget-availability-block"><div class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</div><p id="b-staff-availability" class="budget-staff-availability'+(c.coverageGap>0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p></div>'+
+ '<div class="budget-availability-block"><div class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</div><p id="b-staff-availability" class="budget-staff-availability'+(c.coverageGap>0||c.aboveCapacity||c.rule.needsSpecial?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p><p id="b-program-rule" class="budget-smallprint">'+esc(c.rule.rule)+'</p></div>'+
  '<div id="b-verdict" class="budget-compact-verdict">'+(c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.")+'</div>'+
  '<div id="b-breakdown">'+breakdown(c)+'</div>'+
- '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. The illustrative 1:12 staffing check assumes full-time and part-time children attend together; it is not a licensing-ratio or capacity determination. Partial staff FTEs are excluded from the headcount. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
+ '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. Infants and older children are counted together for family homes; center infant and preschool staffing are modeled as separate groups. Licensing qualifications, the actual mix of children, and shift coverage still require verification. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
  '</aside></section>';
 }
 function update(){
@@ -260,10 +278,11 @@ function update(){
  };
  for(const [id,text] of Object.entries(entries)){const node=document.getElementById(id);if(node)node.textContent=text;}
  const availability=document.getElementById("b-staff-availability");
- if(availability){availability.textContent=availabilityText(c);availability.classList.toggle("budget-staff-alert",c.coverageGap>0);}
+ if(availability){availability.textContent=availabilityText(c);availability.classList.toggle("budget-staff-alert",c.coverageGap>0||c.aboveCapacity||c.rule.needsSpecial);}
  const banner=document.getElementById("b-verdict");
  if(banner)banner.textContent=c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.";
- const source=document.getElementById("budget-county-source");if(source)source.innerHTML=countyRateNote(state.values.county,state.tuitionManual);
+ const source=document.getElementById("budget-county-source");if(source)source.innerHTML=countyRateNote(state.values.county);
+ const rule=document.getElementById("b-program-rule");if(rule)rule.textContent=c.rule.rule;
  const el=document.getElementById("b-breakdown");
  if(el){const open=!!el.querySelector("details")?.open;el.innerHTML=breakdown(c);const details=el.querySelector("details");if(details)details.open=open;}
 }
