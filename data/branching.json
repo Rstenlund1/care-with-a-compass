@@ -33,7 +33,7 @@
         "prompt": "How do you respond when a deferred record correction becomes a credibility problem?",
         "options": [
           {
-            "text": "Preserve the original, add a dated correction, explain the facts, and repair handoffs.",
+            "text": "Keep the original record, add a dated correction, tell the family the facts, and repair handoffs.",
             "why": "Corrects the prior omission without hiding it and identifies the system fault.",
             "level": 2
           },
@@ -60,7 +60,7 @@
         "prompt": "What must happen when the uncorrected record is challenged by objective evidence?",
         "options": [
           {
-            "text": "Freeze record edits, preserve footage, tell the analyst the truth, and document corrections.",
+            "text": "Freeze edits to original records, preserve raw video, explain the discrepancy, and make traceable corrections today.",
             "why": "Acknowledges the actual record without manufacturing a cover story and protects future pickups.",
             "level": 2
           },
@@ -197,7 +197,7 @@
         "prompt": "What must be done before the next video cycle?",
         "options": [
           {
-            "text": "Save available footage and report now. Keep children safe and disclose the delay.",
+            "text": "Save accessible video, report promptly, protect children, and disclose the earlier delay.",
             "why": "Stops preventable loss and addresses the independent child-protection reporting duty.",
             "level": 2
           },
@@ -226,7 +226,7 @@
         "prompt": "How should the director correct the record and ongoing risk?",
         "options": [
           {
-            "text": "Restore real coverage; preserve clock-ins and records; document and correct the opening gap.",
+            "text": "Restore real coverage, preserve staffing records, document the actual gap, and fix opening plans.",
             "why": "Prioritizes present safety and accurate reconstruction rather than simply making records agree.",
             "level": 2
           },
@@ -253,7 +253,7 @@
         "prompt": "How do you respond without undermining the qualified opening plan?",
         "options": [
           {
-            "text": "Set fair arrival standards, explore formal flexibility, and secure qualified opening coverage.",
+            "text": "Set fair arrival rules, offer formal schedule adjustments, secure qualified openers, and document coverage.",
             "why": "Acknowledges legitimate barriers without making child supervision dependent on an informal exception.",
             "level": 2
           },
@@ -280,7 +280,7 @@
         "prompt": "What should the director do first?",
         "options": [
           {
-            "text": "Restore qualified coverage in both rooms; review care plans and log every transfer.",
+            "text": "Restore safe qualified ratios in both rooms, check care plans, and record every child transfer.",
             "why": "Prevents transferring one supervision violation into another and safeguards individualized support.",
             "level": 2
           },
@@ -363,7 +363,7 @@
         "prompt": "What needs to happen first?",
         "options": [
           {
-            "text": "Restore center coverage, appoint a hospital liaison, and document both safety responses.",
+            "text": "Restore qualified center coverage, appoint a named hospital liaison, and document both safety responses in full.",
             "why": "Restores simultaneous accountability to children at both locations.",
             "level": 2
           },
@@ -500,7 +500,7 @@
         "prompt": "How do you regain control of the operational risk?",
         "options": [
           {
-            "text": "Hold intake, secure the gate, restore qualified coverage and reassess capacity.",
+            "text": "Hold new admissions, secure the gate, restore qualified supervisors, and reassess licensed capacity.",
             "why": "Restores real operating limits and safety checks before financial or scheduling goals.",
             "level": 2
           },
