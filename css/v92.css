@@ -535,7 +535,9 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-staff-availability{margin:12px 0 8px;padding:10px 12px;border:1px solid #d9d0e1;border-radius:9px;background:#fff;color:#473753;font-size:12px;line-height:1.5}
 .budget-staff-availability.budget-staff-alert{border-color:#e3ae8b;background:#fff5ec;color:#694026;font-weight:650}
 
-/* v10.7.12 — compact, accessible help popovers for every calculator field and result. */
+
+/* v10.7.13: hover-triggered help instead of click-to-open details elements.
+   Focus also reveals help for keyboard and touch users. */
 .budget-field-heading,.budget-result-heading,.budget-enrollment-heading{display:flex;align-items:center;justify-content:space-between;gap:7px;min-width:0}
 .budget-field-heading label,.budget-result-heading>span{min-width:0;flex:1}
 .budget-field-heading label{cursor:pointer}
@@ -543,15 +545,12 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-enrollment-heading{justify-content:flex-start}
 .budget-enrollment-heading h4{margin:0}
 .budget-compact-field .budget-info,.budget-result-heading .budget-info{flex:0 0 auto}
-.budget-info{position:relative;display:inline-flex;vertical-align:middle;align-items:center;justify-content:center;font:normal 11px/1 system-ui,sans-serif;z-index:1}
-.budget-info[open]{z-index:30}
-.budget-info summary{display:inline-flex!important;align-items:center;justify-content:center;list-style:none;cursor:pointer;box-sizing:border-box;width:21px;height:21px;margin:0!important;border:1px solid #afa1bb;border-radius:50%;background:#f4eef8;color:#533c65;font:750 12px/1 system-ui,sans-serif;user-select:none}
-.budget-info summary::-webkit-details-marker{display:none}
-.budget-info summary::marker{content:""}
-.budget-info summary:hover,.budget-info[open] summary{background:#e5d7f0;border-color:#7e5a97}
-.budget-info summary:focus-visible{outline:3px solid #a77a34;outline-offset:2px}
-.budget-info-popup{display:block;position:absolute;z-index:40;top:calc(100% + 7px);right:0;box-sizing:border-box;width:min(285px,calc(100vw - 44px));padding:11px 13px;background:#fff;color:#352b40;border:1px solid #c9bad8;border-radius:9px;box-shadow:0 7px 24px rgba(35,24,52,.19);font:500 12px/1.55 system-ui,sans-serif;white-space:normal;text-align:left;overflow-wrap:anywhere}
-.budget-info:not([open]) .budget-info-popup{display:none}
+.budget-info{position:relative;display:inline-flex;vertical-align:middle;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #afa1bb;border-radius:50%;background:#f4eef8;color:#533c65;font:750 12px/1 system-ui,sans-serif;z-index:1;outline-offset:2px;cursor:help;box-sizing:border-box;user-select:none}
+.budget-info:hover,.budget-info:focus{z-index:40;background:#e5d7f0;border-color:#7e5a97}
+.budget-info:focus-visible{outline:3px solid #a77a34}
+.budget-info-popup{display:block;visibility:hidden;opacity:0;pointer-events:none;position:absolute;z-index:40;top:calc(100% + 4px);right:0;box-sizing:border-box;width:min(285px,calc(100vw - 44px));padding:11px 13px;background:#fff;color:#352b40;border:1px solid #c9bad8;border-radius:9px;box-shadow:0 7px 24px rgba(35,24,52,.19);font:500 12px/1.55 system-ui,sans-serif;white-space:normal;text-align:left;overflow-wrap:anywhere;transition:opacity .12s ease}
+.budget-info:is(:hover,:focus) .budget-info-popup{visibility:visible;opacity:1}
+.budget-info:hover .budget-info-icon,.budget-info:focus .budget-info-icon{color:#3c2253}
 .budget-compact-numbergrid .budget-info-popup{font:500 12px/1.55 system-ui,sans-serif;color:#352b40;margin:0}
 .budget-compact-numbergrid .budget-result-heading>span{margin:0}
 .budget-breakdown dd{display:flex;align-items:center;justify-content:flex-end;gap:6px}
@@ -560,5 +559,6 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-availability-block .budget-staff-availability{margin-top:4px}
 @media(max-width:650px){
  .budget-info-popup{position:fixed;top:auto;bottom:16px;left:12px;right:12px;width:auto;max-width:none;box-shadow:0 12px 35px rgba(20,12,35,.26);z-index:1000;font-size:13px}
- .budget-info[open]{z-index:1000}
+ .budget-info:focus{z-index:1000}
 }
+@media(prefers-reduced-motion:reduce){.budget-info-popup{transition:none}}
