@@ -18,7 +18,7 @@ const DEFAULTS={
  students:14,tuition:923,partStudents:0,partTuition:692,county:"San Bernardino",
  staffCount:0,staffHourly:23,staffWeeklyHours:40,
  rent:0,utilities:0,insurance:0,directorSalary:6500,
- overnightNights:0,overnightFee:95
+ overnightNights:0,overnightFee:95,staffUnavailable:"none"
 };
 const KEYS=Object.keys(DEFAULTS);
 function clamp(v,min=0,max=1000000){const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):min;}
@@ -27,7 +27,7 @@ function migrate(v){
  if(!v||typeof v!=="object")return {...DEFAULTS};
  if(Object.prototype.hasOwnProperty.call(v,"students")){
   const result={...DEFAULTS};
-  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=key==="county"?String(v[key]):clamp(v[key]);
+  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=(key==="county"||key==="staffUnavailable")?String(v[key]):clamp(v[key]);
   return result;
  }
  const teachers=Math.max(0,Number(v.teachersFte)||0),aides=Math.max(0,Number(v.aidesFte)||0),count=teachers+aides;
@@ -73,15 +73,29 @@ function calculate(){
  const staffPayroll=val("staffCount")*val("staffWeeklyHours")*52/12*val("staffHourly");
  const director=val("directorSalary"),rent=val("rent"),utilities=val("utilities"),insurance=val("insurance");
  const expenses=staffPayroll+director+rent+utilities+insurance;
+ // The director counts as one available person; FTE fractions are not people on shift.
+ // This is not a regulatory ratio calculation.
+ const scheduledPeople=1+Math.floor(val("staffCount"));
+ const unavailable={none:0,restroom:1,sick:1,emergency:1,two:2}[state.values.staffUnavailable]??0;
+ const availablePeople=Math.max(0,scheduledPeople-unavailable);
  const surplus=revenue-expenses;
  // Break-even tuition adjusts only the full-time rate. Part-time and overnight revenue stay fixed.
  const tuitionRequired=full>0?Math.max(0,(expenses-partIncome-nightIncome)/full):null;
- return {full,part,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance};
+ return {full,part,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance,scheduledPeople,unavailable,availablePeople};
 }
 function countyRateNote(county,manual){
  const info=countyRateFor(county);
  const first=manual?"Custom tuition entered. Choosing a county loads its benchmark.":(info.fallback?"No county price: California reference ":""+esc(county)+" County estimated median: ")+cash(info.monthly)+"/month.";
  return '<span>'+first+'</span> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">County data</a> <span class="budget-county-method">2026 estimate based on DOL 2022 median full-time preschool center prices; some figures modeled. <a href="https://scrillischool.net/guides/preschool-and-daycare-cost/" target="_blank" rel="noopener noreferrer">Statewide fallback source</a>.</span>';
+}
+function unavailabilityControl(){
+ const options=[["none","No one unavailable (0)"],["restroom","Restroom break (1)"],["sick","Sick call (1)"],["emergency","Emergency assistance (1)"],["two","Two staff unavailable (2)"]];
+ return '<label class="budget-compact-field"><span>Staff temporarily unavailable</span><select data-budget-key="staffUnavailable">'+
+  options.map(([id,label])=>'<option value="'+esc(id)+'"'+(state.values.staffUnavailable===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></label>';
+}
+function availabilityText(c){
+ if(c.availablePeople===0)return '0 staff available. Arrange appropriate relief before anyone steps away or continue only when safe supervision is restored.';
+ return c.availablePeople+' staff available after the selected interruption (director included). Verify actual on-site supervision and licensing requirements.';
 }
 function field(key,label,step=1){
  return '<label class="budget-compact-field"><span>'+esc(label)+'</span><input type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></label>';
@@ -110,6 +124,7 @@ function view(){
  '<div class="budget-director-first">'+field("directorSalary","Director monthly salary ($)",100)+'</div>'+
  '<div class="budget-compact-fields">'+
  field("staffCount","Additional classroom staff (FTE, excluding director)",.25)+
+ unavailabilityControl()+
  field("staffHourly","Hourly staff pay ($)",.5)+
  field("staffWeeklyHours","Paid hours per staff / week")+
  field("rent","Monthly rent ($)",50)+
@@ -127,9 +142,10 @@ function view(){
  '<div><span>Expenses including director pay</span><strong id="b-expenses">'+cash(c.expenses)+'</strong></div>'+
  '<div class="budget-surplus"><span>Surplus / shortfall</span><strong id="b-profit">'+cash(c.surplus)+'</strong></div>'+
  '<div class="budget-goal-result"><span>Break-even full-time tuition</span><strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child")+'</strong></div></div>'+
+ '<p id="b-staff-availability" class="budget-staff-availability'+(c.availablePeople===0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p>'+
  '<div id="b-verdict" class="budget-compact-verdict">'+(c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.")+'</div>'+
  '<div id="b-breakdown">'+breakdown(c)+'</div>'+
- '<p class="budget-smallprint">Break-even tuition covers the listed expenses, including your director salary, with no extra profit target. Part-time and overnight revenue are held constant. Payroll taxes and benefits, meals, taxes, and unlisted expenses are not modeled.</p>'+
+ '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. Staff availability is a simplified headcount scenario, not a staffing-ratio determination; partial FTEs are excluded from its headcount. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
  '</aside></section>';
 }
 function update(){
@@ -140,6 +156,8 @@ function update(){
  "b-tuition":c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child"
  };
  for(const [id,text] of Object.entries(entries)){const node=document.getElementById(id);if(node)node.textContent=text;}
+ const availability=document.getElementById("b-staff-availability");
+ if(availability){availability.textContent=availabilityText(c);availability.classList.toggle("budget-staff-alert",c.availablePeople===0);}
  const banner=document.getElementById("b-verdict");
  if(banner)banner.textContent=c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.";
  const source=document.getElementById("budget-county-source");if(source)source.innerHTML=countyRateNote(state.values.county,state.tuitionManual);
@@ -149,7 +167,9 @@ function update(){
 function updateField(input){
  const key=input.dataset.budgetKey;
  if(!Object.prototype.hasOwnProperty.call(DEFAULTS,key))return;
- if(key==="county"){
+ if(key==="staffUnavailable"){
+  state.values.staffUnavailable=String(input.value);
+ }else if(key==="county"){
   state.values.county=String(input.value);
   state.values.tuition=countyRateFor(state.values.county).monthly;
   state.tuitionManual=false;
