@@ -413,3 +413,22 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-breakdown summary{cursor:pointer;font-weight:700;font-size:.85rem;color:#42324e}
 .budget-breakdown dl{margin:11px 0 2px}.budget-breakdown dl div{display:flex;justify-content:space-between;gap:15px;padding:8px 2px;border-top:1px solid #ede7f1}
 .budget-breakdown dt{font-size:.82rem;color:#554d62}.budget-breakdown dd{margin:0;text-align:right;font-size:.84rem;font-weight:750;color:#372645;white-space:nowrap}
+
+/* v10.7.5: one optional bonus link at bottom of the navigation; one integrated staffing explanation. */
+.sidebar-bottom{margin-top:auto}
+.sidebar-optional-label{display:block;margin-bottom:7px;color:#d2badf;font:750 10px/1.45 system-ui,sans-serif;letter-spacing:.13em}
+.sidebar-bottom .optional-navbtn{width:100%;cursor:pointer;border:1px solid #685679;background:#39294c;color:#f3eafa;padding:11px 9px;line-height:1.3;text-align:left}
+.sidebar-bottom .optional-navbtn:hover{background:#4b385f;color:#fff}
+.sidebar-bottom .optional-navbtn.active{background:#f5f0fb;color:var(--deep)}
+.sidebar-bottom .optional-navbtn:focus-visible{outline:3px solid #e4bb77;outline-offset:2px}
+.sidebar-bottom>p{margin-top:19px}
+.operations-context{margin:2px 0 20px;background:#fff;border:1px solid #ded5e6;border-radius:13px;overflow:hidden}
+.operations-context>summary{cursor:pointer;padding:17px 20px;font:600 18px/1.4 Georgia,serif;color:#3d2d4d}
+.operations-context>summary:hover{background:#f6f1f9}
+.operations-context>summary:focus-visible{outline:3px solid #ad7b31;outline-offset:-4px}
+.operations-context[open]>summary{border-bottom:1px solid #e5dce9}
+.operations-context-body{padding:8px 20px 18px;font-size:14px;line-height:1.75;color:#3e364a}
+.operations-context-body p{margin:12px 0}
+.operations-context-question{background:#f7f1fa;padding:14px 16px;border-radius:9px}
+@media(max-width:870px){.sidebar-bottom{display:block;margin-top:10px;padding-top:10px}.sidebar-bottom>p,.sidebar-bottom>.sidebar-current,.sidebar-bottom>small{display:none!important}.sidebar-bottom .optional-navbtn{max-width:300px}.sidebar-optional-label{margin:0 0 5px}}
+@media(max-width:620px){.operations-context>summary{font-size:16px;padding:14px 15px}.operations-context-body{padding:7px 14px 15px}}
