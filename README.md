@@ -1,3 +1,17 @@
+# Care with a Compass — The Director’s Desk · v10.7.0
+
+**Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.0
+
+**New in v10.7.0:** A sixth foundational chapter, **Fairness, Bias & Belonging**, examines racialized behavior labels, socioeconomic judgments, family language access, disability-related exclusion, consistent child-safety decisions, and disproportionality in incident reports. It includes 12 original questions, eight conditional question follow-ups, and a four-path, two-stage leadership scenario. Sources include the U.S. Department of Education Civil Rights Data Collection, Yale Child Study Center, Head Start 45 CFR §1302.17, California CDSS exclusion guidance, and DOJ disability-access guidance. The foundation now contains **six chapters, 84 applied questions, and 44 follow-ups**; earlier five-chapter progress is preserved, but Chapter 6 is required for current completion.
+
+**One unified operations page:** The director's desired salary and separate business-profit goal appear first. Staffing decisions, coverage consequences, labor costs, county/area/actual rent overrides, overnight and respite revenue, expenses, break-even enrollment, and required tuition then appear in one scrollable page with no separate staffing-versus-budget tabs. Selected extra backup coverage can affect the monthly financial model without counting it twice if the director confirms it is already in regular payroll.
+
+**Validation boundary:** Source data and JavaScript syntax have been checked, but no cohort, clinical or regulatory expert validation, screen-reader audit, full graphical browser regression, live forms check, or measured financial outcomes are claimed. Benchmarks are dated regional retail rent proxies, and the statewide fallback is an illustrative unweighted average, not a true child care lease survey. Verify current laws, rates, staffing, and learner outcomes before use.
+
+**Adversarial review:** [docs/GEMINI_REVIEW_v10.7.0.txt](docs/GEMINI_REVIEW_v10.7.0.txt)
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.6.0
 
 **Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.6.0
