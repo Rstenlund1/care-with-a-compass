@@ -1,10 +1,14 @@
-# Care with a Compass — The Director's Desk · v10.0
+# Care with a Compass — The Director's Desk · v10.0.1
 
 **Advanced Consequence Lab (new, optional formative practice):** https://rstenlund1.github.io/care-with-a-compass/consequence-lab.html
 
 The v10 lab preserves the existing v9.9.1 guided course and the 20/70/10 competency model. It adds a separate browser-local practice environment that randomly selects **three cases from eight**, with **twelve decisions per selected case** (36 decisions per practice). It randomizes case order, factual cause, family response, interruption, option order, and some adverse developments. All choices advance to the next decision, including unsafe choices. Scoring evaluates defensible decision process instead of treating external medical outcomes or complaints as proof that the learner made an error. Includes a simplified California preschool/toddler/school-age classroom staffing model and stage-linked first-aid, reporting, supervision and Head Start references.
 
 **Design boundaries:** The new lab is **not included in the existing 100-point mastery score or completion certificate** and does not transmit learner data or depend on Formspree. The eight cases are original fictional adaptations of common supervisory situations; Head Start case themes are used as references, not copied. Independent clinical, legal, accessibility and formative learner review remain necessary before use in real training. The current main program does have an instructor-owned Formspree endpoint configured in `index.html`; its actual delivery and quota require separate operational verification before any pilot. A configured endpoint does not imply that the instructor has purchased a Formspree tier.
+
+**v10.0.1 instructional enhancement:** The five existing foundation lessons now include extra director-level reasoning sections on safeguarding, reporting, staffing, emergencies and verifying transfer. All 72 applied questions retain individualized feedback; a correct response additionally displays the chosen option's explanation. The 36 connected follow-ups now show the original governing principle, why a selected path succeeds or needs correction, and a transfer question. The optional 3-of-8 Consequence Lab now includes eight case-specific prebrief lessons and a twelve-part decision-coaching framework. After every choice, the lab explains the relevant duty, compares a plausible alternative, and separates process quality from fictional outcome.
+
+**Validation status:** Changes were reviewed against the source and the original backup was preserved. These new changes have NOT yet received a complete browser-based regression test, real learner pilot, independent clinical/legal content review, or validation of instructor email reports. The external GitHub Pages deployment cannot be confirmed merely by the existence of a repository commit; confirm the published page and inspect cached assets before presenting. Do not describe the educational simulations as validated professional certification or legally authoritative protocols.
 
 **Preserved baseline:** backup/v9.9.1-before-consequence-lab-20261120
 
