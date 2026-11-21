@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.13
+
+**Optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.13&page=staff
+
+**Tooltip interaction improvement:** All help icons in the optional budget planner now reveal explanations automatically on mouse hover, with no click required. Keyboard focus and touch focus can also display the explanation. Previous click-to-open details/summary controls have been replaced with accessible non-toggle help markers, including input labels, county selection, financial results, and expense breakdown lines. No calculator assumptions, progress data, or calculations were changed.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.12
 
 **Optional budget planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.12&page=staff
