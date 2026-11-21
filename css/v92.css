@@ -507,3 +507,10 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
  .budget-mobile-strip strong{display:block;color:#34233f;font-size:13px;overflow-wrap:anywhere}
 }
 @media(max-width:390px){.budget-compact-fields{grid-template-columns:1fr}.budget-compact-numbergrid{grid-template-columns:1fr 1fr}}
+
+/* v10.7.7: paired full-time / part-time enrollment inputs, no duplicate control panels. */
+.budget-enrollment-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;border-bottom:1px solid #e7e0ed;padding:0 0 14px;margin:2px 0 14px}
+.budget-enrollment-group{display:grid;align-content:start;gap:9px;min-width:0}
+.budget-enrollment-group h4{font:750 13px/1.4 system-ui,sans-serif;color:#3f2f50;margin:0}
+.budget-enrollment-group small{color:#71667b;font-size:10.5px;line-height:1.4}
+@media(max-width:350px){.budget-enrollment-pair{grid-template-columns:1fr}}
