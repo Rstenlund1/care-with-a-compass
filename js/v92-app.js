@@ -45,7 +45,7 @@ function journeyButton(){
   const text=allCasesDone()?"Continue to the Staffing Lab →":"Continue Applied Simulations →";
   return hButton("journey-next",text,"primary");
  }
- if(state.page==="staff"){if(state.staffing.activeTab!=="budget")return hButton("staff-tab","Continue to Budget & Tuition →","primary",state.sequence?.staffTouched?"data-tab=\"budget\"":"data-tab=\"budget\" disabled");return hButton("journey-next","Continue to Evidence Journal →","primary",window.CWC_BUDGET?.touched()&&state.sequence.staffTouched?"":"disabled");}
+ if(state.page==="staff")return hButton("journey-next","Continue to Evidence Journal →","primary",window.CWC_BUDGET?.touched()&&state.sequence.staffTouched?"":"disabled");
  if(state.page==="evidence")return hButton("journey-next","Continue to the competency assessment →","primary");
  return "";
 }
@@ -230,8 +230,7 @@ function refreshStaffBudgetPreview(){
 }
 function staffView(){
  const m=staffModel(),s=state.staffing;
- const tabs='<div class="budget-tabs" role="group" aria-label="Staffing and budget exercises"><button type="button" data-action="staff-tab" data-tab="coverage" class="'+(s.activeTab!=="budget"?"active":"")+'">1. Staffing decisions</button><button type="button" data-action="staff-tab" data-tab="budget" class="'+(s.activeTab==="budget"?"active":"")+'">2. Operating budget & tuition</button></div>';
- if(s.activeTab==="budget")return tabs+(window.CWC_BUDGET?.view()||'<p>Budget planner unavailable.</p>')+'<div class="actions journey-next">'+journeyButton()+'</div>';
+
  const plans=[["minimum","No extra teacher (0 hours)","Only regular scheduled coverage"],["overlap","Extra teacher for busy hours (3 hours)","One additional qualified teacher during a three-hour period"],["relief","Scheduled backup teacher (6 hours)","One qualified floating teacher for a six-hour shift"],["combined","Both extra-coverage options (9 hours)","Two additional qualified teachers during the three-hour period; one otherwise"]];
  const coverageExplainers={
   minimum:"No extra teacher is scheduled. Additional coverage costs $0, but the regularly scheduled teachers still have their normal labor cost.",
@@ -240,7 +239,7 @@ function staffView(){
   combined:"You schedule both extra teachers: one for a three-hour busy period and a second for six-hour backup coverage. Two extras are available during the busy period; one remains available outside it in this simplified example."
  };
  const shocks=[["break","Routine restroom break (1 unavailable)"],["sick","Unexpected sick call (1 unavailable)"],["double","Two competing interruptions (2 unavailable)"],["emergency","Emergency transport plus absence (2 unavailable)"]];
- return tabs+`<div class="section-top"><div><div class="kicker">03 · Staffing, finance, and continuity</div><h2>When the staffing plan can't bend.</h2><p>Explore how attendance, real employee presence, funding, and predictable interruptions affect supervisory decisions.</p></div></div>
+ return `<div class="operations-unified">${window.CWC_BUDGET?.goalHeader()||""}<div class="section-top"><div><div class="kicker">Coverage and sustainability</div><h2>Can your staffing plan handle interruptions?</h2><p>Explore how attendance, real employee presence, funding, and predictable interruptions affect supervisory decisions.</p></div></div>
  <div class="actions lesson-revisit">${hButton("review-lesson","Review the staffing lesson","outline")}</div>
  <div class="layout-main">
  <section class="panel staff-panel">
@@ -282,14 +281,15 @@ function staffView(){
   <div><span>22-day labor estimate</span><strong id="staffMonthCost">${money(m.totalMonthCost)}</strong></div>
  </div>
  <p class="tiny muted" id="staffBudgetMethod">Illustrative baseline: ${m.scheduled} scheduled qualified teacher(s) × 8 paid hours per day = <strong id="staffBaseHours">${m.baseHours}</strong> baseline paid hours. Additional paid coverage hours: none 0, three-hour extra teacher 3, six-hour backup teacher 6, both 9; currently <strong id="staffExtraHours">${m.hours}</strong> per day. Changing the hourly cost updates all estimates. Figures exclude unmodeled personnel, overtime, and variable payroll costs; they are examples rather than an actual staffing budget. Added daily cost per attending child: <strong id="staffExtraPerChild">$${m.extraPerChild.toFixed(2)}</strong>.</p></div>
- <div class="actions journey-next">${journeyButton()}</div></div></section>
+ </div></section>
  <aside class="sidepanel"><h3>Leadership skills in action</h3>
  <p><strong>${termHtml("Technical skill")}:</strong> Determine who is qualified, onsite, and counted toward actual classroom supervision.</p>
  <p><strong>${termHtml("Human skill")}:</strong> Recognize that employees cannot postpone illness or restroom needs on command.</p>
  <p><strong>${termHtml("Conceptual skill")}:</strong> Connect employee schedules, enrollment, family needs, and the operating budget.</p>
  <div class="callout"><strong>A policy cannot create an employee.</strong><p>When coverage does not exist, repeating the rule or asking staff to work harder will not solve the underlying resources problem.</p></div>
- <p class="tiny muted">Think about an ordinary day in your own program. How many times can the schedule tolerate an unexpected absence without forcing a supervisor to improvise?</p></aside></div>`;
+ <p class="tiny muted">Think about an ordinary day in your own program. How many times can the schedule tolerate an unexpected absence without forcing a supervisor to improvise?</p></aside></div><div id="operations-budget-section">${window.CWC_BUDGET?.view()||"<p>The financial planner is temporarily unavailable.</p>"}</div><div class="actions journey-next">${journeyButton()}</div></div>`;
 }
+window.CWC_STAFFING=()=>staffModel();
 const clsOptions=[["","Choose classification"],["observed","Directly observed"],["recorded","Recorded evidence"],["alleged","Reported allegation"],["inference","Inference"],["forecast","Prediction"]];
 function evidenceView(){
  let answered=D.evidence.filter(x=>state.evidence[x.id]).length,correct=D.evidence.filter(x=>state.evidence[x.id]===x.answer).length;
@@ -396,7 +396,6 @@ document.addEventListener("submit",e=>{if(e.target?.id!=="cwc-learner-form")retu
 document.addEventListener("click",e=>{
  const btn=e.target.closest("button[data-action]");if(!btn)return;
  const action=btn.dataset.action;
- if(action==="staff-tab"){state.staffing.activeTab=btn.dataset.tab==="budget"?"budget":"coverage";save();return render();}
  if(action==="term"){const wasOpen=btn.getAttribute("aria-expanded")==="true";hideDefinitions();if(!wasOpen)btn.setAttribute("aria-expanded","true");return;}
  if(action==="complete-lesson"){const key=moduleKey();if(!L.modules?.[key])return;state.introSeen[key]=true;save();return render();}
  if(action==="print-completion-certificate")return window.CWC_LEARNER?.certificatePrint(state,courseReady(),allCasesDone());
@@ -470,7 +469,7 @@ document.addEventListener("cwc-budget-changed",()=>{
  if(fill)fill.style.width=progress.percent+"%";
  if(label)label.textContent=progress.percent+"% complete · "+progress.chapters+" of 5 chapters";
  const next=document.querySelector('button[data-action="journey-next"]');
- if(next&&state.page==="staff"&&state.staffing.activeTab==="budget")next.disabled=false;
+ if(next&&state.page==="staff")next.disabled=!state.sequence.staffTouched;
 });
 document.addEventListener("input",e=>{
  if(e.target?.dataset?.change==="staff-wage"){
