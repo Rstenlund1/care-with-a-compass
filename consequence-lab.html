@@ -157,4 +157,20 @@ let header=`<section><p class="eyebrow">Random case ${session.index+1} of 3 · D
 header+=lessonPanel(s);if(s.answered){let f=s.last,cl=f.grade===3?'feedback':f.grade===0?'feedback unsafe':'feedback partial';el.innerHTML=header+`<section class="${cl}" id="scene" tabindex="-1"><p class="eyebrow">Decision ${s.step+1} feedback · ${f.grade}/3 process points</p><h2>${f.grade===3?'Sound decision':f.grade===2?'Defensible with trade-offs':f.grade===1?'Incomplete response':'Unsafe response: recover next'}</h2><p><strong>Your choice:</strong> ${ESC(f.choice)}</p><p>${ESC(f.why)}</p>${decisionTeaching(s,sc,f)}${f.consequence?`<p class="banner">${ESC(f.consequence)}</p>`:''}<p class="source">Review: ${linkSource(f.source)}</p>${f.grade!==3?`<details><summary>View preferred actions after the decision</summary><p>${f.preferred.map(ESC).join(' / ')}</p></details>`:''}<button class="primary" onclick="advance()">${s.step===11?(session.index===2?'Finish practice':'Start next random case'):'Continue: the situation develops'}</button></section>${instructions()}<footer>Practice results remain local to this browser.</footer>`;$('scene').focus();return}
 let opts=s.order.map((j,i)=>`<button type="button" onclick="answer(${i})" aria-label="Decision option ${i+1}">${ESC(sc.opts[j].t)}</button>`).join('');el.innerHTML=header+`<div class="layout"><section id="scene" tabindex="-1"><p class="eyebrow">${ESC(spec.origin)} · ${s.step+1}/12</p><h2>${ESC(sc.title)}</h2><p>${ESC(sc.body)}</p><h3>What do you do next?</h3><div class="buttons">${opts}</div><p class="small">Select the most defensible action given what you know *right now*. The result and supporting guidance appear before the situation continues.</p><p class="source">Guidance for this stage: ${linkSource(sc.src)}</p></section><aside><section><h3>Director’s dashboard</h3><p><b>Hidden factors:</b> underlying cause, family response and possible complaints are selected at the beginning of the case. They are revealed only when appropriate.</p><p><b>Recovery:</b> incorrect first steps do not end the case. Later good decisions count.</p><p><b>Scoring:</b> evidence-based process (0–3 per decision), not a guaranteed favorable ending.</p></section></aside></div>${instructions()}<footer>Fictional, original practice simulation · ${ESC(VERSION)} · session ${session.seed.toString(16)}</footer>`;$('scene').focus()}
 render();
+if(window.parent!==window){
+ let lastHeight=0;
+ const sendHeight=()=>{
+  const lab=document.getElementById("app");
+  if(!lab)return;
+  const measured=Math.ceil(lab.getBoundingClientRect().bottom+18);
+  if(measured>200&&Math.abs(measured-lastHeight)>2){
+   lastHeight=measured;
+   window.parent.postMessage({app:"cwc-consequence-lab",kind:"lab-height",height:measured},window.location.origin);
+  }
+ };
+ new MutationObserver(()=>requestAnimationFrame(sendHeight)).observe(document.getElementById("app"),{childList:true,subtree:true,characterData:true});
+ if(typeof ResizeObserver!=="undefined")new ResizeObserver(sendHeight).observe(document.getElementById("app"));
+ window.addEventListener("load",sendHeight);
+ requestAnimationFrame(sendHeight);
+}
 </script></body></html>
