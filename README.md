@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.3
+
+**Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.3
+
+**Navigation cleanup:** Removed the redundant sidebar chapter submenu, upper chapter shortcut cards, and historical progress notice. The existing six-chapter navigation row inside the lesson area remains the single chapter selector, with keyboard-accessible direct navigation and no completion credit granted by opening a chapter. Other v10.7.2 fixes remain in place. JavaScript syntax checked; final visual and learner-pilot audits remain necessary.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.2
 
 **Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.2
