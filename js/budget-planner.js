@@ -205,16 +205,19 @@ function unavailabilityControl(){
   options.map(([id,label])=>'<option value="'+esc(id)+'"'+(state.values.staffUnavailable===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></div>';
 }
 function availabilityText(c){
- if(c.daytimeChildren===0)return 'No children entered. Director assumed available for care.';
- let msg=c.availablePeople+' supervising staff available for '+c.daytimeChildren+' children ('+c.infants+' infants). ';
- if(c.aboveCapacity)msg+='CAPACITY OR AGE-MIX WARNING: The selected family child care license does not permit this mix; adding staff alone cannot fix that. ';
- if(c.coverageGap>0)msg+='STAFFING GAP: The model needs '+c.planningFloor+' supervising adults, with only '+c.availablePeople+' currently available. ';
- if(c.rule.needsSpecial){
-  if(c.type==="small")msg+='CONDITIONAL HOME CAPACITY: Seven or eight children require the qualifying school-age mix, an infant limit of two, parent notification and written property-owner consent if renting. This calculator cannot verify those conditions. ';
-  else if(c.type==="large")msg+='CONDITIONAL HOME CAPACITY: Thirteen or fourteen children require the qualifying school-age mix, infant limit, parent notification and written property-owner consent if renting. This calculator cannot verify those conditions. ';
-  else msg+='Infant care requires a separately authorized component and appropriately qualified supervision. ';
- }else if(!c.aboveCapacity&&!c.coverageGap)msg+='No headcount gap in this simplified model; verify the licensed capacity, staffing qualifications and actual supervision arrangements. ';
+ if(c.daytimeChildren===0)return "No children entered. The director is the first staff member in this estimate.";
+ const adults=c.availablePeople+" staff member"+(c.availablePeople===1?"":"s");
+ let msg=c.daytimeChildren+" children · "+adults+" available. ";
+ if(c.coverageGap>0)msg+="Staffing shortage: "+c.coverageGap+" more supervising staff member"+(c.coverageGap===1?" is":"s are")+" needed in this model.";
+ else msg+="No staffing shortage in this planning estimate.";
+ if(c.aboveCapacity)msg+=" The selected enrollment exceeds this program type's capacity or age-mix limits.";
  return msg;
+}
+function programNote(c){
+ if(c.type==="small"&&c.rule.needsSpecial)return "7–8 children are permitted only with the required school-age mix, infant limits and parent notifications. The calculator cannot verify these conditions.";
+ if(c.type==="large"&&c.rule.needsSpecial)return "13–14 children require a qualifying school-age mix, infant limits and required notices. Verify these conditions before enrolling.";
+ if(c.type==="preschool"&&c.rule.needsSpecial)return "Infant care requires an authorized infant-care component and appropriately qualified staff.";
+ return "";
 }
 function field(key,label,step=1){
  return '<div class="budget-compact-field">'+helpHeading(key,label)+'<input id="budget-'+esc(key)+'" type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></div>';
@@ -268,7 +271,7 @@ function view(){
  '<div>'+resultHeading("expenses","Expenses including director pay")+'<strong id="b-expenses">'+cash(c.expenses)+'</strong></div>'+
  '<div class="budget-surplus">'+resultHeading("surplus","Surplus / shortfall")+'<strong id="b-profit">'+cash(c.surplus)+'</strong></div>'+
  '<div class="budget-goal-result">'+resultHeading("tuitionRequired","Break-even full-time tuition")+'<strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child")+'</strong></div></div>'+
- '<div class="budget-availability-block"><div class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</div><p id="b-staff-availability" class="budget-staff-availability'+(c.coverageGap>0||c.aboveCapacity||c.rule.needsSpecial?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p><p id="b-program-rule" class="budget-smallprint">'+esc(c.rule.rule)+'</p></div>'+
+ '<div class="budget-availability-block"><div class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</div><p id="b-staff-availability" class="budget-staff-availability'+(c.coverageGap>0||c.aboveCapacity?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p><p id="b-program-rule" class="budget-program-note"'+(programNote(c)?'':' hidden')+'>'+esc(programNote(c))+'</p></div>'+
  '<div id="b-verdict" class="budget-compact-verdict">'+(c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.")+'</div>'+
  '<div id="b-breakdown">'+breakdown(c)+'</div>'+
  '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. Infants and older children are counted together for family homes; center infant and preschool staffing are modeled as separate groups. Licensing qualifications, the actual mix of children, and shift coverage still require verification. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
@@ -283,11 +286,11 @@ function update(){
  };
  for(const [id,text] of Object.entries(entries)){const node=document.getElementById(id);if(node)node.textContent=text;}
  const availability=document.getElementById("b-staff-availability");
- if(availability){availability.textContent=availabilityText(c);availability.classList.toggle("budget-staff-alert",c.coverageGap>0||c.aboveCapacity||c.rule.needsSpecial);}
+ if(availability){availability.textContent=availabilityText(c);availability.classList.toggle("budget-staff-alert",c.coverageGap>0||c.aboveCapacity);}
  const banner=document.getElementById("b-verdict");
  if(banner)banner.textContent=c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.";
  const source=document.getElementById("budget-county-source");if(source)source.innerHTML=countyRateNote(state.values.county);
- const rule=document.getElementById("b-program-rule");if(rule)rule.textContent=c.rule.rule;
+ const rule=document.getElementById("b-program-rule");if(rule){rule.textContent=programNote(c);rule.hidden=!programNote(c);}
  const el=document.getElementById("b-breakdown");
  if(el){const open=!!el.querySelector("details")?.open;el.innerHTML=breakdown(c);const details=el.querySelector("details");if(details)details.open=open;}
 }
