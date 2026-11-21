@@ -141,7 +141,7 @@ function chaptersView(){
  const p=courseProgress();
  return `<div class="section-top"><div><div class="kicker">01 · Learning chapters</div><h2>Five chapters. One leadership foundation.</h2><p>Technical, human, and conceptual leadership skills, taught through the original applied question bank, branching follow-ups, guided recovery, chapter labs, and reflection.</p></div><span class="pill neutral" id="chapterCompletedCount" aria-live="polite">${p.done}/5 completed</span></div>
  <div class="note"><strong>Your earlier progress is preserved.</strong> This is the same curriculum, now part of the single supervisor/director learning program. Continue where you last stopped.</div>
- <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.0.1&build=version-label-fix" loading="eager" title="Five learning chapters for new supervisors and directors"></iframe></div>`;
+ <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.0.1&build=aligned-lessons" loading="eager" title="Five learning chapters for new supervisors and directors"></iframe></div>`;
 }
 function caseConditions(c,w){
  const out={safety:"Under review",coverage:"Under review",family:"Under review",evidence:"Not yet reviewed",finance:"Not reviewed"};
@@ -172,8 +172,8 @@ function simulationSelector(){
 function randomSimulationView(){
  return `<section class="panel" aria-labelledby="random-cases-heading">
  <div class="section-top"><div><div class="kicker">Applied simulations · Randomized practice</div><h2 id="random-cases-heading">Three situations. Thirty-six decisions. No predictable order.</h2><p>Set classroom staffing, then respond to three different cases randomly chosen from eight. Every decision receives an explanation, and the situation continues after mistakes.</p></div></div>
- <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.0.1&embedded=1" title="Three randomized applied supervisory scenarios" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
- <div class="actions"><a href="consequence-lab.html?v=10.0.1" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
+ <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.0.1&embedded=1&build=staffing-and-balance" title="Three randomized applied supervisory scenarios" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
+ <div class="actions"><a href="consequence-lab.html?v=10.0.1&build=staffing-and-balance" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
 }
 function casesView(){return simulationSelector()+(state.simulationMode==="guided"?guidedCasesView():randomSimulationView());}
 function guidedCasesView(){
