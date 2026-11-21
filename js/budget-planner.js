@@ -2,20 +2,32 @@
 "use strict";
 /* Optional simple-center calculator. Monthly USD; food and meal-program funds are excluded. */
 const KEY="cwc-budget-planner-v1";
+/* Estimated median full-time center preschool weekly prices by county.
+ * Source: https://paybytown.com/childcare/california/ (October 2026).
+ * Based on DOL NDCP 2022 county data and publisher's 23.3% 2026 adjustment.
+ * Estimates may be modeled or assigned by survey zone. */
+const COUNTY_WEEKLY_PRESCHOOL_2026={"Alameda":504,"Alpine":207,"Amador":179,"Butte":221,"Calaveras":200,"Colusa":188,"Contra Costa":469,"Del Norte":183,"El Dorado":281,"Fresno":250,"Glenn":186,"Humboldt":236,"Imperial":199,"Inyo":217,"Kern":210,"Kings":188,"Lake":200,"Lassen":183,"Los Angeles":277,"Madera":192,"Marin":534,"Mariposa":188,"Mendocino":207,"Merced":204,"Modoc":183,"Mono":349,"Monterey":244,"Napa":294,"Nevada":248,"Orange":313,"Placer":287,"Plumas":183,"Riverside":233,"Sacramento":321,"San Benito":313,"San Bernardino":213,"San Diego":299,"San Francisco":588,"San Joaquin":228,"San Luis Obispo":336,"San Mateo":539,"Santa Barbara":299,"Santa Clara":506,"Santa Cruz":315,"Shasta":264,"Sierra":183,"Siskiyou":272,"Solano":263,"Sonoma":252,"Stanislaus":211,"Sutter":286,"Tehama":185,"Trinity":183,"Tulare":195,"Tuolumne":200,"Ventura":369,"Yolo":385,"Yuba":220};
+const COUNTIES=Object.keys(COUNTY_WEEKLY_PRESCHOOL_2026).sort((a,b)=>a.localeCompare(b));
+const CALIFORNIA_FALLBACK_MONTHLY=1202; // 2022 CA center preschool median $225/wk ×1.233 ×52/12.
+function countyRateFor(county){
+ const weekly=COUNTY_WEEKLY_PRESCHOOL_2026[county];
+ return Number.isFinite(weekly)&&weekly>0?{monthly:Math.round(weekly*52/12),fallback:false}:{monthly:CALIFORNIA_FALLBACK_MONTHLY,fallback:true};
+}
+
 const DEFAULTS={
- students:14,tuition:1300,partStudents:0,partTuition:975,
+ students:14,tuition:923,partStudents:0,partTuition:692,county:"San Bernardino",
  staffCount:4,staffHourly:23,staffWeeklyHours:40,
  rent:0,utilities:0,insurance:0,directorSalary:6500,
  overnightNights:0,overnightFee:95
 };
 const KEYS=Object.keys(DEFAULTS);
 function clamp(v,min=0,max=1000000){const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):min;}
-function rate75(full){return Math.round(clamp(full)*75)/100;}
+function rate75(full){return Math.round(clamp(full)*.75);}
 function migrate(v){
  if(!v||typeof v!=="object")return {...DEFAULTS};
  if(Object.prototype.hasOwnProperty.call(v,"students")){
   const result={...DEFAULTS};
-  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=clamp(v[key]);
+  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=key==="county"?String(v[key]):clamp(v[key]);
   return result;
  }
  const teachers=Math.max(0,Number(v.teachersFte)||0),aides=Math.max(0,Number(v.aidesFte)||0),count=teachers+aides;
@@ -23,7 +35,7 @@ function migrate(v){
  const rentBase=v.rentMode==="actual"?Number(v.rentActual):Number(v.sqft)*(Number(v.rateOverride)>0?Number(v.rateOverride):1.77);
  const rentExtra=v.rentMode==="actual"?Number(v.leaseExtras)||0:(Number(v.sqft)||0)*(Number(v.nnnSqft)||0);
  const result={...DEFAULTS,
-  students:clamp(v.fullChildren??DEFAULTS.students),tuition:clamp(v.fullTuition??DEFAULTS.tuition),
+  students:clamp(v.fullChildren??DEFAULTS.students),tuition:clamp(v.fullTuition??DEFAULTS.tuition),county:"San Bernardino",
   partStudents:clamp(v.partChildren??0),partTuition:clamp(v.partTuition??DEFAULTS.partTuition),
   staffCount:count||DEFAULTS.staffCount,staffHourly:avgWage||DEFAULTS.staffHourly,
   staffWeeklyHours:clamp(v.weeklyHours??40),rent:Math.max(0,(rentBase||0)+rentExtra),
@@ -40,14 +52,14 @@ function load(){
   const saved=JSON.parse(localStorage.getItem(KEY)||"null");
   if(saved&&typeof saved==="object"){
    // Never convert a previously untouched example into a real user expense assumption.
-   if(!saved.touched)return {values:{...DEFAULTS},touched:false,partLinked:true};
+   if(!saved.touched)return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};
    const values=migrate(saved.values),old=saved.values||{};
    const partLinked=typeof saved.partLinked==="boolean"?saved.partLinked:(Number(old.partStudents??old.partChildren??0)===0 && Number(old.partTuition??1000)===1000);
    if(partLinked)values.partTuition=rate75(values.tuition);
-   return {values,touched:true,partLinked};
+   return {values,touched:true,partLinked,tuitionManual:typeof saved.tuitionManual==="boolean"?saved.tuitionManual:true};
   }
  }catch(_){}
- return {values:{...DEFAULTS},touched:false,partLinked:true};
+ return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};
 }
 let state=load();
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){}}
@@ -66,6 +78,11 @@ function calculate(){
  const tuitionRequired=full>0?Math.max(0,(expenses-partIncome-nightIncome)/full):null;
  return {full,part,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance};
 }
+function countyRateNote(county,manual){
+ const info=countyRateFor(county);
+ const first=manual?"Custom tuition entered. Choosing a county loads its benchmark.":(info.fallback?"No county price: California reference ":""+esc(county)+" County estimated median: ")+cash(info.monthly)+"/month.";
+ return '<span>'+first+'</span> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">County data</a> <span class="budget-county-method">2026 estimate based on DOL 2022 median full-time preschool center prices; some figures modeled. <a href="https://scrillischool.net/guides/preschool-and-daycare-cost/" target="_blank" rel="noopener noreferrer">Statewide fallback source</a>.</span>';
+}
 function field(key,label,step=1){
  return '<label class="budget-compact-field"><span>'+esc(label)+'</span><input type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></label>';
 }
@@ -76,14 +93,16 @@ function breakdown(c){
   line("Utilities",c.utilities)+line("Insurance",c.insurance)+'</dl></details>';
 }
 function view(){
- const c=calculate();
+ const c=calculate(),county=state.values.county||"San Bernardino";
  return '<section class="budget-compact" id="cwc-budget" aria-label="Tuition and expenses calculator">'+
  '<div class="budget-mobile-strip" aria-label="Live monthly summary">'+
  '<span>Revenue<strong id="b-mobile-income">'+cash(c.revenue)+'</strong></span>'+
  '<span>Expenses<strong id="b-mobile-expenses">'+cash(c.expenses)+'</strong></span>'+
  '<span>Surplus<strong id="b-mobile-profit">'+cash(c.surplus)+'</strong></span></div>'+
  '<div class="budget-compact-editor">'+
- '<div class="budget-compact-heading"><h3>Will the center support your goals?</h3><p>Estimate tuition and operating costs, including your director salary. Results update as you type.</p></div>'+
+ '<div class="budget-compact-heading"><h3>Will the center support your goals?</h3><p>Choose a county to prefill an editable tuition estimate. Results update as you type.</p></div>'+
+ '<label class="budget-compact-field budget-county-selector"><span>California county</span><select data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></label>'+
+ '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county,state.tuitionManual)+'</p>'+
  '<div class="budget-enrollment-pair">'+
  '<div class="budget-enrollment-group"><h4>Full-time</h4>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
  '<div class="budget-enrollment-group"><h4>Part-time</h4>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+
@@ -123,15 +142,22 @@ function update(){
  for(const [id,text] of Object.entries(entries)){const node=document.getElementById(id);if(node)node.textContent=text;}
  const banner=document.getElementById("b-verdict");
  if(banner)banner.textContent=c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.";
+ const source=document.getElementById("budget-county-source");if(source)source.innerHTML=countyRateNote(state.values.county,state.tuitionManual);
  const el=document.getElementById("b-breakdown");
  if(el){const open=!!el.querySelector("details")?.open;el.innerHTML=breakdown(c);const details=el.querySelector("details");if(details)details.open=open;}
 }
 function updateField(input){
  const key=input.dataset.budgetKey;
  if(!Object.prototype.hasOwnProperty.call(DEFAULTS,key))return;
- state.values[key]=clamp(input.value);
+ if(key==="county"){
+  state.values.county=String(input.value);
+  state.values.tuition=countyRateFor(state.values.county).monthly;
+  state.tuitionManual=false;
+  const full=document.querySelector('[data-budget-key="tuition"]');if(full)full.value=state.values.tuition;
+ }else state.values[key]=clamp(input.value);
+ if(key==="tuition")state.tuitionManual=true;
  if(key==="partTuition")state.partLinked=false;
- if(key==="tuition"&&state.partLinked){
+ if((key==="tuition"||key==="county")&&state.partLinked){
   state.values.partTuition=rate75(state.values.tuition);
   const node=document.querySelector('[data-budget-key="partTuition"]');
   if(node)node.value=state.values.partTuition;
@@ -143,19 +169,19 @@ document.addEventListener("input",e=>{
  if(e.target?.dataset?.budgetKey&&e.target.tagName==="INPUT")updateField(e.target);
 });
 document.addEventListener("change",e=>{
- if(e.target?.dataset?.budgetKey&&e.target.tagName==="INPUT")updateField(e.target);
+ if(e.target?.dataset?.budgetKey&&(e.target.tagName==="INPUT"||e.target.tagName==="SELECT"))updateField(e.target);
 });
 document.addEventListener("click",e=>{
  const reset=e.target.closest("[data-budget-reset]");
  if(!reset)return;
- state={values:{...DEFAULTS},touched:false,partLinked:true};persist();
+ state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};persist();
  const node=document.getElementById("cwc-budget");
  if(node)node.outerHTML=view();
  document.dispatchEvent(new Event("cwc-budget-changed"));
 });
-function reset(){state={values:{...DEFAULTS},touched:false,partLinked:true};persist();}
+function reset(){state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};persist();}
 function goalHeader(){return "";} // Old callers can safely omit this preamble.
 function loadBenchmarks(){return undefined;}
-function countyRate(){return null;}
+function countyRate(){return countyRateFor(state.values.county);}
 window.CWC_BUDGET={view,goalHeader,calculate,update,touched:()=>state.touched,reset,loadBenchmarks,countyRate};
 })();
