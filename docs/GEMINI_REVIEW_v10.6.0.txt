@@ -32,7 +32,13 @@ Test js/budget-planner.js from the source, not simply by reading the displayed s
 PRIORITY 4 — SCORING AND BRANCHING
 Run all 11 case families, all variants and all 12 decisions. Do not accept mere syntax or 2,256 structural checks as proof of ethical validity. Check realistic distractors, near misses, consequences actually updating state, appropriate factual and regulatory citations, stale incorrect questions, and whether outcomes reflect recovery after a mistake. Recalculate answer-length bias, identifying worst offending questions.
 
-PRIORITY 5 — APA, ACADEMIC CONSISTENCY AND PRESENTATION
+PRIORITY 5 — EXHAUSTIVE WRITING, DESCRIPTIONS AND STORY CONTINUITY
+Audit every learner-facing string, not just sample questions. Check headings, descriptions, chapter lessons, glossary, 72 main questions, 36 follow-up prompts, branching answer alternatives, all 11 scenario families, 12 stages and variants, recovery feedback, staffing exercises, budget fields, rent-source labels, instructions, navigation, progress messaging, completion/debrief text, and final assessment. Look for awkward or unnatural sentences, spelling, grammar, redundant wording, unclear jargon, inexplicable numbering, inconsistent terms and overlong descriptions.
+Treat misleading descriptions and narrative contradictions as functional defects: answer choices not matching a question, an ambulance in a non-medical transport case, an unauthorized adult being described as authorized, a staff member leaving without changing coverage, shifting timelines, different names/pronouns, unsupported facts, feedback describing an action the learner did not choose, or previously resolved problems still being described as active.
+For the finance and licensing screens, verify clarity of enrolled versus present children; monthly versus annual and per-square-foot units; wages versus director salary versus business profit; actual rent versus a regional market proxy or constructed statewide fallback; software loading an updated JSON file versus automatically finding new publisher rates; overnight sleeping versus required qualified supervision; and needed tuition versus a locally affordable/competitive price.
+Give an exact location, verbatim current text, reason it is wrong or confusing, and a revised sentence/button/option for EACH confirmed issue. Sort true factual/narrative errors ahead of subjective style changes. Keep the author's voice and examples rather than making prose generically formal. Explicitly identify uninspected paths. Assess if an inexperienced director can understand each direction without an explanation from the developer.
+
+PRIORITY 6 — APA, ACADEMIC CONSISTENCY AND PRESENTATION
 Compare the short submission paper, portfolio paper, slideshow and speaker notes with v10.6.0 if supplied. Treat old version statements as needing revision, not proof the current site is wrong. Check page limits, scope and references. Evaluate whether the budget and overall progress claims have been adequately incorporated into academic descriptions. Avoid inventing performed pilot studies or learner outcomes.
 
 REPORT FORMAT
@@ -43,8 +49,9 @@ D. Reproducible, ranked bug register: severity, exact file/step, expected versus
 E. Financial-model audit with equations and hand-calculated examples, including tuition, director salary and overnight staffing.
 F. Question-by-question and answer-key assessment defects.
 G. Progress, navigation, accessibility and persistence test results.
-H. Cross-file academic discrepancies.
-I. Top 15 improvements ranked by learner benefit and implementation effort.
-J. Explicit list of what you could not actually verify.
+H. Full editorial defect table with exact old and revised wording, including narrative contradictions.
+I. Cross-file academic discrepancies.
+J. Top 15 improvements ranked by learner benefit and implementation effort.
+K. Explicit list of what you could not actually verify.
 
 Be rigorous. Distinguish bugs, poor assumptions, user-experience problems, missing validation, and personal aesthetic preferences.
