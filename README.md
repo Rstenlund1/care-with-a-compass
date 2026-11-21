@@ -1,3 +1,13 @@
+# Care with a Compass — The Director’s Desk · v10.5.0
+
+**Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.5.0
+
+**v10.5.0 correction release:** Safe-intake actions now actually reduce admitted children when an opening teacher calls out; coverage breaches are recorded once per uninterrupted episode, with explicit recovery when qualified staffing returns. Conditional branch answers are no longer uniformly identified by length (highest-scoring longest in 9 of 32). The full Consequence Lab can be completed in a separate browser tab and recognized by the main course through validated saved session results. Refined bruise/pickup handoffs, embedded display, runtime version labels and export names. **Academic prototype only:** regulatory/clinical review and human usability testing are still required.
+
+---
+
+## Historical release notes (v10.4.0 and earlier)
+
 # Care with a Compass — The Director’s Desk · v10.4.0
 
 **Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.4.0
