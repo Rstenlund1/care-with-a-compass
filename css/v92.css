@@ -364,5 +364,5 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 /* v9.8.5: match the section banner to the 970px lesson reading card. */
 .section-photo-banner--lesson{width:100%;max-width:970px;margin:0 auto 26px}
 
-/* v10.4.0: give narrow-screen coverage summaries a readable key/value layout. */
+/* v10.5.0: give narrow-screen coverage summaries a readable key/value layout. */
 @media(max-width:390px){.coverage-summary{grid-template-columns:minmax(0,1fr)}.coverage-summary>div{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:10px 12px}.coverage-summary span{font-size:12px;flex:1}.coverage-summary strong{font-size:20px;margin-top:0;white-space:nowrap}}
