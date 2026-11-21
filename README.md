@@ -1,3 +1,13 @@
+# Care with a Compass — The Director’s Desk · v10.4.0
+
+**Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.4.0
+
+**v10.4.0 simulation and usability correction:** Independent static review found that the three expanded Director's Desk cases used repeated feedback, some harmful staffing decisions did not update live counts, and transportation cases inherited irrelevant medical-escort questions. This release adds individualized reasoning across all 36 original-Desk decision sets, connects leave/admission choices to live staffing or attendance, adds scenario-specific transportation questions for the remaining 22 transport steps, and removes a generic distractor-changing function that could overwrite safety effects. It places the primary decision before optional reference and staffing tools, collapses those tools, and puts coverage alerts with the focused decision. Eight foundational questions and selected branching alternatives now use more credible near-misses. The workplace transfer plan has a live character counter.
+
+**Validation:** Syntax checks and programmatic scenario/variant generation checks passed. This is still an academic prototype; browser-based mobile and assistive-technology tests, child-care regulatory and clinical specialist validation, live Formspree delivery testing, and a learner pilot remain outstanding. This release does not establish certification validity.
+
+---
+
 # Care with a Compass — The Director's Desk · v10.2.0
 
 **Live program:** https://rstenlund1.github.io/care-with-a-compass/
