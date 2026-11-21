@@ -58,7 +58,7 @@ function notifyProgress(){
  const state=read();
  try{
   global.parent.postMessage({app:"care-with-a-compass",kind:"chapter-progress",
-   done:Array.isArray(state.done)?state.done.filter(ch=>Number.isInteger(ch)&&ch>=1&&ch<=5):[],
+   done:Array.isArray(state.done)?state.done.filter(ch=>Number.isInteger(ch)&&ch>=1&&ch<=6):[],
    capstone:!!state.capstone?.completed},global.location.origin);
  }catch(e){}
 }
@@ -67,7 +67,7 @@ global.addEventListener("message",e=>{
  const message=e.data;
  if(message?.app!=="care-with-a-compass"||message.kind!=="chapter-submit-status")return;
  const ch=Number(message.chapter);
- if(Number.isInteger(ch)&&ch>=1&&ch<=5){
+ if(Number.isInteger(ch)&&ch>=1&&ch<=6){
   global.chapterResultStatus?.(ch,message.status,String(message.error||"").slice(0,400));
  }
 });
