@@ -31,10 +31,8 @@ function termHtml(raw){
 }
 function moduleKey(){if(state.page==="cases")return "case:"+state.caseId;return state.page;}
 function continueJourney(){
- if(state.page==="cases"&&work(state.caseId).step<getCase(state.caseId).stages.length)return;
  if(state.page==="cases"){
-  if(state.caseId==="pickup"){state.caseId="hospital";return go("cases");}
-  if(state.caseId==="hospital"){state.caseId="staff";return go("cases");}
+  if(!allCasesDone())return go("cases");
   return go("staff");
  }
  if(state.page==="staff"){if(!state.sequence.staffTouched)return;state.sequence.staffCompleted=true;save();return go("evidence");}
@@ -44,7 +42,7 @@ function continueJourney(){
 }
 function journeyButton(){
  if(state.page==="cases"){
-  const text=state.caseId==="pickup"?"Continue to the medical emergency case →":state.caseId==="hospital"?"Continue to the staffing case →":"Continue to the Staffing Lab →";
+  const text=allCasesDone()?"Continue to the Staffing Lab →":"Continue Applied Simulations →";
   return hButton("journey-next",text,"primary");
  }
  if(state.page==="staff")return hButton("journey-next","Continue to the Evidence Journal →","primary",state.sequence?.staffTouched?"":"disabled");
@@ -124,7 +122,7 @@ function canOpenCase(id){
 }
 function resumeLinear(){
  const next=nextRequired();
- if(next.page==="cases")state.simulationMode=state.simulationMode==="guided"?"guided":"random";
+ if(next.page==="cases")state.simulationMode="random";
  return go(next.page);
 }
 function hButton(action,label,kind="secondary",extra=""){return `<button type="button" data-action="${esc(action)}" class="btn ${kind}" ${extra}>${label}</button>`;}
@@ -133,7 +131,7 @@ function nav(){return pages.map(p=>`<button data-action="nav" data-page="${p}" c
 function iconCard(value,name,small=""){return `<div class="metric"><strong>${esc(value)}</strong><span>${esc(name)}</span>${small?`<small>${esc(small)}</small>`:""}</div>`;}
 function overview(){
  const chapters=courseProgress();
- return `<section class="hero ${window.CWC_LEARNER?.ready()?"":"hero-enrollment"}"><div class="hero-copy"><span class="eyebrow light">Version 10.0.1 · One guided leadership program + advanced practice lab</span><h2>One facility. One ordinary day.<br><em>A dozen consequences.</em></h2><p>One leadership program combines five foundational chapters, consequential simulations, staffing and evidence labs, and a facilitator-reviewed competency assessment for aspiring supervisors and directors.</p><p class="hero-author">Created and developed by <strong>Richard Lawrence Stenlund</strong></p>${window.CWC_LEARNER?.ready()?`<div class="hero-welcome"><p>Welcome back, <strong>${esc(window.CWC_LEARNER.profile().name)}</strong>.</p><div class="hero-actions">${hButton("start-training",courseReady()||chapters.done>0?"Continue Training →":"Start Training →","primary-light")}</div></div>`:window.CWC_LEARNER?.enrollHero()||""}</div><div class="hero-mark" aria-hidden="true"><span>09</span><small>director<br>edition</small></div></section>
+ return `<section class="hero ${window.CWC_LEARNER?.ready()?"":"hero-enrollment"}"><div class="hero-copy"><span class="eyebrow light">Version 10.1.0 · One leadership program with applied simulations</span><h2>One facility. One ordinary day.<br><em>A dozen consequences.</em></h2><p>One leadership program combines five foundational chapters, consequential simulations, staffing and evidence labs, and a facilitator-reviewed competency assessment for aspiring supervisors and directors.</p><p class="hero-author">Created and developed by <strong>Richard Lawrence Stenlund</strong></p>${window.CWC_LEARNER?.ready()?`<div class="hero-welcome"><p>Welcome back, <strong>${esc(window.CWC_LEARNER.profile().name)}</strong>.</p><div class="hero-actions">${hButton("start-training",courseReady()||chapters.done>0?"Continue Training →":"Start Training →","primary-light")}</div></div>`:window.CWC_LEARNER?.enrollHero()||""}</div><div class="hero-mark" aria-hidden="true"><span>09</span><small>director<br>edition</small></div></section>
  <div class="program-roadmap"><div class="roadmap-step"><span class="roadmap-no">01</span><div><h3>Learn the leadership foundations</h3><p>Five chapters, 72 applied questions, 36 follow-ups, and the original four-stage capstone. ${chapters.done} of 5 chapters completed.</p><span class="roadmap-desc">Part of the guided learning journey</span></div></div><div class="roadmap-step"><span class="roadmap-no">02</span><div><h3>Manage real consequences</h3><p>Practice updated guided or randomized cases, then explore staffing resilience and evidence evaluation.</p><span class="roadmap-desc">Applied cases follow the foundation lessons</span></div></div><div class="roadmap-step"><span class="roadmap-no">03</span><div><h3>Demonstrate the learning</h3><p>Complete diagnostics, a new cascading capstone, and a facilitator-reviewed workplace plan.</p><span class="roadmap-desc">Human-scored pilot assessment and feedback</span></div></div></div><section class="training-rationale" aria-labelledby="training-rationale-title"><div class="rationale-eyebrow">Why supervisory preparation matters · EDACE 830</div><h2 id="training-rationale-title">Experience is not the same as preparation.</h2><p>California's Child Development Permit pathways recognize education and professional experience, and some require administration or adult-supervision coursework. Those qualifications are important, but they do not automatically demonstrate the judgment needed when child safety, staff supervision, family concerns, and licensing obligations collide.</p><p>Drawing on Katz's (1974) technical, human, and conceptual leadership skills, and on adult learning through application and reflection, <em>Care with a Compass</em> moves beyond knowing what a leader should do. Learners evaluate evidence, make consequential choices, confront unexpected developments, and consider how to transfer those lessons to their own programs.</p><p class="rationale-bottom"><strong>The goal is not simply to find the right answer. It is to make a responsible decision, then know how to lead when the next problem begins.</strong></p></section>
  <div class="note"><strong>How to explore.</strong> Use the sidebar to preview any section in any order. The single Start/Continue Training button still follows the intended learning sequence, and browsing ahead does not automatically complete earlier activities. This remains a prototype, not a state licensing or validated certification course.</div><div class="actions">${window.CWC_LEARNER?.certificateAction(state,courseReady(),allCasesDone())||""}</div>`;
 }
@@ -141,7 +139,7 @@ function chaptersView(){
  const p=courseProgress();
  return `<div class="section-top"><div><div class="kicker">01 · Learning chapters</div><h2>Five chapters. One leadership foundation.</h2><p>Technical, human, and conceptual leadership skills, taught through the original applied question bank, branching follow-ups, guided recovery, chapter labs, and reflection.</p></div><span class="pill neutral" id="chapterCompletedCount" aria-live="polite">${p.done}/5 completed</span></div>
  <div class="note"><strong>Your earlier progress is preserved.</strong> This is the same curriculum, now part of the single supervisor/director learning program. Continue where you last stopped.</div>
- <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.0.1&build=aligned-72-final" loading="eager" title="Five learning chapters for new supervisors and directors"></iframe></div>`;
+ <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.1.0&build=aligned-72-final" loading="eager" title="Five learning chapters for new supervisors and directors"></iframe></div>`;
 }
 function caseConditions(c,w){
  const out={safety:"Under review",coverage:"Under review",family:"Under review",evidence:"Not yet reviewed",finance:"Not reviewed"};
@@ -159,24 +157,11 @@ function caseStage(c,index){
  return {...base,lead:adjustment.lead||base.lead,question:adjustment.question||base.question,
   options:base.options.map(o=>({...o,text:adjustment.optionText?.[o.id]||o.text}))};
 }
-function simulationSelector(){
- const mode=state.simulationMode==="guided"?"guided":"random";
- return `<section class="panel" aria-label="Applied simulation selection" style="margin-bottom:16px">
- <div class="kicker">Applied simulations</div>
- <h2>Choose how you want to practice.</h2>
- <div class="actions" role="group" aria-label="Simulation sets">
-  <button type="button" data-action="simulation-mode" data-mode="random" class="btn ${mode==="random"?"primary":"outline"}" aria-pressed="${mode==="random"}">Three randomized cases · 12 decisions each</button>
-  <button type="button" data-action="simulation-mode" data-mode="guided" class="btn ${mode==="guided"?"primary":"outline"}" aria-pressed="${mode==="guided"}">Three updated guided cases · 12 decisions each</button>
- </div></section>`;
+function casesView(){
+ return `<section class="panel" aria-label="Applied leadership simulations">
+ <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.1.0&embedded=1" title="Applied leadership simulations" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
+ <div class="actions"><a href="consequence-lab.html?v=10.1.0" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
 }
-function simulationLabView(){
- const guided=state.simulationMode==="guided";
- const mode=guided?"guided":"random";
- return `<section class="panel" aria-label="${guided?"Guided":"Randomized"} applied simulation">
- <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.0.2&mode=${mode}&embedded=1" title="${guided?"Three updated guided supervisory scenarios":"Three randomized applied supervisory scenarios"}" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
- <div class="actions"><a href="consequence-lab.html?v=10.0.2&mode=${mode}" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
-}
-function casesView(){return simulationSelector()+simulationLabView();}
 function guidedCasesView(){
  const c=getCase(state.caseId),w=work(c.id),finished=w.step>=c.stages.length,variant=selectedVariant(c);
  if(!state.introSeen["case:"+c.id])return `<div class="section-top"><div><div class="kicker">Supervisor applied case · Lesson first</div><h2>${esc(c.title)}</h2><p>${esc(c.subtitle)}</p></div></div>${introductoryLesson("case:"+c.id)}`;
@@ -366,8 +351,8 @@ function render(){
  const app=$("#app");if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready())state.page="overview";const views={overview,chapters:chaptersView,cases:casesView,staff:staffView,evidence:evidenceView,assessment:assessmentView,facilitator:facilitatorView};
  const key=moduleKey(),content=state.page!=="cases"&&L.modules?.[key]&&!state.introSeen[key]?introductoryLesson(key):views[state.page]();
  const showingReadingLesson=content.includes('class="panel module-lesson"');
- app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v10.0.1</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button><button type="button" class="utility-button" data-action="switch-learner" aria-label="Switch learner and clear this browser's training data"><span aria-hidden="true">⇄</span> Switch Learner</button></div></div></header><main id="main" tabindex="-1">${sectionVisual(key,showingReadingLesson)}${content}</main>${window.CWC_LEARNER?.notice()||""}<footer><span>Care with a Compass · Supervisor Leadership Program · v10.0.1</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
- document.title="Care with a Compass | Supervisor Leadership Program v10.0.1";
+ app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v10.1.0</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button><button type="button" class="utility-button" data-action="switch-learner" aria-label="Switch learner and clear this browser's training data"><span aria-hidden="true">⇄</span> Switch Learner</button></div></div></header><main id="main" tabindex="-1">${sectionVisual(key,showingReadingLesson)}${content}</main>${window.CWC_LEARNER?.notice()||""}<footer><span>Care with a Compass · Supervisor Leadership Program · v10.1.0</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
+ document.title="Care with a Compass | Supervisor Leadership Program v10.1.0";
 }
 function returnHome(){go("overview");}
 function startOverTraining(){
@@ -389,7 +374,7 @@ function go(page){if(!canOpen(page))return;if(window.CWC_LEARNER&&!window.CWC_LE
 function download(name,body,type){const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function report(){
  const a=state.assessment,r=assessScores();
- return {application:"Care with a Compass",version:"10.0.1",generatedAt:new Date().toISOString(),participant:a.name||"Anonymous local participant",scores:{diagnostic:r.partA,capstone:r.partB,transfer:r.manual,total:r.manual===null?null:r.total},mastery:{objective1:r.skillCorrect,objective4:r.causeCorrect,criticalSafetyErrors:r.critical,provisionalStatus:r.manual===null?"facilitator review pending":r.pass?"all pilot gates met":"remediation required"},responses:{diagnostic:a.diagnostic,capstone:a.capstone,transferPlan:a.transfer},facilitator:{reviewer:a.reviewer,notes:a.facilitatorNote,reviewMode:"Unverified local scoring simulation"},warning:"This browser cannot authenticate the scorer, verify first attempts, or issue an accredited/verified competency credential."};
+ return {application:"Care with a Compass",version:"10.1.0",generatedAt:new Date().toISOString(),participant:a.name||"Anonymous local participant",scores:{diagnostic:r.partA,capstone:r.partB,transfer:r.manual,total:r.manual===null?null:r.total},mastery:{objective1:r.skillCorrect,objective4:r.causeCorrect,criticalSafetyErrors:r.critical,provisionalStatus:r.manual===null?"facilitator review pending":r.pass?"all pilot gates met":"remediation required"},responses:{diagnostic:a.diagnostic,capstone:a.capstone,transferPlan:a.transfer},facilitator:{reviewer:a.reviewer,notes:a.facilitatorNote,reviewMode:"Unverified local scoring simulation"},warning:"This browser cannot authenticate the scorer, verify first attempts, or issue an accredited/verified competency credential."};
 }
 function csv(x){return '"'+String(x??"").replace(/"/g,'""')+'"';}
 document.addEventListener("submit",e=>{if(e.target?.id!=="cwc-learner-form")return;e.preventDefault();if(window.CWC_LEARNER?.enroll()){state.assessment.name=window.CWC_LEARNER.profile().name;save();resumeLinear();}});
@@ -473,7 +458,7 @@ document.addEventListener("input",e=>{
  }
  if(e.target?.dataset?.change==="assess-transfer"){state.assessment.transfer=e.target.value;save();const button=$('button[data-action="submit-assessment"]');if(button)button.disabled=!assessmentReady();}
 });
-window.addEventListener("message",e=>{const frame=document.getElementById("consequenceLabFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin||e.data?.app!=="cwc-consequence-lab")return;if(e.data.kind==="lab-completed"){if(e.data.completed===true&&["guided","random"].includes(e.data.mode)){state.completedSimulations[e.data.mode]=true;save();}return;}if(e.data.kind!=="lab-height")return;const h=Number(e.data.height);if(Number.isFinite(h)&&h>200)frame.style.height=Math.min(30000,Math.ceil(h+20))+"px";});
+window.addEventListener("message",e=>{const frame=document.getElementById("consequenceLabFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin||e.data?.app!=="cwc-consequence-lab")return;if(e.data.kind==="lab-completed"){if(e.data.completed===true&&e.data.mode==="unified"){state.completedSimulations.random=true;save();}return;}if(e.data.kind!=="lab-height")return;const h=Number(e.data.height);if(Number.isFinite(h)&&h>200)frame.style.height=Math.min(30000,Math.ceil(h+20))+"px";});
  window.addEventListener("message",e=>{const frame=document.getElementById("chaptersFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin)return;const data=e.data;if(data?.app!=="care-with-a-compass")return;if(data.kind==="chapter-progress"){const numbers=Array.isArray(data.done)?[...new Set(data.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=5))]:[];const badge=document.getElementById("chapterCompletedCount");if(badge)badge.textContent=numbers.length+"/5 completed";return;}
 if(data.kind==="chapter-submit-request"){
  const payload=data.payload||{},ch=Number(payload.chapter);
