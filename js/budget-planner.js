@@ -20,7 +20,7 @@ let benchmarks={
  ],lastReviewed:"2026-11-21"
 };
 let state=load();
-function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||"null");if(x&&typeof x==="object")return {values:{...DEFAULTS,...x.values},touched:!!x.touched};}catch(e){}return {values:{...DEFAULTS},touched:false};}
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||"null");if(x&&typeof x==="object")return {values:{...DEFAULTS,...x.values},actual:x.actual||null,touched:!!x.touched};}catch(e){}return {values:{...DEFAULTS},actual:null,touched:false};}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
 function html(x){return String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function cash(n){return (n<0?"−":"")+"$"+Math.abs(Math.round(n)).toLocaleString("en-US");}
@@ -77,6 +77,16 @@ function fieldset(title,items,open){
 function card(label,id,value){
  return '<div class="budget-result"><span>'+html(label)+'</span><strong id="'+id+'">'+value+'</strong></div>';
 }
+function breakdown(c){
+ return '<details class="budget-breakdown"><summary>See where the money goes each month</summary><dl>'+
+ '<div><dt>Rent, CAM/NNN and utilities</dt><dd>'+cash(c.rent+c.leaseExtras+c.utility)+'</dd></div>'+
+ '<div><dt>Teacher wages, taxes and benefits</dt><dd>'+cash(c.teacherPayroll)+'</dd></div>'+
+ '<div><dt>Aide wages, taxes and benefits</dt><dd>'+cash(c.aidePayroll)+'</dd></div>'+
+ '<div><dt>Extra paid overnight labor</dt><dd>'+cash(c.nightPayroll)+'</dd></div>'+
+ '<div><dt>Director’s desired salary</dt><dd>'+cash(c.director)+'</dd></div>'+
+ '<div><dt>Insurance, food and other expenses</dt><dd>'+cash(c.expenses-c.rent-c.leaseExtras-c.utility-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.director)+'</dd></div>'+
+ '</dl></details>';
+}
 function overview(c){
  return '<div class="budget-results" aria-live="polite">'+
  card("Total monthly income","b-income",cash(c.monthlyRevenue))+
@@ -84,7 +94,7 @@ function overview(c){
  card("Director's desired salary","b-director",cash(c.director))+
  card("Other operating costs","b-othercost",cash(c.expenses-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.director))+
  card("Monthly surplus after director pay","b-profit",cash(c.profit))+
- '</div><div class="budget-verdict" id="b-verdict">'+verdict(c)+'</div>';
+ '</div><div class="budget-verdict" id="b-verdict">'+verdict(c)+'</div><div id="b-breakdown">'+breakdown(c)+'</div>';
 }
 function verdict(c){
  if(c.day>c.capacity)return '<strong>Capacity warning:</strong> Daytime enrollment exceeds the licensed maximum you entered. Adjust the schedule or enrollment.';
@@ -140,7 +150,7 @@ function view(){
  fieldset("3. Rent and building expenses",[
  select("county","California county",countyOpts),
  select("rentMode","How to calculate rent",[["area","Estimate by square footage"],["actual","Enter actual monthly rent"]]),
- (v.rentMode==="area"?numeric("sqft","Building square footage",100)+numeric("rateOverride","Your own rent rate ($/sq. ft./month; 0 = county benchmark)",.01)+numeric("nnnSqft","Extra CAM/NNN charges ($/sq. ft./month)",.05):
+ (v.rentMode==="area"?numeric("sqft","Building square footage",100)+'<label class="budget-field budget-square-slider"><span>Drag to change building size</span><input type="range" data-budget-key="sqft" min="500" max="50000" step="100" value="'+html(v.sqft)+'"></label>'+numeric("rateOverride","Your own rent rate ($/sq. ft./month; 0 = county benchmark)",.01)+numeric("nnnSqft","Extra CAM/NNN charges ($/sq. ft./month)",.05):
  numeric("rentActual","Actual monthly base rent ($)",100)+numeric("leaseExtras","Extra monthly lease charges ($)",25)),
  numeric("utilitiesPct","Utilities (% of base rent)",1),numeric("insurance","Insurance each month ($)",25)
  ],false)+
@@ -174,21 +184,30 @@ function update(){
  const caveat=document.getElementById("b-caveat");
  if(caveat)caveat.textContent=(c.breakEven!==null&&c.breakEven>c.capacity?"Break-even enrollment exceeds your entered licensed capacity. ":"")+"These calculations hold current rates and staffing costs fixed while you compare possible enrollment levels.";
  const source=document.getElementById("b-rentsource");if(source)source.innerHTML=sourceLine(c);
+ const detail=document.getElementById("b-breakdown");if(detail){const wasOpen=!!detail.querySelector("details")?.open;detail.innerHTML=breakdown(c);const box=detail.querySelector("details");if(box)box.open=wasOpen;}
 }
 function updateField(input){
  const key=input.dataset.budgetKey;if(!key||!(key in DEFAULTS))return;
  const val=input.value;
- state.values[key]=typeof DEFAULTS[key]==="number"?(val===""?0:Math.max(0,Math.min(1000000,Number(val)||0))):val;
- state.touched=true;persist();update();
+ if(key==="mode"){
+  if(val==="actual"){state.values={...(state.actual||state.values),mode:"actual"};}
+  else {if(state.values.mode==="actual")state.actual={...state.values};state.values={...DEFAULTS,mode:"example"};}
+ }else{
+  state.values[key]=typeof DEFAULTS[key]==="number"?(val===""?0:Math.max(0,Math.min(1000000,Number(val)||0))):val;
+  if(state.values.mode==="actual")state.actual={...state.values};
+ }
+ state.touched=true;persist();
+ if(key==="sqft"){document.querySelectorAll('[data-budget-key="sqft"]').forEach(el=>{if(el!==input)el.value=state.values.sqft;});}
+ update();
  document.dispatchEvent(new Event("cwc-budget-changed"));
 }
 document.addEventListener("input",function(e){if(e.target&&e.target.dataset.budgetKey&&e.target.tagName==="INPUT")updateField(e.target);});
 document.addEventListener("change",function(e){
  const el=e.target;if(!el||!el.dataset.budgetKey)return;updateField(el);
- if(el.dataset.budgetKey==="rentMode"){const root=document.getElementById("cwc-budget");if(root){root.outerHTML=view();}}
+ if(el.dataset.budgetKey==="rentMode"||el.dataset.budgetKey==="mode"){const root=document.getElementById("cwc-budget");if(root){root.outerHTML=view();}}
 });
-document.addEventListener("click",function(e){const el=e.target.closest("[data-budget-reset]");if(!el)return;state={values:{...DEFAULTS},touched:false};persist();const root=document.getElementById("cwc-budget");if(root)root.outerHTML=view();});
-function reset(){state={values:{...DEFAULTS},touched:false};persist();}
+document.addEventListener("click",function(e){const el=e.target.closest("[data-budget-reset]");if(!el)return;state={values:{...DEFAULTS},actual:state.actual,touched:false};persist();const root=document.getElementById("cwc-budget");if(root)root.outerHTML=view();});
+function reset(){state={values:{...DEFAULTS},actual:null,touched:false};persist();}
 function loadBenchmarks(){
  if(typeof fetch!=="function")return;
  fetch("data/california-budget-benchmarks.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("market data unavailable");return r.json();}).then(data=>{
