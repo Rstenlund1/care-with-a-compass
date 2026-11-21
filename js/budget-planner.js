@@ -15,7 +15,7 @@ function countyRateFor(county){
 }
 
 const DEFAULTS={
- students:14,tuition:923,partStudents:0,partTuition:692,county:"San Bernardino",
+ students:1,tuition:923,partStudents:0,partTuition:692,county:"San Bernardino",
  staffCount:0,staffHourly:23,staffWeeklyHours:40,
  rent:0,utilities:0,insurance:0,directorSalary:6500,
  overnightNights:0,overnightFee:95,staffUnavailable:"none"
