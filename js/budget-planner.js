@@ -89,6 +89,7 @@ function breakdown(c){
 function view(){
  const c=calculate(),v=state.values;
  return '<section class="budget-compact" id="cwc-budget" aria-label="Tuition and expenses calculator">'+
+ '<div class="budget-mobile-strip" aria-label="Live monthly summary"><span>Revenue<strong id="b-mobile-income">'+fmt(c.revenue)+'</strong></span><span>Expenses<strong id="b-mobile-expenses">'+fmt(c.expenses)+'</strong></span><span>Surplus<strong id="b-mobile-profit">'+fmt(c.surplus)+'</strong></span></div>'+
  '<div class="budget-compact-editor">'+
  '<div class="budget-compact-heading"><h3>Tuition &amp; expenses</h3><p>Change any number. Results update as you type.</p></div>'+
  '<div class="budget-compact-fields">'+
@@ -136,6 +137,7 @@ function update(){
  if(!document.getElementById("cwc-budget"))return;
  const c=calculate(),values={
   "b-income":fmt(c.revenue),"b-expenses":fmt(c.expenses),"b-profit":fmt(c.surplus),
+  "b-mobile-income":fmt(c.revenue),"b-mobile-expenses":fmt(c.expenses),"b-mobile-profit":fmt(c.surplus),
   "b-tuition":c.tuitionRequired==null?"Add full-time enrollment":fmt(c.tuitionRequired)+"/child",
   "b-break":c.breakEven==null?"Not calculable":String(c.breakEven)
  };
