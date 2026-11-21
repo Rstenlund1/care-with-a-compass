@@ -14,8 +14,54 @@ function countyRateFor(county){
  return Number.isFinite(weekly)&&weekly>0?{monthly:Math.round(weekly*52/12),fallback:false}:{monthly:CALIFORNIA_FALLBACK_MONTHLY,fallback:true};
 }
 
+
+/* Estimated 2026 county weekly rates, from PayByTown's DOL NDCP 2022 data
+ * adjusted using a 23.3% day-care price index. Array values:
+ * [center infant, family infant, family preschool]. Center preschool
+ * rates are already in COUNTY_WEEKLY_PRESCHOOL_2026.
+ * https://paybytown.com/childcare/california/ (updated Oct 18, 2026).
+ */
+const COUNTY_WEEKLY_EXTRA_2026={"Alameda":[636,445,426],"Alpine":[439,249,246],"Amador":[290,266,239],"Butte":[437,359,277],"Calaveras":[359,301,254],"Colusa":[327,296,254],"Contra Costa":[594,393,394],"Del Norte":[277,284,241],"El Dorado":[555,459,354],"Fresno":[513,364,288],"Glenn":[294,260,221],"Humboldt":[452,312,252],"Imperial":[274,234,222],"Inyo":[445,307,252],"Kern":[435,293,235],"Kings":[321,269,224],"Lake":[322,286,240],"Lassen":[277,284,240],"Los Angeles":[317,351,273],"Madera":[409,291,241],"Marin":[676,484,502],"Mariposa":[314,286,241],"Mendocino":[343,296,247],"Merced":[302,285,235],"Modoc":[277,253,219],"Mono":[456,364,321],"Monterey":[497,393,313],"Napa":[465,324,309],"Nevada":[391,269,255],"Orange":[486,370,345],"Placer":[554,480,382],"Plumas":[277,284,240],"Riverside":[499,285,251],"Sacramento":[428,298,252],"San Benito":[476,292,291],"San Bernardino":[474,334,276],"San Diego":[468,309,294],"San Francisco":[748,488,505],"San Joaquin":[477,405,319],"San Luis Obispo":[446,303,264],"San Mateo":[684,462,488],"Santa Barbara":[558,448,353],"Santa Clara":[650,445,427],"Santa Cruz":[588,503,387],"Shasta":[306,257,219],"Sierra":[277,253,219],"Siskiyou":[327,236,240],"Solano":[522,452,351],"Sonoma":[300,353,275],"Stanislaus":[390,375,299],"Sutter":[378,271,235],"Tehama":[291,273,225],"Trinity":[277,299,244],"Tulare":[296,304,254],"Tuolumne":[332,297,256],"Ventura":[524,323,323],"Yolo":[478,321,277],"Yuba":[450,337,277]};
+const PROGRAM_TYPES=[
+ ["small","Small Family Child Care Home"],
+ ["large","Large Family Child Care Home"],
+ ["preschool","Preschool Center"]
+];
+function programType(){return PROGRAM_TYPES.some(([id])=>id===state.values.programType)?state.values.programType:"small";}
+function countyRates(name,type){
+ const e=COUNTY_WEEKLY_EXTRA_2026[name],preschool=COUNTY_WEEKLY_PRESCHOOL_2026[name],center=type==="preschool";
+ const childWeekly=center?preschool:e?.[2];
+ const infantWeekly=center?e?.[0]:e?.[1];
+ return {child:Math.round((Number(childWeekly)||CALIFORNIA_FALLBACK_MONTHLY*12/52)*52/12),
+         infant:Math.round((Number(infantWeekly)||CALIFORNIA_FALLBACK_MONTHLY*12/52)*52/12),
+         inferred:!(childWeekly>0&&infantWeekly>0)};
+}
+/* Conservative budget staffing. Home ratios are not a universal staff-child formula.
+ * Family care: Title 22 CCR 102416.5.
+ * Preschool 1:12: 22 CCR 101216.3; infant 1:4: 101416.5.
+ * This assumes the director is authorized, qualified, and available to work
+ * with ONE group, not simultaneously supervise two separate age groups.
+ */
+function programRule(type,older,infants){
+ const n=older+infants,small=type==="small",large=type==="large";
+ if(small){
+  const onlyInfants=older===0&&infants<=4;
+  const beyond6=n>6;
+  const tooMany=n>8||(n>6&&infants>2)||(n<=6&&infants>3&&!onlyInfants);
+  return {required:n?1:0,additional:beyond6?1:0,limit:8,needsSpecial:beyond6&&n<=8,invalid:tooMany,infantLimit:onlyInfants?4:n>6?2:3,rule:"Small family home: 4 infants only; or up to 6 children with no more than 3 infants. Seven or eight require qualifying school-age children and other conditions; adding staff does not waive those rules."};
+ }
+ if(large){
+  const assistantNeeded=n>6;
+  const invalid=n>14||(n>12&&infants>3)||(n<=12&&infants>4);
+  return {required:n?(assistantNeeded?2:1):0,additional:assistantNeeded?1:0,limit:14,needsSpecial:n>12&&n<=14,invalid,infantLimit:n>12?3:4,rule:"Large family home: up to 12 with an assistant and no more than 4 infants, or 13–14 only with qualifying school-age children and no more than 3 infants. Without an assistant, small-home limits apply."};
+ }
+ const infantNeeded=Math.ceil(infants/4),olderNeeded=Math.ceil(older/12),required=infantNeeded+olderNeeded;
+ return {required,additional:Math.max(0,required-1),limit:null,needsSpecial:infants>0,invalid:false,infantLimit:null,rule:"Preschool center: one qualified teacher per 12 preschool children; infant groups require one qualified infant-care teacher per 4 infants and an authorized infant-care component. The director counts in only one group when properly qualified and working directly with those children."};
+}
+
 const DEFAULTS={
- students:1,tuition:923,partStudents:0,partTuition:692,county:"San Bernardino",
+ students:1,tuition:1196,partStudents:0,partTuition:897,county:"San Bernardino",programType:"small",
+ infantFull:0,infantPart:0,infantTuition:1447,infantPartTuition:1085,
  staffCount:0,staffHourly:23,staffWeeklyHours:40,
  rent:0,utilities:0,insurance:0,directorSalary:6500,
  overnightNights:0,overnightFee:95,staffUnavailable:"none"
@@ -27,7 +73,7 @@ function migrate(v){
  if(!v||typeof v!=="object")return {...DEFAULTS};
  if(Object.prototype.hasOwnProperty.call(v,"students")){
   const result={...DEFAULTS};
-  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=(key==="county"||key==="staffUnavailable")?String(v[key]):clamp(v[key]);
+  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=(key==="county"||key==="staffUnavailable"||key==="programType")?String(v[key]):clamp(v[key]);
   return result;
  }
  const teachers=Math.max(0,Number(v.teachersFte)||0),aides=Math.max(0,Number(v.aidesFte)||0),count=teachers+aides;
@@ -36,7 +82,7 @@ function migrate(v){
  const rentExtra=v.rentMode==="actual"?Number(v.leaseExtras)||0:(Number(v.sqft)||0)*(Number(v.nnnSqft)||0);
  const result={...DEFAULTS,
   students:clamp(v.fullChildren??DEFAULTS.students),tuition:clamp(v.fullTuition??DEFAULTS.tuition),county:"San Bernardino",
-  partStudents:clamp(v.partChildren??0),partTuition:clamp(v.partTuition??DEFAULTS.partTuition),
+  partStudents:clamp(v.partChildren??0),partTuition:clamp(v.partTuition??DEFAULTS.partTuition),programType:"small",
   staffCount:count||DEFAULTS.staffCount,staffHourly:avgWage||DEFAULTS.staffHourly,
   staffWeeklyHours:clamp(v.weeklyHours??40),rent:Math.max(0,(rentBase||0)+rentExtra),
   insurance:clamp(v.insurance??0),
@@ -52,42 +98,53 @@ function load(){
   const saved=JSON.parse(localStorage.getItem(KEY)||"null");
   if(saved&&typeof saved==="object"){
    // Never convert a previously untouched example into a real user expense assumption.
-   if(!saved.touched)return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};
+   if(!saved.touched)return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};
    const values=migrate(saved.values),old=saved.values||{};
    const partLinked=typeof saved.partLinked==="boolean"?saved.partLinked:(Number(old.partStudents??old.partChildren??0)===0 && Number(old.partTuition??1000)===1000);
    if(partLinked)values.partTuition=rate75(values.tuition);
-   return {values,touched:true,partLinked,tuitionManual:typeof saved.tuitionManual==="boolean"?saved.tuitionManual:true};
+   return {values,touched:true,partLinked,tuitionManual:typeof saved.tuitionManual==="boolean"?saved.tuitionManual:true,infantPartLinked:saved.infantPartLinked!==false,infantManual:!!saved.infantManual};
   }
  }catch(_){}
- return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};
+ return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};
 }
 let state=load();
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){}}
 function esc(x){return String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function cash(n){return (n<0?"−":"")+"$"+Math.abs(Math.round(n)).toLocaleString("en-US");}
 function val(key){return clamp(state.values[key]);}
+function automaticStaffCount(v=state.values){
+ const r=programRule(v.programType||"small",
+   Math.ceil(Number(v.students)||0)+Math.ceil(Number(v.partStudents)||0),
+   Math.ceil(Number(v.infantFull)||0)+Math.ceil(Number(v.infantPart)||0));
+ return r.additional;
+}
+function setSuggestedStaff(){
+ state.values.staffCount=automaticStaffCount();
+ state.values.staffWeeklyHours=40;
+ const n=document.querySelector?.('[data-budget-key="staffCount"]');if(n)n.value=state.values.staffCount;
+ const h=document.querySelector?.('[data-budget-key="staffWeeklyHours"]');if(h)h.value=40;
+}
 function calculate(){
- const full=val("students"),part=val("partStudents"),night=val("overnightNights");
- const fullIncome=full*val("tuition"),partIncome=part*val("partTuition"),nightIncome=night*val("overnightFee");
- const revenue=fullIncome+partIncome+nightIncome;
+ const full=val("students"),part=val("partStudents"),infantFull=val("infantFull"),infantPart=val("infantPart"),night=val("overnightNights");
+ const fullIncome=full*val("tuition"),partIncome=part*val("partTuition");
+ const infantIncome=infantFull*val("infantTuition")+infantPart*val("infantPartTuition"),nightIncome=night*val("overnightFee");
+ const revenue=fullIncome+partIncome+infantIncome+nightIncome;
  const staffPayroll=val("staffCount")*val("staffWeeklyHours")*52/12*val("staffHourly");
  const director=val("directorSalary"),rent=val("rent"),utilities=val("utilities"),insurance=val("insurance");
  const expenses=staffPayroll+director+rent+utilities+insurance;
- // The director counts as one available person; FTE fractions are not people on shift.
- // This is not a regulatory ratio calculation.
+ const older=full+part,infants=infantFull+infantPart,daytimeChildren=older+infants;
+ const type=programType(),rule=programRule(type,older,infants);
+ // FTE is a payroll estimate, not a guarantee someone is on site at each moment.
  const scheduledPeople=1+Math.floor(val("staffCount"));
  const unavailable={none:0,restroom:1,sick:1,emergency:1,two:2}[state.values.staffUnavailable]??0;
  const availablePeople=Math.max(0,scheduledPeople-unavailable);
- // Conservative same-time attendance estimate. An illustrative 1:12 planning
- // threshold is not a substitute for age-specific ratios, licensed capacity,
- // qualified-personnel requirements, or family child care home staffing rules.
- const daytimeChildren=full+part;
- const planningFloor=Math.ceil(daytimeChildren/12);
+ const planningFloor=rule.required;
  const coverageGap=Math.max(0,planningFloor-availablePeople);
+ const aboveCapacity=rule.invalid;
  const surplus=revenue-expenses;
  // Break-even tuition adjusts only the full-time rate. Part-time and overnight revenue stay fixed.
- const tuitionRequired=full>0?Math.max(0,(expenses-partIncome-nightIncome)/full):null;
- return {full,part,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance,scheduledPeople,unavailable,availablePeople,daytimeChildren,planningFloor,coverageGap};
+ const tuitionRequired=full>0?Math.max(0,(expenses-partIncome-infantIncome-nightIncome)/full):null;
+ return {full,part,infantFull,infantPart,older,infants,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance,scheduledPeople,unavailable,availablePeople,daytimeChildren,planningFloor,coverageGap,type,rule,aboveCapacity};
 }
 function countyRateNote(county,manual){
  const info=countyRateFor(county);
