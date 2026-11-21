@@ -247,18 +247,7 @@ function staffView(){
  ${(s.plan==="overlap"||s.plan==="combined")?`<div><label for="staffWindow">Does the incident happen during the 3-hour extra-teacher shift?</label><select id="staffWindow" data-change="staff-window"><option value="during" ${s.window!=="outside"?"selected":""}>Yes, during the three hours</option><option value="outside" ${s.window==="outside"?"selected":""}>No, outside the three hours</option></select></div>`:""}
  <div><label for="staffSupport">Individualized supervision considerations</label><select id="staffSupport" data-change="staff-support"><option value="routine" ${s.support!=="enhanced"?"selected":""}>Routine group needs</option><option value="enhanced" ${s.support==="enhanced"?"selected":""}>Child needs intensive individualized support</option></select></div>
  </div><p class="staff-plan-help" id="staffPlanHelp"><strong>What this option means:</strong> ${esc(coverageExplainers[s.plan]||coverageExplainers.minimum)} Extra teachers must be qualified, actually on shift, and available to supervise.</p></div>
- <div class="staff-section"><h4>3. What does extra teacher coverage cost?</h4>
- <label for="staffWage">Illustrative fully loaded cost per paid staff-hour: <strong id="staffWageValue">${money(m.wage)}</strong></label>
- <input id="staffWage" type="range" min="18" max="45" step="1" value="${s.wage}" data-change="staff-wage" aria-describedby="staffBudgetMethod">
- <div class="lab-results" aria-live="polite" aria-atomic="true">
-  <div><span>Base daily labor</span><strong id="staffBaseCost">${money(m.baseCost)}</strong></div>
-  <div><span>Extra daily teacher coverage</span><strong id="staffExtraCost">${money(m.cost)}</strong></div>
-  <div><span>Total daily labor</span><strong id="staffTotalCost">${money(m.totalDaily)}</strong></div>
-  <div><span>Five-day labor estimate</span><strong id="staffFiveDayCost">${money(m.totalWeekCost)}</strong></div>
-  <div><span>22-day labor estimate</span><strong id="staffMonthCost">${money(m.totalMonthCost)}</strong></div>
- </div>
- <p class="tiny muted" id="staffBudgetMethod">Illustrative baseline: ${m.scheduled} scheduled qualified teacher(s) × 8 paid hours per day = <strong id="staffBaseHours">${m.baseHours}</strong> baseline paid hours. Additional paid coverage hours: none 0, three-hour extra teacher 3, six-hour backup teacher 6, both 9; currently <strong id="staffExtraHours">${m.hours}</strong> per day. Changing the hourly cost updates all estimates. Figures exclude unmodeled personnel, overtime, and variable payroll costs; they are examples rather than an actual staffing budget. Added daily cost per attending child: <strong id="staffExtraPerChild">$${m.extraPerChild.toFixed(2)}</strong>.</p></div>
- <div class="staff-section"><h4>4. Evaluate the decision</h4>
+ <div class="staff-section"><h4>3. Evaluate the decision</h4>
  <div class="coverage-summary" aria-live="polite">
  <div><span>Scheduled teachers</span><strong>${m.scheduled}</strong></div>
  <div><span>Extra qualified teachers available at this incident</span><strong>+${m.backup}</strong></div>
@@ -270,6 +259,18 @@ function staffView(){
  ${m.enhanced?`<div class="staff-support-warning"><strong>Individualized support consideration.</strong> ${termHtml("Minimum ratio")} compliance alone cannot establish whether this child receives appropriate supervision, accommodations, or communication support. Review the actual child-specific plan and available staffing.</div>`:""}
  <p><strong>Director's next action:</strong> ${m.ok?"Verify classroom assignments, actual supervision, staff qualifications, and ability to maintain coverage throughout the day.":"Obtain suitable qualified relief, change arrangements where permitted, or reduce attendance and operations until the program can provide required supervision."}</p>
  ${sourceHtml("staff")}
+
+ <div class="staff-section"><h4>4. What does extra teacher coverage cost?</h4>
+ <label for="staffWage">Illustrative fully loaded cost per paid staff-hour: <strong id="staffWageValue">${money(m.wage)}</strong></label>
+ <input id="staffWage" type="range" min="18" max="45" step="1" value="${s.wage}" data-change="staff-wage" aria-describedby="staffBudgetMethod">
+ <div class="lab-results" aria-live="polite" aria-atomic="true">
+  <div><span>Base daily labor</span><strong id="staffBaseCost">${money(m.baseCost)}</strong></div>
+  <div><span>Extra daily teacher coverage</span><strong id="staffExtraCost">${money(m.cost)}</strong></div>
+  <div><span>Total daily labor</span><strong id="staffTotalCost">${money(m.totalDaily)}</strong></div>
+  <div><span>Five-day labor estimate</span><strong id="staffFiveDayCost">${money(m.totalWeekCost)}</strong></div>
+  <div><span>22-day labor estimate</span><strong id="staffMonthCost">${money(m.totalMonthCost)}</strong></div>
+ </div>
+ <p class="tiny muted" id="staffBudgetMethod">Illustrative baseline: ${m.scheduled} scheduled qualified teacher(s) × 8 paid hours per day = <strong id="staffBaseHours">${m.baseHours}</strong> baseline paid hours. Additional paid coverage hours: none 0, three-hour extra teacher 3, six-hour backup teacher 6, both 9; currently <strong id="staffExtraHours">${m.hours}</strong> per day. Changing the hourly cost updates all estimates. Figures exclude unmodeled personnel, overtime, and variable payroll costs; they are examples rather than an actual staffing budget. Added daily cost per attending child: <strong id="staffExtraPerChild">$${m.extraPerChild.toFixed(2)}</strong>.</p></div>
  <div class="actions journey-next">${journeyButton()}</div></div></section>
  <aside class="sidepanel"><h3>Leadership skills in action</h3>
  <p><strong>${termHtml("Technical skill")}:</strong> Determine who is qualified, onsite, and counted toward actual classroom supervision.</p>
