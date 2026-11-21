@@ -523,3 +523,8 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-county-method{display:block;color:#71647d;font-size:11px;line-height:1.5;margin-top:4px}
 .budget-county-source a{color:#573b79;text-decoration:underline;text-underline-offset:2px}
 @media(max-width:500px){.budget-county-selector{max-width:100%}.budget-county-source{padding:9px}}
+
+/* v10.7.9: show director salary directly above additional staff without a duplicate card. */
+.budget-director-first{margin:0 0 13px;max-width:400px}
+.budget-director-first .budget-compact-field{display:flex}
+@media(max-width:650px){.budget-director-first{max-width:100%}}
