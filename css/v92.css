@@ -594,3 +594,8 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 /* v10.7.18 — conditional home enrollment is a note, not an error banner. */
 .budget-program-note{margin:5px 0 2px;padding:8px 10px;border-left:2px solid #b8aac6;border-radius:0 6px 6px 0;background:#f7f4fa;color:#584d61;font:500 12px/1.5 system-ui,sans-serif}
 .budget-program-note[hidden]{display:none!important}
+
+/* Align program and county controls without changing the published version. */
+.budget-program-county-row .budget-compact-field{display:flex;flex-direction:column;min-width:0;align-self:stretch}
+.budget-program-county-row .budget-field-heading{min-height:32px;display:flex;align-items:center;margin:0 0 8px}
+.budget-program-county-row .budget-compact-field select{display:block;box-sizing:border-box;width:100%;height:52px;min-height:52px;margin:0}
