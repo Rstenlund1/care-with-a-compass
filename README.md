@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.5
+
+**Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.5
+
+**Optional operations tool:** The Staffing & Tuition Planner is now clearly marked OPTIONAL at the bottom of the main navigation, with its explanatory lesson integrated into an expandable section on the same page. The former separate “What you will practice” lesson is not shown. The planner no longer contributes to the overall progress meter and is not required in the guided journey or certificate eligibility. Complete core progress now reaches 100% from six chapters, foundation capstone, simulations, evidence journal, and assessment. New clean defaults: one child attending and zero staff removed by interruption; saved planner selections are retained for learners who interacted with the tool. Learner reports accept Chapter 6, and the certificate lists all six chapters without treating optional staffing as required. Static JavaScript syntax and source consistency were checked; graphical browser verification remains necessary.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.4
 
 **Live review:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.4
