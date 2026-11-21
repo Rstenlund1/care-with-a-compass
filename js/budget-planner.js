@@ -289,22 +289,41 @@ function update(){
 function updateField(input){
  const key=input.dataset.budgetKey;
  if(!Object.prototype.hasOwnProperty.call(DEFAULTS,key))return;
- if(key==="staffUnavailable"){
+ const isPriceKey=key==="county"||key==="programType";
+ if(isPriceKey){
+  if(key==="county")state.values.county=String(input.value);
+  if(key==="programType")state.values.programType=PROGRAM_TYPES.some(([id])=>id===input.value)?input.value:"small";
+  const rates=countyRates(state.values.county,programType());
+  state.values.tuition=rates.child;
+  state.values.infantTuition=rates.infant;
+  state.tuitionManual=false;state.infantManual=false;
+  for(const [name,value] of [["tuition",rates.child],["infantTuition",rates.infant]]){
+   const el=document.querySelector?.('[data-budget-key="'+name+'"]');if(el)el.value=value;
+  }
+ }else if(key==="staffUnavailable"){
   state.values.staffUnavailable=String(input.value);
- }else if(key==="county"){
-  state.values.county=String(input.value);
-  state.values.tuition=countyRateFor(state.values.county).monthly;
-  state.tuitionManual=false;
-  const full=document.querySelector('[data-budget-key="tuition"]');if(full)full.value=state.values.tuition;
- }else state.values[key]=clamp(input.value);
- if(key==="tuition")state.tuitionManual=true;
- if(key==="partTuition")state.partLinked=false;
- if((key==="tuition"||key==="county")&&state.partLinked){
-  state.values.partTuition=rate75(state.values.tuition);
-  const node=document.querySelector('[data-budget-key="partTuition"]');
-  if(node)node.value=state.values.partTuition;
+ }else{
+  state.values[key]=clamp(input.value);
  }
+ if(key==="tuition")state.tuitionManual=true;
+ if(key==="infantTuition")state.infantManual=true;
+ if(key==="partTuition")state.partLinked=false;
+ if(key==="infantPartTuition")state.infantPartLinked=false;
+ if((key==="tuition"||isPriceKey)&&state.partLinked){
+  state.values.partTuition=rate75(state.values.tuition);
+  const el=document.querySelector?.('[data-budget-key="partTuition"]');if(el)el.value=state.values.partTuition;
+ }
+ if((key==="infantTuition"||isPriceKey)&&state.infantPartLinked){
+  state.values.infantPartTuition=rate75(state.values.infantTuition);
+  const el=document.querySelector?.('[data-budget-key="infantPartTuition"]');if(el)el.value=state.values.infantPartTuition;
+ }
+ if(["programType","students","partStudents","infantFull","infantPart"].includes(key))setSuggestedStaff();
  state.touched=true;persist();update();
+ // Re-render only for program/county changes to update the source annotation and headings.
+ if(isPriceKey){
+  const root=document.getElementById("cwc-budget");
+  if(root)root.outerHTML=view();
+ }
  document.dispatchEvent(new Event("cwc-budget-changed"));
 }
 document.addEventListener("input",e=>{
@@ -316,12 +335,12 @@ document.addEventListener("change",e=>{
 document.addEventListener("click",e=>{
  const reset=e.target.closest("[data-budget-reset]");
  if(!reset)return;
- state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};persist();
+ state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};persist();
  const node=document.getElementById("cwc-budget");
  if(node)node.outerHTML=view();
  document.dispatchEvent(new Event("cwc-budget-changed"));
 });
-function reset(){state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false};persist();}
+function reset(){state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};persist();}
 function goalHeader(){return "";} // Old callers can safely omit this preamble.
 function loadBenchmarks(){return undefined;}
 function countyRate(){return countyRateFor(state.values.county);}
