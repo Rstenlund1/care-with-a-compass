@@ -122,7 +122,7 @@ function coverage(type,children,staff,infants=0,extended=true){
  if(children===0&&Number.isInteger(staff)&&staff>=0)return {ok:true,need:0,reason:'No children admitted while qualified coverage is unavailable.'};
  if(!Number.isInteger(children)||children<1||children>maxChildren(type))return fail('Attendance exceeds the selected capacity.');
  if(!Number.isInteger(staff)||staff<1)return fail('At least one qualified supervising adult must be present.');
- if(!home)return staff>=need?{ok:true,need,reason:'Simplified center ratio met.'}:fail('Center staffing falls below the modeled minimum.');
+ if(!home)return staff>=need?{ok:true,need,reason:'Center ratio met.'}:fail('Center staffing falls below the modeled minimum.');
  if(!Number.isInteger(infants)||infants<0||infants>children)return fail('Enter the number of children under age two.');
  if(infants>infantLimit(type,children,staff))return fail('Infant count exceeds the permitted age mix for this home and staffing.');
  if(type==='familySmall'||staff<2){
