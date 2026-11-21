@@ -48,7 +48,7 @@ function programRule(type,older,infants){
   const onlyInfants=older===0&&infants<=4;
   const beyond6=n>6;
   const tooMany=n>8||(n>6&&infants>2)||(n<=6&&infants>3&&!onlyInfants);
-  return {required:n?1:0,additional:beyond6?1:0,limit:8,needsSpecial:beyond6&&n<=8,invalid:tooMany,infantLimit:onlyInfants?4:n>6?2:3,rule:"Small family home: 4 infants only; or up to 6 children with no more than 3 infants. Seven or eight require qualifying school-age children and other conditions; adding staff does not waive those rules."};
+  return {required:n?1:0,additional:beyond6?1:0,limit:8,needsSpecial:beyond6&&n<=8,invalid:tooMany,infantLimit:onlyInfants?4:n>6?2:3,rule:"Small family home: up to 6 children with age-mix limits, or 4 infants only. Seven or eight require a child attending kindergarten or elementary school, another child age 6 or older, no more than 2 infants, parent notification and written property-owner consent if renting. Adding staff does not waive licensing capacity limits."};
  }
  if(large){
   const assistantNeeded=n>6||(infants>3&&older>0);
@@ -207,10 +207,13 @@ function unavailabilityControl(){
 function availabilityText(c){
  if(c.daytimeChildren===0)return 'No children entered. Director assumed available for care.';
  let msg=c.availablePeople+' supervising staff available for '+c.daytimeChildren+' children ('+c.infants+' infants). ';
- if(c.aboveCapacity)msg+='LICENSE MIX OR CAPACITY WARNING: These counts do not fit the selected family child care license. Adding employees does not fix a licensing capacity or infant-limit violation. ';
- if(c.coverageGap>0)msg+='STAFFING GAP: At least '+c.planningFloor+' supervising adults are modeled; only '+c.availablePeople+' are currently available. ';
- else msg+='No numerical coverage gap under the selected planning model. ';
- if(c.rule.needsSpecial)msg+=(c.type==="preschool"?'Infant care requires an authorized center component with separately qualified supervision. ':'Extra home capacity requires qualifying school-age children, infant limits and documented parent notification. ');
+ if(c.aboveCapacity)msg+='CAPACITY OR AGE-MIX WARNING: The selected family child care license does not permit this mix; adding staff alone cannot fix that. ';
+ if(c.coverageGap>0)msg+='STAFFING GAP: The model needs '+c.planningFloor+' supervising adults, with only '+c.availablePeople+' currently available. ';
+ if(c.rule.needsSpecial){
+  if(c.type==="small")msg+='CONDITIONAL HOME CAPACITY: Seven or eight children require the qualifying school-age mix, an infant limit of two, parent notification and written property-owner consent if renting. This calculator cannot verify those conditions. ';
+  else if(c.type==="large")msg+='CONDITIONAL HOME CAPACITY: Thirteen or fourteen children require the qualifying school-age mix, infant limit, parent notification and written property-owner consent if renting. This calculator cannot verify those conditions. ';
+  else msg+='Infant care requires a separately authorized component and appropriately qualified supervision. ';
+ }else if(!c.aboveCapacity&&!c.coverageGap)msg+='No headcount gap in this simplified model; verify the licensed capacity, staffing qualifications and actual supervision arrangements. ';
  return msg;
 }
 function field(key,label,step=1){
