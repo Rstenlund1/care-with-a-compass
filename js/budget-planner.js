@@ -103,7 +103,7 @@ function overview(c){
  '</div><div class="budget-verdict" id="b-verdict">'+verdict(c)+'</div><div id="b-breakdown">'+breakdown(c)+'</div>';
 }
 function verdict(c){
- if(c.day>c.capacity)return '<strong>Capacity warning:</strong> Daytime enrollment exceeds the licensed maximum you entered. Adjust the schedule or enrollment.';
+ if(c.day>c.capacity)return '<strong>Capacity warning:</strong> This estimate counts full-time and part-time children as present together. Actual peak attendance must stay within licensed capacity.';
  if(c.profit<0)return '<strong>Projected shortfall.</strong> Try adjusting enrollment, rates, or expenses. Check coverage before changing staff.';
  return '<strong>Projected surplus.</strong> Check your staff schedules, occupancy assumptions, and whether the tuition is affordable locally.';
 }
@@ -130,7 +130,7 @@ function tuition(c){
 function view(){
  const c=calculate(),v=c.v;
  const countyOpts=COUNTIES.map(x=>[x,x+" County"]);
- return '<section class="budget-page" id="cwc-budget"><div class="section-top"><div><div class="kicker">03 · Operating budget and tuition</div><h2>Can your child care business pay its bills?</h2><p>Start with example numbers or use your own. Change any number and see the monthly results.</p></div></div>'+
+ return '<section class="budget-page" id="cwc-budget"><div class="section-top"><div><div class="kicker">03 · Operating budget and tuition</div><h2>Can your child care business pay its bills?</h2><p>Start with example numbers or use your own. Change any number and see the monthly results. Your entries remain in this browser and are not included in assessment submissions.</p></div></div>'+
  '<div class="budget-top"><div class="budget-steps"><strong>What comes in?</strong><span>What goes out?</span><span>What tuition works?</span></div>'+
  overview(c)+'</div>'+
  '<div class="panel budget-form-panel"><div class="budget-choice">'+
@@ -173,7 +173,7 @@ function view(){
  '<section class="panel budget-tuition"><h3>5. Tuition planner</h3><p>What would you need to charge to cover your costs, pay the director, and earn a sustainable operating profit?</p>'+
  '<div class="budget-fields">'+numeric("profitGoal","Desired monthly business profit after paying director ($)",100)+'</div>'+
  tuition(c)+
- '<p class="budget-help"><strong>Director pay is not the same as profit.</strong> The director’s salary is included in monthly expenses before the business-profit target is calculated.</p><p class="budget-help">Overnight care may add revenue without additional payroll <em>only if the required qualified, paid staff are already scheduled and counted in the budget</em>. Sleeping children do not eliminate California supervision obligations. Check your license type, overnight approval, and staffing plan.</p>'+
+ '<p class="budget-help"><strong>Director pay is not the same as profit.</strong> The director’s salary is included in monthly expenses before the business-profit target is calculated.</p><p class="budget-help">Overnight care may add revenue without additional payroll <em>only if the required qualified, paid staff are already scheduled and counted in the budget</em>. Sleeping children do not eliminate California supervision obligations. Check your license type, overnight approval, and staffing plan. <a href="https://www.law.cornell.edu/regulations/california/22-CCR-102426" target="_blank" rel="noopener noreferrer">Family child care home overnight rules</a> · <a href="https://www.law.cornell.edu/regulations/california/22-CCR-101230" target="_blank" rel="noopener noreferrer">Child care center napping rules</a>.</p>'+
  '<p class="budget-help">Illustrative planning only. Tuition affordability, subsidized/reimbursement rates, debt service, depreciation, taxes, staffing thresholds, occupancy and local rent vary. No figure here establishes regulatory compliance or a guaranteed profit.</p>'+
  '</section></section>';
 }
