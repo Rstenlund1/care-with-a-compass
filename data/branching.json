@@ -16,8 +16,8 @@
             "level": 1
           },
           {
-            "text": "Tell the lead to apologize publicly and warn the team that any criticism of management will result in termination.",
-            "why": "Punishing discussion can suppress future near-miss reporting and avoids examining how conflicting instructions developed.",
+            "text": "Allow the lead to continue verbal sign-outs this week while the staff develop a faster procedure.",
+            "why": "A temporary exception revives the inaccurate practice instead of maintaining reliable child-release records.",
             "level": 0
           },
           {
@@ -135,7 +135,8 @@
             "why": "Concealing a delay undermines the integrity of the investigation.",
             "level": 0
           }
-        ],        "takeaway": "The first protective step does not excuse delayed reporting or incomplete preservation."
+        ],
+        "takeaway": "The first protective step does not excuse delayed reporting or incomplete preservation."
       },
       "1": {
         "lead": "You safeguarded children, preserved footage, and made the required report. Two days later, an upset parent posts an allegation online; the employee says your report was malicious and threatens to file a retaliatory licensing complaint. None of those claims has yet been substantiated.",
@@ -815,13 +816,13 @@
             1
           ],
           [
-            "Suggest the missing video never existed so no one will conclude the center mishandled the report.",
-            "Misrepresentation compounds the original failure.",
+            "Explain that the system overwrote footage during normal retention, omitting that staff knew preservation was urgent.",
+            "A technically true retention detail becomes misleading when known delay and escalation failures are concealed.",
             0
           ],
           [
-            "Ask a staff member to recreate the missing events in a staged video for the case file.",
-            "Fabricated evidence is never an acceptable corrective measure.",
+            "Send a reconstruction based on staff recollections as the official timeline without identifying uncertain parts.",
+            "An inferred chronology cannot replace missing video or be presented as independently verified fact.",
             0
           ]
         ]
@@ -874,8 +875,8 @@
             0
           ],
           [
-            "Ask the parent to withdraw the concern because a licensing complaint would damage the program.",
-            "Pressuring a reporting family compounds the ethical and safety failure.",
+            "Ask the parent to postpone their external complaint while the facility conducts its internal review.",
+            "Internal review cannot be used to discourage a family or delay any statutory reporting duty.",
             0
           ]
         ]
