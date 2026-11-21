@@ -580,3 +580,13 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-infants-pair .budget-enrollment-group{gap:9px}
 .budget-infants-pair .budget-infant-count{margin-top:0}
 @media(max-width:560px){.budget-program-county-row{grid-template-columns:1fr;gap:10px}}
+
+/* v10.7.16 -- one-line child enrollment headings and truly centered info glyphs. */
+.budget-enrollment-heading{display:flex;align-items:center;justify-content:flex-start;gap:7px;min-height:24px;line-height:1.25}
+.budget-enrollment-heading h4{margin:0;font-size:13px;line-height:1.35;white-space:normal;flex:0 1 auto}
+.budget-enrollment-heading .budget-info{flex:0 0 22px}
+.budget-info{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex:0 0 22px;line-height:1;margin:0;padding:0}
+.budget-info>.budget-info-icon{display:flex!important;align-items:center!important;justify-content:center!important;flex:none!important;width:100%;height:100%;font:750 12px/1 system-ui,sans-serif!important;margin:0!important;padding:0!important;transform:none!important;text-align:center;vertical-align:middle}
+.budget-compact-numbergrid .budget-info>.budget-info-icon{margin:0!important}
+.budget-compact-numbergrid .budget-info-popup{margin:0!important}
+.budget-enrollment-group .budget-compact-field:first-of-type{margin-top:0}
