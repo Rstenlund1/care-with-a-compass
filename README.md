@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.10
+
+**Optional calculator:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.10&page=staff
+
+**Single-page optional budget tool:** Removed the separate Staffing Coverage section, its cost duplicate, and the two jump buttons. Replaced them with one “Staff temporarily unavailable” dropdown next to additional classroom staffing in the budget. The director is always included as one staff member in the simplified scenario, so additional classroom staff still default to 0. Available staff = max(0, 1 director + whole additional staff FTEs − temporarily unavailable persons). This is an illustrative headcount, not a legal staffing ratio or guarantee of director eligibility. Temporary absence does not alter payroll automatically, since paid shifts remain incurred. Previously saved main-course progress and budget entries remain intact; staff unavailability defaults to none. Optional planner still never contributes to core training progress or certificate eligibility. The interface now has one financial editor with live financial results and a brief staff-availability status. Source-level logic and syntax validation performed; live graphical/browser testing remains necessary.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.9
 
 **Live planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.9&page=staff
