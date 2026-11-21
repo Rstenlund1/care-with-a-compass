@@ -528,3 +528,9 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-director-first{margin:0 0 13px;max-width:400px}
 .budget-director-first .budget-compact-field{display:flex}
 @media(max-width:650px){.budget-director-first{max-width:100%}}
+
+/* v10.7.10: the two-page staffing simulator is gone; one availability control lives in budget. */
+.budget-compact-field select{width:100%;min-width:0;min-height:39px;box-sizing:border-box;padding:8px 9px;border:1px solid #c7bbd1;border-radius:7px;background:#fff;color:#292033;font:600 13px/1.3 system-ui,sans-serif}
+.budget-compact-field select:focus-visible{outline:2px solid #8662a6;outline-offset:1px}
+.budget-staff-availability{margin:12px 0 8px;padding:10px 12px;border:1px solid #d9d0e1;border-radius:9px;background:#fff;color:#473753;font-size:12px;line-height:1.5}
+.budget-staff-availability.budget-staff-alert{border-color:#e3ae8b;background:#fff5ec;color:#694026;font-weight:650}
