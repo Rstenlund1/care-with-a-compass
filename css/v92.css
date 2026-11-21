@@ -590,3 +590,7 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-compact-numbergrid .budget-info>.budget-info-icon{margin:0!important}
 .budget-compact-numbergrid .budget-info-popup{margin:0!important}
 .budget-enrollment-group .budget-compact-field:first-of-type{margin-top:0}
+
+/* v10.7.18 — conditional home enrollment is a note, not an error banner. */
+.budget-program-note{margin:5px 0 2px;padding:8px 10px;border-left:2px solid #b8aac6;border-radius:0 6px 6px 0;background:#f7f4fa;color:#584d61;font:500 12px/1.5 system-ui,sans-serif}
+.budget-program-note[hidden]{display:none!important}
