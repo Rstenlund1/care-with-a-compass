@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "lastReviewed": "2026-11-21",
+  "units": "USD per usable square foot per month",
+  "basis": "Commercial retail asking rents (typically NNN), not child care-specific leases. May exclude additional rent/CAM, taxes, and utilities.",
+  "statewide": {
+    "monthlyRate": 2.37,
+    "method": "Unweighted mean of eight published California retail market/listing observations, rounded to cents. An illustrative planning fallback, NOT an official statewide or child care lease average.",
+    "period": "2026-Q3 / Nov 2026"
+  },
+  "counties": [
+    "Alameda",
+    "Alpine",
+    "Amador",
+    "Butte",
+    "Calaveras",
+    "Colusa",
+    "Contra Costa",
+    "Del Norte",
+    "El Dorado",
+    "Fresno",
+    "Glenn",
+    "Humboldt",
+    "Imperial",
+    "Inyo",
+    "Kern",
+    "Kings",
+    "Lake",
+    "Lassen",
+    "Los Angeles",
+    "Madera",
+    "Marin",
+    "Mariposa",
+    "Mendocino",
+    "Merced",
+    "Modoc",
+    "Mono",
+    "Monterey",
+    "Napa",
+    "Nevada",
+    "Orange",
+    "Placer",
+    "Plumas",
+    "Riverside",
+    "Sacramento",
+    "San Benito",
+    "San Bernardino",
+    "San Diego",
+    "San Francisco",
+    "San Joaquin",
+    "San Luis Obispo",
+    "San Mateo",
+    "Santa Barbara",
+    "Santa Clara",
+    "Santa Cruz",
+    "Shasta",
+    "Sierra",
+    "Siskiyou",
+    "Solano",
+    "Sonoma",
+    "Stanislaus",
+    "Sutter",
+    "Tehama",
+    "Trinity",
+    "Tulare",
+    "Tuolumne",
+    "Ventura",
+    "Yolo",
+    "Yuba"
+  ],
+  "regions": [
+    {
+      "id": "inlandEmpire",
+      "name": "Inland Empire retail market",
+      "counties": [
+        "Riverside",
+        "San Bernardino"
+      ],
+      "monthlyRate": 1.77,
+      "period": "2026-Q3",
+      "source": "CBRE",
+      "url": "https://www.cbre.com/insights/figures/inland-empire-retail-figures-q3-2026",
+      "scale": 1
+    },
+    {
+      "id": "losAngeles",
+      "name": "Los Angeles retail market",
+      "counties": [
+        "Los Angeles"
+      ],
+      "monthlyRate": 2.87,
+      "period": "2026-Q3",
+      "source": "CBRE",
+      "url": "https://www.cbre.com/insights/figures/los-angeles-retail-figures-q3-2026",
+      "scale": 1
+    },
+    {
+      "id": "orange",
+      "name": "Orange County retail market",
+      "counties": [
+        "Orange"
+      ],
+      "monthlyRate": 2.69,
+      "period": "2026-Q3",
+      "source": "CBRE",
+      "url": "https://www.cbre.com/insights/figures/orange-county-retail-figures-q3-2026",
+      "scale": 1
+    },
+    {
+      "id": "sacramento",
+      "name": "Sacramento retail market",
+      "counties": [
+        "Sacramento"
+      ],
+      "monthlyRate": 1.49,
+      "period": "2026-Q3",
+      "source": "CBRE",
+      "url": "https://www.cbre.com/insights/figures/sacramento-retail-figures-q3-2026",
+      "scale": 1
+    },
+    {
+      "id": "sanDiego",
+      "name": "San Diego County retail market",
+      "counties": [
+        "San Diego"
+      ],
+      "monthlyRate": 2.27,
+      "period": "2026-Q3",
+      "source": "Cushman & Wakefield",
+      "url": "https://www.cushmanwakefield.com/en/united-states/insights/us-marketbeats/san-diego-marketbeats/retail",
+      "scale": 1
+    },
+    {
+      "id": "sanFrancisco",
+      "name": "San Francisco retail listing average",
+      "counties": [
+        "San Francisco"
+      ],
+      "monthlyRate": 2.77,
+      "period": "2026-11",
+      "source": "PropertyShark listing sample",
+      "url": "https://www.propertyshark.com/cre/retail/us/ca/san-francisco/",
+      "scale": 12
+    },
+    {
+      "id": "siliconValley",
+      "name": "Silicon Valley retail market",
+      "counties": [
+        "Santa Clara"
+      ],
+      "monthlyRate": 2.66,
+      "period": "2026-Q3",
+      "source": "Cushman & Wakefield",
+      "url": "https://www.cushmanwakefield.com/en/united-states/insights/us-marketbeats/silicon-valley-marketbeats/retail",
+      "scale": 12
+    },
+    {
+      "id": "eastBay",
+      "name": "East Bay retail market",
+      "counties": [
+        "Alameda",
+        "Contra Costa"
+      ],
+      "monthlyRate": 2.41,
+      "period": "2026-Q3",
+      "source": "Cushman & Wakefield",
+      "url": "https://www.cushmanwakefield.com/en/united-states/insights/us-marketbeats/oakland-marketbeats/retail",
+      "scale": 12
+    }
+  ]
+}
