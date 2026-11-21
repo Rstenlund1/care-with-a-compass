@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.15
+
+**Live optional calculator:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.15&page=staff
+
+**Final spacing and labeling tweaks:** "Program type" and "California county" share one row on desktop and stack on narrow screens. The non-infant section now reads "Children (over age 2)" with no far-right duplicate note. The infant count inputs now sit immediately below "Full-time infants" and "Part-time infants" without a redundant "Infants" label; the visible headings still provide accessible names to screen readers. No calculations, financial defaults, licensing assumptions, or saved values were changed. All changes are on main; the independent Gemini audit source snapshot should be refreshed to this release before the final review.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.14
 
 **Live optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.14&page=staff
