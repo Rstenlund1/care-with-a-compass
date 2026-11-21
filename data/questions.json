@@ -3293,6 +3293,555 @@
         "parentinspect",
         "parentrights"
       ]
+    },
+    {
+      "id": "C6Q01",
+      "chapter": 6,
+      "objective": 1,
+      "scenario": "Two preschoolers grab the same toy and push each other. Only the Black child receives an incident report labeling him 'aggressive'; the White child receives a reminder. No injury is reported. What should you do?",
+      "choices": [
+        "Keep both reports as written because teachers saw the exchange firsthand.",
+        "Ask both families to meet together before reviewing the actual incident.",
+        "Require identical disciplinary outcomes without considering each child's actions.",
+        "Review the facts, correct unsupported descriptions, and coach staff on consistent documentation.",
+        "Check both accounts and observations, then document each child's actions using the same standard."
+      ],
+      "answer": "E",
+      "rationale": "The director needs verified observations and a consistent standard. Correcting one label alone is not enough: review both children's actions, document fairly, and address the process that produced unequal treatment.",
+      "feedback": {
+        "E": {
+          "type": "preferred",
+          "text": "The director needs verified observations and a consistent standard. Correcting one label alone is not enough: review both children's actions, document fairly, and address the process that produced unequal treatment."
+        },
+        "A": {
+          "type": "review",
+          "text": "An eyewitness perspective still requires concrete observations rather than unequal labels."
+        },
+        "B": {
+          "type": "review",
+          "text": "A joint family meeting before fact-finding may expose private information and escalate conflict."
+        },
+        "C": {
+          "type": "review",
+          "text": "Equal standards do not require identical consequences when individual conduct or safety needs differ."
+        },
+        "D": {
+          "type": "acceptable",
+          "text": "A strong alternative, but the director should explicitly compare the two records and contemporaneous observations."
+        }
+      },
+      "family": "c6-o1",
+      "acceptable": {
+        "D": "A strong alternative, but the director should explicitly compare the two records and contemporaneous observations."
+      },
+      "refs": [
+        "crdc2122",
+        "rights101223",
+        "naeyc"
+      ]
+    },
+    {
+      "id": "C6Q02",
+      "chapter": 6,
+      "objective": 1,
+      "scenario": "A caregiver describes a White child who cries at transitions as 'sensitive' and a Latino child who cries at transitions as 'manipulative.' No objective difference appears in the written observations. What is the best first supervisory response?",
+      "choices": [
+        "Ask for specific observed behavior, apply consistent descriptions, and check each child's support needs.",
+        "Replace both terms with the same neutral word and close the review.",
+        "Tell staff not to mention either child's race in any discussion.",
+        "Notify both families that staff used inaccurate labels before gathering context.",
+        "Move the Latino child to another room where staff may be more understanding."
+      ],
+      "answer": "A",
+      "rationale": "The labels are interpretations, not observable behaviors. Comparable evidence and individualized support should guide response, while coaching addresses how descriptors may bias future decisions.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "The labels are interpretations, not observable behaviors. Comparable evidence and individualized support should guide response, while coaching addresses how descriptors may bias future decisions."
+        },
+        "B": {
+          "type": "acceptable",
+          "text": "Editing a descriptor helps but cannot correct an unexamined interaction pattern."
+        },
+        "C": {
+          "type": "review",
+          "text": "Racial identity need not determine treatment, but suppressing relevant equity data can conceal disparities."
+        },
+        "D": {
+          "type": "review",
+          "text": "Family communication may be warranted, but facts and a concrete corrective plan come first."
+        },
+        "E": {
+          "type": "review",
+          "text": "An unexplained transfer shifts the burden to the child rather than examining staff practice."
+        }
+      },
+      "family": "c6-o1",
+      "acceptable": {
+        "B": "Editing a descriptor helps but cannot correct an unexamined interaction pattern."
+      },
+      "refs": [
+        "yaleBias",
+        "naeyc"
+      ]
+    },
+    {
+      "id": "C6Q03",
+      "chapter": 6,
+      "objective": 1,
+      "scenario": "A parent arrives 25 minutes late after an unexpected shift extension. A staff member proposes recording the family as 'neglectful' because they are paid hourly and rely on subsidized care. What should you do?",
+      "choices": [
+        "Apply the same pickup procedure, verify the child's safe care, document actual times, and discuss options privately.",
+        "Waive fees automatically for families receiving assistance.",
+        "Remind the family about closing hours in front of other parents.",
+        "File a neglect report based on the parent's job schedule and subsidy status.",
+        "Use the term 'neglectful' in the file but offer a payment plan."
+      ],
+      "answer": "A",
+      "rationale": "Employment and income do not establish neglect. The director still enforces pickup requirements, protects coverage and children, and discusses practical alternatives without stigmatizing a family.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "Employment and income do not establish neglect. The director still enforces pickup requirements, protects coverage and children, and discusses practical alternatives without stigmatizing a family."
+        },
+        "B": {
+          "type": "acceptable",
+          "text": "A supportive exception may be appropriate under a neutral written policy; an automatic status-based exception is not a substitute for one."
+        },
+        "C": {
+          "type": "review",
+          "text": "A public correction unnecessarily exposes family circumstances and may stigmatize."
+        },
+        "D": {
+          "type": "review",
+          "text": "A report requires legally relevant facts and applicable suspicion criteria; poverty or shift work alone is insufficient."
+        },
+        "E": {
+          "type": "review",
+          "text": "A payment arrangement does not make an unsupported accusation appropriate."
+        }
+      },
+      "family": "c6-o1",
+      "acceptable": {
+        "B": "A supportive exception may be appropriate under a neutral written policy; an automatic status-based exception is not a substitute for one."
+      },
+      "refs": [
+        "pen11165_2",
+        "naeyc",
+        "calExclusion"
+      ]
+    },
+    {
+      "id": "C6Q04",
+      "chapter": 6,
+      "objective": 2,
+      "scenario": "A teacher marks a bilingual family's communication as 'unresponsive' because they rarely answer English-only email. The family speaks Spanish at pickup and has asked for a phone call. What changes first?",
+      "choices": [
+        "Ask their preferred language and contact method, then arrange understandable communication and verify receipt.",
+        "Continue the email-only policy until parents provide a translator.",
+        "Assign the child's older sibling to translate complex behavior reports.",
+        "Ask the parent to attend a weekly English-language conference.",
+        "Send a translated one-page summary but do not change the routine if it remains difficult."
+      ],
+      "answer": "A",
+      "rationale": "A communication barrier created by the program should not be treated as lack of parental interest. A respectful plan uses preferred modes and qualified language access where appropriate.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "A communication barrier created by the program should not be treated as lack of parental interest. A respectful plan uses preferred modes and qualified language access where appropriate."
+        },
+        "B": {
+          "type": "review",
+          "text": "A uniform method is not necessarily accessible to every family."
+        },
+        "C": {
+          "type": "review",
+          "text": "Children are not an appropriate default for translating sensitive or complex professional decisions."
+        },
+        "D": {
+          "type": "review",
+          "text": "Required attendance at a language-inaccessible conference can intensify the barrier."
+        },
+        "E": {
+          "type": "acceptable",
+          "text": "A translated document can help but may not address the family's stated need for a call and comprehension check."
+        }
+      },
+      "family": "c6-o2",
+      "acceptable": {
+        "E": "A translated document can help but may not address the family's stated need for a call and comprehension check."
+      },
+      "refs": [
+        "naeyc",
+        "equalAccess"
+      ]
+    },
+    {
+      "id": "C6Q05",
+      "chapter": 6,
+      "objective": 2,
+      "scenario": "During outdoor play, two children run toward the gate. An employee immediately stops both but describes only the Black boy as 'a threat to safety.' What should the director examine?",
+      "choices": [
+        "Assume bias caused the decision without speaking to the employee.",
+        "Remove the boy from outdoor play until the staff member agrees he is calm.",
+        "Review the safety facts for both children and how the label shaped the response.",
+        "Have another adult conduct structured observations over several transitions.",
+        "Discard the incident because both children were ultimately stopped."
+      ],
+      "answer": "C",
+      "rationale": "Objective facts and patterns of attention matter. A second observer can help determine whether similar conduct was treated differently, without prejudging intent or overlooking actual safety hazards.",
+      "feedback": {
+        "C": {
+          "type": "preferred",
+          "text": "Objective facts and patterns of attention matter. A second observer can help determine whether similar conduct was treated differently, without prejudging intent or overlooking actual safety hazards."
+        },
+        "A": {
+          "type": "review",
+          "text": "An observed disparity deserves investigation, not a predetermined finding about motive."
+        },
+        "B": {
+          "type": "review",
+          "text": "A restriction requires a child-specific safety rationale, not a subjective label."
+        },
+        "D": {
+          "type": "acceptable",
+          "text": "Independent observation strengthens evidence but should accompany review of the immediate report and prior patterns."
+        },
+        "E": {
+          "type": "review",
+          "text": "A successful intervention does not erase a possible pattern of unequal interpretation."
+        }
+      },
+      "family": "c6-o2",
+      "acceptable": {
+        "D": "Independent observation strengthens evidence but should accompany review of the immediate report and prior patterns."
+      },
+      "refs": [
+        "yaleBias",
+        "rights101223",
+        "supervision"
+      ]
+    },
+    {
+      "id": "C6Q06",
+      "chapter": 6,
+      "objective": 2,
+      "scenario": "A teacher writes 'violent and defiant' in a daily report. The underlying log says only that a child dropped blocks after being told to move. Which report belongs in the child's file?",
+      "choices": [
+        "Record what happened, the antecedent, adult response, safety implications, and follow-up support.",
+        "Retain the original label because the caregiver knows the child well.",
+        "Ask parents whether they consider the child defiant and use their answer.",
+        "Delete the incident entirely because no one was physically injured.",
+        "Describe the child as 'having a difficult day' without noting the blocks."
+      ],
+      "answer": "A",
+      "rationale": "A fair record distinguishes observed behavior from interpretations and includes the adult response. Incident notes can influence later placement and exclusion decisions.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "A fair record distinguishes observed behavior from interpretations and includes the adult response. Incident notes can influence later placement and exclusion decisions."
+        },
+        "B": {
+          "type": "review",
+          "text": "Familiarity with a child does not validate a subjective or stigmatizing conclusion."
+        },
+        "C": {
+          "type": "review",
+          "text": "Family context matters, but an opinion cannot replace accurate incident observations."
+        },
+        "D": {
+          "type": "review",
+          "text": "A noninjury event can still be relevant for support and prevention."
+        },
+        "E": {
+          "type": "acceptable",
+          "text": "A vague softer phrase still omits material observations and interventions."
+        }
+      },
+      "family": "c6-o2",
+      "acceptable": {
+        "E": "A vague softer phrase still omits material observations and interventions."
+      },
+      "refs": [
+        "naeyc",
+        "crdc2122"
+      ]
+    },
+    {
+      "id": "C6Q07",
+      "chapter": 6,
+      "objective": 3,
+      "scenario": "A child with a known elopement risk runs toward an open doorway. Staff protect the child; another family demands that the child be expelled immediately. How should the director proceed?",
+      "choices": [
+        "Protect all children, reassess the individual safety plan and staffing, and check applicable exclusion rules.",
+        "Promise the complaining family an immediate dismissal to preserve enrollment.",
+        "Keep the child enrolled without changing supervision because exclusion would be unfair.",
+        "Ask the child's parents to cover the cost of another qualified teacher before care resumes.",
+        "Review the actual risk, consult relevant specialists and family, and plan verified accommodations."
+      ],
+      "answer": "A",
+      "rationale": "Safety and inclusion are complementary obligations. The director must provide immediate supervision and an individualized review, including applicable disability rights and program-specific suspension and expulsion rules.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "Safety and inclusion are complementary obligations. The director must provide immediate supervision and an individualized review, including applicable disability rights and program-specific suspension and expulsion rules."
+        },
+        "B": {
+          "type": "review",
+          "text": "Another family's demand does not establish a legally and ethically sound exclusion basis."
+        },
+        "C": {
+          "type": "review",
+          "text": "Refusing every adjustment can expose the child and peers to preventable risk."
+        },
+        "D": {
+          "type": "review",
+          "text": "Cost alone cannot substitute for an individualized assessment of required obligations and feasible modifications."
+        },
+        "E": {
+          "type": "acceptable",
+          "text": "This is a defensible follow-up, though immediate safety and applicable exclusion standards should be named explicitly."
+        }
+      },
+      "family": "c6-o3",
+      "acceptable": {
+        "E": "This is a defensible follow-up, though immediate safety and applicable exclusion standards should be named explicitly."
+      },
+      "refs": [
+        "equalAccess",
+        "headstart130217",
+        "calExclusion",
+        "supervision"
+      ]
+    },
+    {
+      "id": "C6Q08",
+      "chapter": 6,
+      "objective": 3,
+      "scenario": "A three-month audit shows that 6 of 20 Black children received incident reports, compared with 8 of 80 other children. The incidents range widely in severity. What is the responsible interpretation?",
+      "choices": [
+        "Flag the difference, then compare circumstances and reporting practices before drawing conclusions.",
+        "Conclude the staff intentionally discriminated because the percentages differ.",
+        "Require equal numbers of incident reports for each group next month.",
+        "Ignore the difference because the sample is too small to evaluate.",
+        "Investigate denominator, age, attendance, disability supports and severity before making changes."
+      ],
+      "answer": "A",
+      "rationale": "The observed reporting rates are 30% versus 10%, a pattern worth reviewing. Small samples and differences in exposure and circumstances affect interpretation; the difference alone cannot establish a discriminatory intent or justify quotas.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "The observed reporting rates are 30% versus 10%, a pattern worth reviewing. Small samples and differences in exposure and circumstances affect interpretation; the difference alone cannot establish a discriminatory intent or justify quotas."
+        },
+        "B": {
+          "type": "review",
+          "text": "Disproportionality warrants inquiry, but aggregate counts alone do not prove motive."
+        },
+        "C": {
+          "type": "review",
+          "text": "Numerical targets could pressure staff to omit legitimate safety documentation or invent reports."
+        },
+        "D": {
+          "type": "review",
+          "text": "Small samples demand care, not automatic dismissal of possible inequity."
+        },
+        "E": {
+          "type": "acceptable",
+          "text": "An appropriate analytic direction, though it should also review the reporting criteria applied by specific staff."
+        }
+      },
+      "family": "c6-o3",
+      "acceptable": {
+        "E": "An appropriate analytic direction, though it should also review the reporting criteria applied by specific staff."
+      },
+      "refs": [
+        "crdc2122",
+        "yaleBias"
+      ]
+    },
+    {
+      "id": "C6Q09",
+      "chapter": 6,
+      "objective": 3,
+      "scenario": "A grandmother who works two jobs regularly misses daytime parent conferences. Her grandchild's teacher calls the family 'uninvested' despite prompt answers to texts. What would you change?",
+      "choices": [
+        "Keep attendance requirements unchanged and mark all missed conferences as a lack of support.",
+        "Ask the child to remind the grandmother that school meetings come first.",
+        "Offer one evening conference but still score the family negatively for earlier absences.",
+        "Invite the family to use a phone or video conference and ask what schedule works.",
+        "Offer flexible, confidential ways to participate and measure engagement by actual communication."
+      ],
+      "answer": "E",
+      "rationale": "Participation should be assessed through meaningful contact and two-way communication, not a single daytime meeting format. The director can maintain instructional expectations while removing unnecessary barriers.",
+      "feedback": {
+        "E": {
+          "type": "preferred",
+          "text": "Participation should be assessed through meaningful contact and two-way communication, not a single daytime meeting format. The director can maintain instructional expectations while removing unnecessary barriers."
+        },
+        "A": {
+          "type": "review",
+          "text": "A uniform meeting time can systematically exclude families with inflexible work."
+        },
+        "B": {
+          "type": "review",
+          "text": "A child should not carry responsibility for managing adults' schedules."
+        },
+        "C": {
+          "type": "review",
+          "text": "A flexible meeting is useful but should also correct the unsupported negative characterization."
+        },
+        "D": {
+          "type": "acceptable",
+          "text": "This is the most immediate inclusive step; confirm that records reflect the family's existing engagement."
+        }
+      },
+      "family": "c6-o3",
+      "acceptable": {
+        "D": "This is the most immediate inclusive step; confirm that records reflect the family's existing engagement."
+      },
+      "refs": [
+        "naeyc",
+        "calExclusion"
+      ]
+    },
+    {
+      "id": "C6Q10",
+      "chapter": 6,
+      "objective": 4,
+      "scenario": "A caregiver fears a child may be neglected because the child sometimes wears the same clothes and their family lives temporarily with relatives. There is no additional evidence of unmet basic care or harm. What should the director instruct?",
+      "choices": [
+        "Document specific observations, offer appropriate support, and apply the legal reporting threshold to actual facts.",
+        "Wait until a family admits financial hardship before documenting anything.",
+        "Report suspected abuse immediately based on housing instability alone.",
+        "Tell staff poverty is never relevant, so no future safety concern should be assessed.",
+        "Call the family in front of staff and ask why they cannot buy new clothes."
+      ],
+      "answer": "A",
+      "rationale": "Poverty or unstable housing alone is not neglect. Directors cannot discourage reports where objective reasonable suspicion exists, but must avoid substituting socioeconomic stereotypes for legally relevant evidence.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "Poverty or unstable housing alone is not neglect. Directors cannot discourage reports where objective reasonable suspicion exists, but must avoid substituting socioeconomic stereotypes for legally relevant evidence."
+        },
+        "B": {
+          "type": "acceptable",
+          "text": "Support and observation need not wait for a family to disclose finances."
+        },
+        "C": {
+          "type": "review",
+          "text": "Housing status and clothing repetition alone do not establish neglect under the stated facts."
+        },
+        "D": {
+          "type": "review",
+          "text": "Actual harmful deprivation or other credible facts must still be evaluated individually."
+        },
+        "E": {
+          "type": "review",
+          "text": "Public questioning stigmatizes the family and does not assess the child's safety fairly."
+        }
+      },
+      "family": "c6-o4",
+      "acceptable": {
+        "B": "Support and observation need not wait for a family to disclose finances."
+      },
+      "refs": [
+        "pen11165_2",
+        "pen11166",
+        "naeyc"
+      ]
+    },
+    {
+      "id": "C6Q11",
+      "chapter": 6,
+      "objective": 4,
+      "scenario": "A parent asks whether a Black child is 'the one causing all the problems' after hearing playground rumors. The child's family and conduct records are confidential. How should the director respond?",
+      "choices": [
+        "Discuss safety procedures without identifying another child, then investigate the specific concern.",
+        "Show anonymized incident counts that make the child identifiable.",
+        "Confirm the child's name but promise not to share details.",
+        "Say there is no problem so the parent will not complain again.",
+        "Invite the parent to describe their own child's experience and offer an appropriate factual follow-up."
+      ],
+      "answer": "A",
+      "rationale": "Protect confidentiality and acknowledge the parent's safety concern without repeating a stigmatizing claim about a child. Specific allegations still deserve verification and an appropriate response.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "Protect confidentiality and acknowledge the parent's safety concern without repeating a stigmatizing claim about a child. Specific allegations still deserve verification and an appropriate response."
+        },
+        "B": {
+          "type": "review",
+          "text": "Information that makes a child readily identifiable is not meaningfully confidential."
+        },
+        "C": {
+          "type": "review",
+          "text": "A name is protected information when it links a child to discipline or allegations."
+        },
+        "D": {
+          "type": "review",
+          "text": "False reassurance can conceal a real issue and undermine family trust."
+        },
+        "E": {
+          "type": "acceptable",
+          "text": "This is a useful immediate response; reinforce boundaries about other children's records."
+        }
+      },
+      "family": "c6-o4",
+      "acceptable": {
+        "E": "This is a useful immediate response; reinforce boundaries about other children's records."
+      },
+      "refs": [
+        "rights101223",
+        "naeyc",
+        "supervision"
+      ]
+    },
+    {
+      "id": "C6Q12",
+      "chapter": 6,
+      "objective": 4,
+      "scenario": "Two children repeatedly hit others during transitions. Their behaviors are similar, but one child has accumulated multiple exclusion recommendations while the other receives individualized supports. What is the director's strongest next move?",
+      "choices": [
+        "Protect peers, compare documented conduct and supports, and apply the same decision standard to both children.",
+        "Stop all discipline for the child facing more exclusions to correct the imbalance.",
+        "Apply identical consequences immediately without checking safety plans or developmental context.",
+        "Ask staff to recommend fewer exclusions so the program's statistics look balanced.",
+        "Ask a neutral observer to review the two plans, staff interactions and escalation patterns."
+      ],
+      "answer": "A",
+      "rationale": "A consistent, evidence-based standard should safeguard every child and address comparable risks; individualized supports can differ. The disparity deserves review, not artificial equalization or ignoring real harm.",
+      "feedback": {
+        "A": {
+          "type": "preferred",
+          "text": "A consistent, evidence-based standard should safeguard every child and address comparable risks; individualized supports can differ. The disparity deserves review, not artificial equalization or ignoring real harm."
+        },
+        "B": {
+          "type": "review",
+          "text": "Removing all response to harmful conduct does not protect other children or help the child learn."
+        },
+        "C": {
+          "type": "review",
+          "text": "Consistency means consistent standards, not mechanical identical treatment of unequal individual needs."
+        },
+        "D": {
+          "type": "review",
+          "text": "Suppressing recommendations to meet a numerical target hides information rather than improving decisions."
+        },
+        "E": {
+          "type": "acceptable",
+          "text": "An independent review is sound but must be tied to immediate child safety and a consistent standard."
+        }
+      },
+      "family": "c6-o4",
+      "acceptable": {
+        "E": "An independent review is sound but must be tied to immediate child safety and a consistent standard."
+      },
+      "refs": [
+        "crdc2122",
+        "equalAccess",
+        "calExclusion",
+        "naeyc"
+      ]
     }
   ],
   "lessons": [
@@ -3320,6 +3869,11 @@
       "title": "Leadership, Inclusion & Program Improvement",
       "subtitle": "Build accountability, support staff, and close the loop after difficult incidents.",
       "html": "<div class=\"photo-grid-two\"><figure><img data-photo=\"ch5a\" alt=\"Photograph from the child care program\"></figure><figure><img data-photo=\"ch5b\" alt=\"Photograph from the child care program\"></figure></div>\n<p>A director can make an urgent decision and still fail as a leader if the same preventable issue returns next week. Use a consistent improvement cycle: <strong>observe → protect → document → communicate → correct → verify</strong>. Avoid the illusion that “everyone has been reminded” proves the system has changed.</p><p>Inclusion is not merely a supportive attitude. A child who uses AAC, has an elopement risk, experiences seizures, or needs a quieter transition may require specific staffing, communication, emergency and supervision adjustments. Do not equate a disability with inevitable exclusion, and do not expect an individual teacher to invent a solution without program resources.</p><p>Adaptive leadership involves recognizing when a problem is more than a technical deficiency. Some failures are created by unrealistic staffing, conflicting incentives, and cultures where employees are afraid to report concerns. Leadership means challenging those conditions and giving employees a workable plan.</p><p><strong>EDACE 830 connection:</strong> The interactive program-planning model emphasizes needs, stakeholder participation, teaching design, evaluation, staffing and budget. Assess transfer of training through real workplace performance, not just quiz completion (Daffron &amp; Caffarella, 2021, chs. 6–12). Scaffolding can help adults learn the next step, but the assistance should fade as their judgment strengthens. Confirmative evaluation checks whether they still make sound decisions later, without a prompt on the screen. That is why this lab includes reflective follow-up rather than claiming competence from a certificate alone.</p><h3>From training completion to transfer</h3><p>A quiz can show recognition of the preferred response while missing the skills needed in a busy classroom. After an incident, ask whether the problem involved knowledge, workload, unclear authority, a missing resource, or a failed handoff. Choose a corrective action with a named owner, a deadline, and an observable verification step.</p><p>For children who use AAC, have disabilities, or require individualized supervision, inclusion should be evaluated through practical accommodations and staffing rather than automatic exclusion. The same principle applies to adult learners: provide temporary supports when needed, then fade them and test independent performance.</p>"
+    },
+    {
+      "title": "Fairness, Bias & Belonging",
+      "subtitle": "Make equitable supervision, family communication, and inclusion visible in everyday leadership decisions.",
+      "html": "<p><strong>Fairness is an operational responsibility, not a slogan.</strong> In the U.S. Department of Education's 2021–22 Civil Rights Data Collection, Black children were 18% of public preschool enrollment but 38% of children receiving one or more out-of-school suspensions and 33% of those expelled. These are national public preschool figures, not a finding about any one center. The pattern calls for careful inquiry, not an assumption about any individual teacher's motive.</p>\n<p>Yale Child Study Center researchers reported that early educators asked to watch for challenging behavior tended to visually monitor Black children, particularly boys, more closely. Expectations can shape who is watched, which behaviors are recorded, which parent gets a negative report, and whose continued enrollment is questioned. Directors can reduce this risk by requiring specific observations and checking comparable cases before acting.</p>\n<h3>Separate what happened from what it means</h3>\n<p>“Threw two blocks after being asked to clean up” is observable. “Defiant,” “manipulative,” and “aggressive” are interpretations that require careful justification. Document who was present, the relevant context, what the child actually did, the adult response, safety risks, and supports attempted. Apply equivalent rules across children without treating every child's developmental or accommodation needs as identical.</p>\n<h3>Discipline, exclusion and child safety</h3>\n<p>Safety comes first for <em>every</em> child, including the child accused of difficult behavior. Give immediate protection to children who might be injured, then make individualized plans that support regulation, communication, and supervision. Head Start has specific limitations on suspension and prohibits unenrolling a child because of behavior under 45 CFR § 1302.17. California also has suspension and expulsion requirements for covered state-funded early education programs. These rules do not apply identically to every private or family child care license. Directors must verify which program and legal rules govern their decisions.</p>\n<h3>Economic and cultural barriers can look like “noncompliance”</h3>\n<p>A parent working two jobs may miss conferences. A family with a night-shift schedule may have unconventional pickup arrangements. A bilingual family may prefer phone calls rather than English-only email. None of these facts, by themselves, establishes indifference or neglect. Listen to families and offer workable, documented communication methods while preserving consistent safety expectations and reporting responsibilities.</p>\n<h3>Audit the decisions, not just the policy</h3>\n<p>Compare how often children are referred, described negatively, suspended or considered for disenrollment. Use group sizes, days attended, severity, staff observer, disability-related supports and context. A disparity is a reason to investigate; it is not, by itself, proof of discriminatory intent. The goal is fair, accurate, developmentally appropriate responses, not quotas or artificially equal incident counts.</p>\n<div class=\"lesson-question\"><strong>Try this comparison.</strong><p>Two children push during the same disagreement. One is called “frustrated” and offered help. The other is called “violent” and sent home with a warning. What evidence would justify the difference? If there is none, what needs to change: the children, the report, or the adults' decision-making process?</p></div>\n<p><strong>Leadership transfer:</strong> Develop a neutral incident-report template, offer accessible family contact choices, and review a small sample of decisions for consistent safety and inclusion standards. Recheck whether staff practice changed.</p>\n<p class=\"tiny muted\"><strong>Research and guidance:</strong> <a href=\"https://www.ed.gov/media/document/2021-22-crdc-first-look-report-109194.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">U.S. DOE, 2021–22 CRDC</a>; <a href=\"https://news.yale.edu/2016/09/27/implicit-bias-may-help-explain-high-preschool-expulsion-rates-black-children\" target=\"_blank\" rel=\"noopener noreferrer\">Yale Child Study Center</a>; <a href=\"https://www.law.cornell.edu/cfr/text/45/1302.17\" target=\"_blank\" rel=\"noopener noreferrer\">45 CFR § 1302.17 (Head Start)</a>; <a href=\"https://www.cdss.ca.gov/inforesources/child-care-and-development/quality-improvement-initiatives/creating-positive-early-learning-environments\" target=\"_blank\" rel=\"noopener noreferrer\">CDSS exclusion guidance</a>; <a href=\"https://www.ada.gov/topics/child-care-centers/\" target=\"_blank\" rel=\"noopener noreferrer\">DOJ disability access guidance</a>.</p>"
     }
   ],
   "glossary": {
@@ -3459,6 +4013,26 @@
     [
       "California Health and Safety Code § 1596.8895: Parent notice following specified child care facility licensing accusations, suspension, or revocation actions.",
       "https://law.justia.com/codes/california/code-hsc/division-2/chapter-3-4/article-4/section-1596-8895/"
+    ],
+    [
+      "U.S. Department of Education. (2025). 2021–22 Civil Rights Data Collection: A first look (public preschool discipline disparities).",
+      "https://www.ed.gov/media/document/2021-22-crdc-first-look-report-109194.pdf"
+    ],
+    [
+      "Yale News. (2016). Implicit bias may help explain high preschool expulsion rates for Black children.",
+      "https://news.yale.edu/2016/09/27/implicit-bias-may-help-explain-high-preschool-expulsion-rates-black-children"
+    ],
+    [
+      "45 CFR § 1302.17. Head Start suspension and expulsion; program-specific protections.",
+      "https://www.law.cornell.edu/cfr/text/45/1302.17"
+    ],
+    [
+      "California Department of Social Services. (2026). Creating positive early learning environments; AB 2806, suspension and expulsion guidance for applicable programs.",
+      "https://www.cdss.ca.gov/inforesources/child-care-and-development/quality-improvement-initiatives/creating-positive-early-learning-environments"
+    ],
+    [
+      "U.S. Department of Justice. Equal access to child care (disability and individualized reasonable modifications).",
+      "https://www.ada.gov/topics/child-care-centers/"
     ]
   ],
   "photos": [
@@ -3745,6 +4319,31 @@
       "label": "California Penal Code § 11165.2 — Neglect and poverty distinction",
       "short": "Penal Code § 11165.2",
       "url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=11165.2.&lawCode=PEN"
+    },
+    "crdc2122": {
+      "label": "U.S. Department of Education. (2025). 2021–22 Civil Rights Data Collection: A first look (public preschool discipline disparities).",
+      "url": "https://www.ed.gov/media/document/2021-22-crdc-first-look-report-109194.pdf",
+      "short": "U.S. DOE CRDC (2021–22)"
+    },
+    "yaleBias": {
+      "label": "Yale News. (2016). Implicit bias may help explain high preschool expulsion rates for Black children.",
+      "url": "https://news.yale.edu/2016/09/27/implicit-bias-may-help-explain-high-preschool-expulsion-rates-black-children",
+      "short": "Yale Child Study Center (2016)"
+    },
+    "headstart130217": {
+      "label": "45 CFR § 1302.17. Head Start suspension and expulsion; program-specific protections.",
+      "url": "https://www.law.cornell.edu/cfr/text/45/1302.17",
+      "short": "Head Start 45 CFR § 1302.17"
+    },
+    "calExclusion": {
+      "label": "California Department of Social Services. (2026). Creating positive early learning environments; AB 2806, suspension and expulsion guidance for applicable programs.",
+      "url": "https://www.cdss.ca.gov/inforesources/child-care-and-development/quality-improvement-initiatives/creating-positive-early-learning-environments",
+      "short": "CDSS AB 2806 guidance (2026)"
+    },
+    "equalAccess": {
+      "label": "U.S. Department of Justice. Equal access to child care (disability and individualized reasonable modifications).",
+      "url": "https://www.ada.gov/topics/child-care-centers/",
+      "short": "DOJ: Equal access to child care"
     }
   }
 }
