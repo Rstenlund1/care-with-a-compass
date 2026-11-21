@@ -291,3 +291,8 @@ body{background:#fcfaf6;color:#262433}
 .concept-card p{margin:9px 0 0;line-height:1.55}
 .card h2 .glossbtn{font-size:inherit;color:inherit;vertical-align:baseline}
 @media(max-width:600px){.concept-card{padding:13px 14px}}
+
+/* Accessible direct chapter navigation: visiting does not count as completion. */
+.navitem{appearance:none;font:inherit;text-align:left;width:100%;cursor:pointer}
+.navitem:hover{background:#ffffff36;border-color:#f0dcb0}
+.navitem:focus-visible{outline:3px solid #f0dcb0;outline-offset:3px}
