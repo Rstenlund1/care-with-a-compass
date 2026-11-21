@@ -402,7 +402,7 @@ function startOverTraining(){
  render();
  window.scrollTo({top:0,behavior:"auto"});
 }
-function go(page){if(!canOpen(page))return;if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready()&&page!=="chapters")page="overview";if(page==="cases"&&!canOpenCase(state.caseId))state.caseId=D.cases[0].id;state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
+function go(page){if(!canOpen(page))return;if(page==="chapters")pendingChapterJump=null;if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready()&&page!=="chapters")page="overview";if(page==="cases"&&!canOpenCase(state.caseId))state.caseId=D.cases[0].id;state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
 function download(name,body,type){const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function report(){
  const a=state.assessment,r=assessScores();
