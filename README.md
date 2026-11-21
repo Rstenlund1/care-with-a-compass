@@ -1,3 +1,15 @@
+# Care with a Compass — The Director's Desk · v10.7.17
+
+**Optional calculator:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.17&page=staff
+
+**UI compactness:** Removed standalone “Children (over age 2)” heading; the two columns now directly read “Full-time Children (over age 2)” and “Part-time Children (over age 2).” Both count fields retain accessible names from their headings. Infant heading layout remains unchanged.
+
+**California small-home conditional capacity:** Refined status messaging so seven or eight children never receive an unqualified “no numerical coverage gap” reassurance. Instead, a conditional-capacity warning names the kindergarten/elementary school child, a second child age 6 or older, maximum 2 infants, parent notification and written property-owner consent if renting. Adding staff does not increase licensed capacity or override age-mix restrictions. Legal basis: California HSC 1597.44 and 22 CCR 102416.5. The budget still conservatively autofills additional 40-hour staff at seven or eight children as a finance assumption; this does not imply a second staff member is mandatory in all lawful 7-8-child cases.
+
+**QA:** current JavaScript parses; separate full/part-time older and infant counts, price estimates and persistent training state unchanged. Additional browser screenshots and professional compliance review should be included in the Gemini final audit.
+
+---
+
 # Care with a Compass — The Director's Desk · v10.7.16
 
 **Planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.16&page=staff
