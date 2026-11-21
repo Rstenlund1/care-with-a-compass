@@ -413,3 +413,22 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-breakdown summary{cursor:pointer;font-weight:700;font-size:.85rem;color:#42324e}
 .budget-breakdown dl{margin:11px 0 2px}.budget-breakdown dl div{display:flex;justify-content:space-between;gap:15px;padding:8px 2px;border-top:1px solid #ede7f1}
 .budget-breakdown dt{font-size:.82rem;color:#554d62}.budget-breakdown dd{margin:0;text-align:right;font-size:.84rem;font-weight:750;color:#372645;white-space:nowrap}
+
+/* v10.7.2: chapter shortcuts available from the main program and course view. */
+.sidebar-chapter-shortcuts{margin:0 0 8px 39px;padding:10px 0 5px 10px;border-left:1px solid #675477}
+.sidebar-chapter-label{display:block;font-size:10px;letter-spacing:.11em;text-transform:uppercase;font-weight:750;color:#d9c8e6;margin-bottom:7px}
+.sidebar-chapter-grid{display:grid;grid-template-columns:1fr;gap:3px}
+.chapter-shortcut{display:flex;align-items:center;gap:10px;width:100%;min-width:0;text-align:left;border:1px solid #dbd1e5;background:#fff;border-radius:10px;padding:12px;line-height:1.35;font:600 13px/1.35 system-ui,sans-serif;color:#453057;cursor:pointer}
+.chapter-shortcut:hover{border-color:#8161a0;background:#f3ebf8}
+.chapter-shortcut:focus-visible{outline:3px solid #c38a30;outline-offset:2px}
+.chapter-shortcut-number{display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:50%;background:#ede2f6;color:#4a2b65;font-weight:800}
+.chapter-shortcut--sidebar{font-size:12px;color:#e9e0f2;border-color:transparent;background:transparent;padding:7px 5px;gap:7px}
+.chapter-shortcut--sidebar:hover{color:#fff;border-color:#9077a7;background:#4a375e}
+.chapter-shortcut--sidebar .chapter-shortcut-number{flex-basis:22px;height:22px;background:#68527d;color:#fff;font-size:11px}
+.chapter-jump-panel{padding:18px 20px;margin:16px 0 20px;border:1px solid var(--line);border-radius:14px;background:#faf8fc}
+.chapter-jump-panel h3{font:600 21px/1.3 Georgia,serif;margin:0 0 6px;color:#342541}
+.chapter-jump-panel p{margin:0 0 14px;color:#62546d;font-size:13px;line-height:1.55}
+.chapter-jump-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media(max-width:1150px){.sidebar-chapter-shortcuts{margin-left:10px}}
+@media(max-width:680px){.chapter-jump-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.chapter-jump-panel{padding:15px}}
+@media(max-width:380px){.chapter-jump-grid{grid-template-columns:1fr}}
