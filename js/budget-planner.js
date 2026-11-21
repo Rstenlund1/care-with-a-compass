@@ -88,9 +88,45 @@ function countyRateNote(county,manual){
  const first=manual?"Custom tuition entered. Choosing a county loads its benchmark.":(info.fallback?"No county price: California reference ":""+esc(county)+" County estimated median: ")+cash(info.monthly)+"/month.";
  return '<span>'+first+'</span> <a href="https://paybytown.com/childcare/california/" target="_blank" rel="noopener noreferrer">County data</a> <span class="budget-county-method">2026 estimate based on DOL 2022 median full-time preschool center prices; some figures modeled. <a href="https://scrillischool.net/guides/preschool-and-daycare-cost/" target="_blank" rel="noopener noreferrer">Statewide fallback source</a>.</span>';
 }
+const BUDGET_HELP={
+ "county": "Select a county to load an estimated full-time preschool-center tuition starting point. These are modeled medians, not a quote from a specific program. You can edit the tuition.",
+ "students": "How many children pay full-time monthly tuition. This is enrollment for the revenue estimate, not your licensed capacity.",
+ "tuition": "The monthly price charged per full-time child. Part-time tuition follows at 75% until you edit the part-time rate separately.",
+ "partStudents": "Children paying the part-time monthly fee. Do not count a child here if they are already counted as full-time.",
+ "partTuition": "The monthly price per part-time child. Starts at 75% of full-time tuition; a manual change stops automatic linking.",
+ "directorSalary": "What the director receives each month. This is an expense, distinct from additional staff payroll and from the operating surplus.",
+ "staffCount": "Staff beyond the director, measured as full-time equivalents (FTE). Enter 0 when the director is the only worker. A partial FTE affects payroll but not this simple on-site headcount.",
+ "staffUnavailable": "Choose a temporary absence affecting the director or another staff member. Director plus whole additional FTEs form the starting headcount. An absence changes the headcount warning, not payroll.",
+ "staffHourly": "Hourly pay for additional classroom staff only. Director pay is entered separately above.",
+ "staffWeeklyHours": "Paid hours per week for each additional full-time-equivalent staff member. Monthly pay uses 52 weeks divided by 12 months.",
+ "rent": "Enter rent only for a separate commercial facility. A home-based provider may leave this at $0; household rent or mortgage is not included.",
+ "utilities": "Monthly utility expenses paid by the program. Leave at $0 if not entering a separate amount; home utility allocation is not calculated.",
+ "insurance": "Monthly business or child care insurance premium. Leave at $0 until you know the amount.",
+ "overnightNights": "Total overnight stays billed in a month. Starts at zero; do not enter an overnight stay unless the program actually offers it.",
+ "overnightFee": "Amount charged for each overnight stay. Overnight revenue is included, but extra overnight staffing costs are not calculated automatically.",
+ "revenue": "Projected monthly full-time tuition, part-time tuition, and optional overnight fees added together. Meal-program reimbursements are excluded.",
+ "expenses": "Projected monthly director salary, additional staff wages, commercial rent, utilities and insurance only. Other costs are excluded.",
+ "surplus": "Projected revenue minus the listed expenses. Positive surplus is not necessarily take-home profit because taxes and other costs are excluded.",
+ "tuitionRequired": "The full-time monthly fee that would cover the listed expenses at your current enrollment, with part-time and overnight fees held constant. It does not add a profit target.",
+ "available": "Estimated staff available after the selected interruption. Starts with the director plus whole additional staff FTEs. This is not a legal staffing-ratio test.",
+ "breakdown": "A detailed view of the same monthly expenses already included in the total. The lines are not extra charges.",
+ "staffPayroll": "Monthly wages for additional classroom staff, excluding the director. FTE × paid hours per week × hourly pay × 52/12.",
+ "overnight": "Only use overnight revenue if you can provide safe, authorized staffing. Overnight care may require additional personnel whose cost is not separately included here.",
+ "fulltime": "The full-time group uses the county starting rate until you enter your own monthly tuition.",
+ "parttime": "Part-time begins at 75% of the full-time monthly rate, and can be changed independently.",
+ "staffAbsent": "The director counts as the first staff member in this exercise. When the only available person steps away, the available count becomes zero."
+};
+function helpTip(key,label){
+ const explanation=BUDGET_HELP[key];
+ if(!explanation)return "";
+ return '<details class="budget-info"><summary title="'+esc(explanation)+'" aria-label="Help: '+esc(label)+'"><span aria-hidden="true">i</span></summary><span class="budget-info-popup">'+esc(explanation)+'</span></details>';
+}
+function helpHeading(key,label){
+ return '<span class="budget-field-heading"><span>'+esc(label)+'</span>'+helpTip(key,label)+'</span>';
+}
 function unavailabilityControl(){
  const options=[["none","No one unavailable (0)"],["restroom","Restroom break (1)"],["sick","Sick call (1)"],["emergency","Emergency assistance (1)"],["two","Two staff unavailable (2)"]];
- return '<label class="budget-compact-field"><span>Staff temporarily unavailable</span><select data-budget-key="staffUnavailable">'+
+ return '<label class="budget-compact-field">'+helpHeading("staffUnavailable","Staff temporarily unavailable")+'<select data-budget-key="staffUnavailable">'+
   options.map(([id,label])=>'<option value="'+esc(id)+'"'+(state.values.staffUnavailable===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></label>';
 }
 function availabilityText(c){
@@ -98,7 +134,7 @@ function availabilityText(c){
  return c.availablePeople+' staff available after the selected interruption (director included). Verify actual on-site supervision and licensing requirements.';
 }
 function field(key,label,step=1,help=""){
- return '<label class="budget-compact-field"><span>'+esc(label)+'</span><input type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'">'+(help?'<small class="budget-rent-note">'+esc(help)+'</small>':'')+'</label>';
+ return '<label class="budget-compact-field">'+helpHeading(key,label)+'<input type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'">'+'</label>';
 }
 function breakdown(c){
  const line=(name,n)=>'<div><dt>'+esc(name)+'</dt><dd>'+cash(n)+'</dd></div>';
