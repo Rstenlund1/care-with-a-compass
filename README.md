@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.6
+
+**Live version:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.6&page=staff
+
+**Optional planner redesign:** Replaced sprawling and repetitive tuition/expense screens with a compact, side-by-side live calculator. Essential inputs: enrollment, tuition, combined classroom staff pay and hours, rent, utilities, insurance, director salary and desired profit. Collapsed optional part-time, overnight, respite and payroll assumptions. Removed licensed-capacity input, county dropdown, food/meal expenses and income, vague miscellaneous expenses, and separate teacher/aide categories. Breakdown lists only explicit named cost components. The coverage simulator uses generic staff terminology, removes interpretive supervision dropdown, adds paid hours/week slider (40 default), moves cost inputs higher, and displays live coverage and weekly/monthly costs alongside inputs. Optional module still does not affect course progress or completion. Static source and arithmetic validation completed; independent graphical browser review outstanding.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.5
 
 **Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.5
