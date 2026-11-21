@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.12
+
+**Optional budget planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.12&page=staff
+
+**Final budget usability adjustments:** The optional planner has contextual help icons for financial inputs, result cards, and expense breakdowns. Removed the unnecessary “Go to Evidence Journal” shortcut at the bottom of the page. The rent tooltip is now concise without an extended home-rent explanation. Restored a live illustrative 1:12 staffing-coverage warning based on full-time plus part-time daytime children, one director, whole additional-staff FTEs, and temporary absence. This warning is not a substitute for California age-specific, facility-type, or licensed-capacity rules. The default is 1 full-time child, 0 part-time, 0 additional staff, 0 temporarily unavailable, so it starts with no illustrated coverage gap. The default student count is applied to new or untouched planner sessions while preserving previously edited values. Financial calculations continue to treat director salary separately from staff payroll. Source syntax and example calculations checked; live graphical browser review outstanding.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.11
 
 **Live optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.11&page=staff
