@@ -13,7 +13,7 @@ const DEFAULTS={
  cleaning:300,marketing:150,incidentals:650,profitGoal:3000
 };
 let benchmarks={
- statewide:{monthlyRate:2.37,period:"Q3 2026",method:"Illustrative, unweighted mean of eight California retail market observations, not an official statewide rent average"},
+ statewide:{monthlyRate:2.40,period:"Q3 2026",method:"Illustrative, unweighted mean of eight California retail market observations, not an official statewide rent average"},
  regions:[
  {counties:["Riverside","San Bernardino"],monthlyRate:1.77,name:"Inland Empire retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/inland-empire-retail-figures-q3-2026"},
  {counties:["Los Angeles"],monthlyRate:2.87,name:"Los Angeles retail market",period:"2026 Q3",source:"CBRE",url:"https://www.cbre.com/insights/figures/los-angeles-retail-figures-q3-2026"}
@@ -29,7 +29,9 @@ function countyRate(){
  const county=state.values.county;
  const reg=(benchmarks.regions||[]).find(v=>Array.isArray(v.counties)&&v.counties.includes(county)&&Number(v.monthlyRate)>0);
  if(reg)return {rate:Number(reg.monthlyRate),name:reg.name,period:reg.period,source:reg.source,url:reg.url,fallback:false};
- return {rate:Number(benchmarks.statewide.monthlyRate)||2.37,name:"California statewide planning fallback",period:benchmarks.statewide.period||"2026",source:benchmarks.statewide.method||"Illustrative market average",url:"",fallback:true};
+ const activeRates=(benchmarks.regions||[]).map(v=>Number(v.monthlyRate)).filter(v=>Number.isFinite(v)&&v>0);
+ const dynamicRate=activeRates.length?Math.round(activeRates.reduce((sum,x)=>sum+x,0)/activeRates.length*100)/100:Number(benchmarks.statewide.monthlyRate)||2.40;
+ return {rate:dynamicRate,name:"California statewide planning fallback",period:benchmarks.statewide.period||"2026",source:"Unweighted mean of "+activeRates.length+" published California regional retail benchmarks; not an official statewide index",url:"",fallback:true};
 }
 function calculate(){
  const v=state.values,rateInfo=countyRate();
@@ -132,7 +134,7 @@ function view(){
  numeric("aidesFte","Aides (full-time equivalents)",.25),numeric("aideWage","Aide hourly wage ($)",.5),
  numeric("weeklyHours","Weekly paid hours per full-time position",1),
  numeric("payrollBurden","Benefits and payroll taxes (%)",1),
- numeric("directorSalary","Director's desired monthly salary ($)",100,"Separate from staff wages and business profit."),
+ numeric("directorSalary","Director’s desired monthly salary ($)",100,"Separate from staff wages and business profit."),
  numeric("extraNightHours","Additional overnight paid staff hours per month",1,"Enter 0 only if qualified, paid overnight supervision is already included in the positions above.")
  ],true)+
  fieldset("3. Rent and building expenses",[
@@ -153,9 +155,9 @@ function view(){
  ],false)+
  '</div>'+
  '<section class="panel budget-tuition"><h3>5. Tuition planner</h3><p>What would you need to charge to cover your costs, pay the director, and earn a sustainable operating profit?</p>'+
- '<div class="budget-fields">'+numeric("profitGoal","Desired monthly business profit AFTER director salary ($)",100)+'</div>'+
+ '<div class="budget-fields">'+numeric("profitGoal","Desired monthly business profit after paying director ($)",100)+'</div>'+
  tuition(c)+
- '<p class="budget-help">Overnight care may add revenue without additional payroll <em>only if the required qualified, paid staff are already scheduled and counted in the budget</em>. Sleeping children do not eliminate California supervision obligations. Check your license type, overnight approval, and staffing plan.</p>'+
+ '<p class="budget-help"><strong>Director pay is not the same as profit.</strong> The director’s salary is included in monthly expenses before the business-profit target is calculated.</p><p class="budget-help">Overnight care may add revenue without additional payroll <em>only if the required qualified, paid staff are already scheduled and counted in the budget</em>. Sleeping children do not eliminate California supervision obligations. Check your license type, overnight approval, and staffing plan.</p>'+
  '<p class="budget-help">Illustrative planning only. Tuition affordability, subsidized/reimbursement rates, debt service, depreciation, taxes, staffing thresholds, occupancy and local rent vary. No figure here establishes regulatory compliance or a guaranteed profit.</p>'+
  '</section></section>';
 }
