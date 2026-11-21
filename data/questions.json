@@ -3405,7 +3405,7 @@
           "text": "Employment and income do not establish neglect. The director still enforces pickup requirements, protects coverage and children, and discusses practical alternatives without stigmatizing a family."
         },
         "B": {
-          "type": "acceptable",
+          "type": "review",
           "text": "A supportive exception may be appropriate under a neutral written policy; an automatic status-based exception is not a substitute for one."
         },
         "C": {
@@ -3422,9 +3422,7 @@
         }
       },
       "family": "c6-o1",
-      "acceptable": {
-        "B": "A supportive exception may be appropriate under a neutral written policy; an automatic status-based exception is not a substitute for one."
-      },
+      "acceptable": {},
       "refs": [
         "pen11165_2",
         "naeyc",
@@ -3554,14 +3552,12 @@
           "text": "A noninjury event can still be relevant for support and prevention."
         },
         "E": {
-          "type": "acceptable",
+          "type": "review",
           "text": "A vague softer phrase still omits material observations and interventions."
         }
       },
       "family": "c6-o2",
-      "acceptable": {
-        "E": "A vague softer phrase still omits material observations and interventions."
-      },
+      "acceptable": {},
       "refs": [
         "naeyc",
         "crdc2122"
@@ -3724,7 +3720,7 @@
           "text": "Poverty or unstable housing alone is not neglect. Directors cannot discourage reports where objective reasonable suspicion exists, but must avoid substituting socioeconomic stereotypes for legally relevant evidence."
         },
         "B": {
-          "type": "acceptable",
+          "type": "review",
           "text": "Support and observation need not wait for a family to disclose finances."
         },
         "C": {
@@ -3741,9 +3737,7 @@
         }
       },
       "family": "c6-o4",
-      "acceptable": {
-        "B": "Support and observation need not wait for a family to disclose finances."
-      },
+      "acceptable": {},
       "refs": [
         "pen11165_2",
         "pen11166",
