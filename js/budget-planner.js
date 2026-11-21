@@ -78,10 +78,16 @@ function calculate(){
  const scheduledPeople=1+Math.floor(val("staffCount"));
  const unavailable={none:0,restroom:1,sick:1,emergency:1,two:2}[state.values.staffUnavailable]??0;
  const availablePeople=Math.max(0,scheduledPeople-unavailable);
+ // Conservative same-time attendance estimate. An illustrative 1:12 planning
+ // threshold is not a substitute for age-specific ratios, licensed capacity,
+ // qualified-personnel requirements, or family child care home staffing rules.
+ const daytimeChildren=full+part;
+ const planningFloor=Math.ceil(daytimeChildren/12);
+ const coverageGap=Math.max(0,planningFloor-availablePeople);
  const surplus=revenue-expenses;
  // Break-even tuition adjusts only the full-time rate. Part-time and overnight revenue stay fixed.
  const tuitionRequired=full>0?Math.max(0,(expenses-partIncome-nightIncome)/full):null;
- return {full,part,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance,scheduledPeople,unavailable,availablePeople};
+ return {full,part,night,revenue,expenses,surplus,tuitionRequired,staffPayroll,director,rent,utilities,insurance,scheduledPeople,unavailable,availablePeople,daytimeChildren,planningFloor,coverageGap};
 }
 function countyRateNote(county,manual){
  const info=countyRateFor(county);
@@ -99,7 +105,7 @@ const BUDGET_HELP={
  "staffUnavailable": "Choose a temporary absence affecting the director or another staff member. Director plus whole additional FTEs form the starting headcount. An absence changes the headcount warning, not payroll.",
  "staffHourly": "Hourly pay for additional classroom staff only. Director pay is entered separately above.",
  "staffWeeklyHours": "Paid hours per week for each additional full-time-equivalent staff member. Monthly pay uses 52 weeks divided by 12 months.",
- "rent": "Enter rent only for a separate commercial facility. A home-based provider may leave this at $0; household rent or mortgage is not included.",
+ "rent": "Monthly rent for a commercial facility, if applicable.",
  "utilities": "Monthly utility expenses paid by the program. Leave at $0 if not entering a separate amount; home utility allocation is not calculated.",
  "insurance": "Monthly business or child care insurance premium. Leave at $0 until you know the amount.",
  "overnightNights": "Total overnight stays billed in a month. Starts at zero; do not enter an overnight stay unless the program actually offers it.",
@@ -108,7 +114,7 @@ const BUDGET_HELP={
  "expenses": "Projected monthly director salary, additional staff wages, commercial rent, utilities and insurance only. Other costs are excluded.",
  "surplus": "Projected revenue minus the listed expenses. Positive surplus is not necessarily take-home profit because taxes and other costs are excluded.",
  "tuitionRequired": "The full-time monthly fee that would cover the listed expenses at your current enrollment, with part-time and overnight fees held constant. It does not add a profit target.",
- "available": "Estimated staff available after the selected interruption. Starts with the director plus whole additional staff FTEs. This is not a legal staffing-ratio test.",
+ "available": "Daytime full-time and part-time children are assumed present together. The alert compares available adults, including the director, with an illustrative one-per-12 threshold. Actual home-based and center rules can be stricter.",
  "breakdown": "A detailed view of the same monthly expenses already included in the total. The lines are not extra charges.",
  "staffPayroll": "Monthly wages for additional classroom staff, excluding the director. FTE × paid hours per week × hourly pay × 52/12.",
  "overnight": "Only use overnight revenue if you can provide safe, authorized staffing. Overnight care may require additional personnel whose cost is not separately included here.",
@@ -133,8 +139,9 @@ function unavailabilityControl(){
   options.map(([id,label])=>'<option value="'+esc(id)+'"'+(state.values.staffUnavailable===id?' selected':'')+'>'+esc(label)+'</option>').join("")+'</select></div>';
 }
 function availabilityText(c){
- if(c.availablePeople===0)return '0 staff available. Arrange appropriate relief before anyone steps away or continue only when safe supervision is restored.';
- return c.availablePeople+' staff available after the selected interruption (director included). Verify actual on-site supervision and licensing requirements.';
+ if(c.daytimeChildren===0)return 'No daytime children entered. Staff availability: '+c.availablePeople+' (director included when present).';
+ if(c.coverageGap>0)return 'Potential staffing gap: '+c.daytimeChildren+' daytime children require '+c.planningFloor+' supervising adult'+(c.planningFloor===1?'':'s')+' under this illustrative 1:12 planning check, but only '+c.availablePeople+' '+(c.availablePeople===1?'is':'are')+' available. Arrange sufficient supervision before proceeding.';
+ return c.availablePeople+' staff available for '+c.daytimeChildren+' daytime children. No gap under this illustrative 1:12 check, but actual program limits, staffing qualifications, and age-specific ratios may be stricter.';
 }
 function field(key,label,step=1){
  return '<div class="budget-compact-field">'+helpHeading(key,label)+'<input id="budget-'+esc(key)+'" type="number" data-budget-key="'+key+'" inputmode="decimal" min="0" max="1000000" step="'+step+'" value="'+esc(state.values[key])+'"></div>';
@@ -180,10 +187,10 @@ function view(){
  '<div>'+resultHeading("expenses","Expenses including director pay")+'<strong id="b-expenses">'+cash(c.expenses)+'</strong></div>'+
  '<div class="budget-surplus">'+resultHeading("surplus","Surplus / shortfall")+'<strong id="b-profit">'+cash(c.surplus)+'</strong></div>'+
  '<div class="budget-goal-result">'+resultHeading("tuitionRequired","Break-even full-time tuition")+'<strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child")+'</strong></div></div>'+
- '<div class="budget-availability-block"><div class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</div><p id="b-staff-availability" class="budget-staff-availability'+(c.availablePeople===0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p></div>'+
+ '<div class="budget-availability-block"><div class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</div><p id="b-staff-availability" class="budget-staff-availability'+(c.coverageGap>0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p></div>'+
  '<div id="b-verdict" class="budget-compact-verdict">'+(c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.")+'</div>'+
  '<div id="b-breakdown">'+breakdown(c)+'</div>'+
- '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. Staff availability is a simplified headcount scenario, not a staffing-ratio determination; partial FTEs are excluded from its headcount. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
+ '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. The illustrative 1:12 staffing check assumes full-time and part-time children attend together; it is not a licensing-ratio or capacity determination. Partial staff FTEs are excluded from the headcount. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
  '</aside></section>';
 }
 function update(){
@@ -195,7 +202,7 @@ function update(){
  };
  for(const [id,text] of Object.entries(entries)){const node=document.getElementById(id);if(node)node.textContent=text;}
  const availability=document.getElementById("b-staff-availability");
- if(availability){availability.textContent=availabilityText(c);availability.classList.toggle("budget-staff-alert",c.availablePeople===0);}
+ if(availability){availability.textContent=availabilityText(c);availability.classList.toggle("budget-staff-alert",c.coverageGap>0);}
  const banner=document.getElementById("b-verdict");
  if(banner)banner.textContent=c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.";
  const source=document.getElementById("budget-county-source");if(source)source.innerHTML=countyRateNote(state.values.county,state.tuitionManual);
