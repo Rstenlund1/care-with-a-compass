@@ -68,7 +68,7 @@ function bannerChange(next){
 }
 function bannerKeydown(event){if(event.key==='ArrowRight'){event.preventDefault();bannerChange(bannerIndex+1)}else if(event.key==='ArrowLeft'){event.preventDefault();bannerChange(bannerIndex-1)}}
 function welcome(){state.phase='welcome';bannerIndex=0;render(`
-<div class="eyebrow">EDACE 830 · Supervisor leadership · Five learning chapters</div>
+<div class="eyebrow">EDACE 830 · Supervisor leadership · Six learning chapters</div>
 <section class="opening-banner welcome-v8-banner" aria-roledescription="carousel" aria-label="Photographs from an early childhood program" onkeydown="bannerKeydown(event)">
 <img id="bannerImage" src="${IMG.welcomeHero}" alt="${BANNER_SLIDES[0].alt}" style="object-position:${BANNER_SLIDES[0].position}" decoding="async" fetchpriority="high">
 <div class="banner-tint" aria-hidden="true"></div>
