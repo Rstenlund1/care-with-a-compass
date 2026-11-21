@@ -333,7 +333,7 @@
       "objective": 1,
       "scenario": "A respected senior teacher says, “Come on, don’t go corporate on me,” when you ask her to document repeated late handoffs. Other staff are watching. What is your first response?",
       "choices": [
-        "Explain why records matter, hear concerns privately and establish expectations.",
+        "Explain why records matter, hear concerns privately and establish expectations for the entire team.",
         "Let it pass publicly but quietly begin documenting every minor mistake she makes.",
         "Ask the staff group to vote on whether handoff documentation is worth the time.",
         "Suspend the teacher immediately for questioning the supervisor in front of others.",
@@ -795,7 +795,7 @@
       "scenario": "After an allegation of possible staff abuse, the director has removed the employee from child contact, made the required reports and assigned qualified coverage. Other parents notice the staffing change and ask what happened. What is the most appropriate communication?",
       "choices": [
         "Send all enrolled families a summary of the allegation, noting that no findings have yet been made by investigators.",
-        "Give necessary safety and staffing information, communicate appropriately with affected families, and follow required notices.",
+        "Give necessary safety and staffing information, communicate appropriately with affected families, and follow required notices without speculation.",
         "Confirm that a staffing change occurred but withhold all details, including relevant safety information from an affected parent.",
         "Share a redacted copy of the complaint to maintain transparency while removing the employee’s and child’s names.",
         "Wait for the final investigative result before describing any operational changes or required licensing communications."
@@ -1430,7 +1430,7 @@
       "scenario": "A center classroom is within its usual teacher-child ratio, but attendance would exceed the site's licensed capacity if two additional children arrive. What is the correct supervisory conclusion?",
       "choices": [
         "Offer to add a qualified teacher immediately, then treat the extra staff member as increasing licensed capacity.",
-        "Check licensed capacity and room staffing, then redirect enrollment until a fully compliant space is available.",
+        "Check licensed capacity and room staffing, then redirect enrollment until a fully compliant space is available for the group.",
         "Admit the two children because teacher-to-child ratios are satisfied and report the temporary overage afterward.",
         "Use a multipurpose room as overflow care only after confirming that its use and staffing are approved.",
         "Ask families to stagger arrival times and admit everyone so long as no more than the licensed total is present."
@@ -1613,7 +1613,7 @@
       "objective": 3,
       "scenario": "An enrollment coordinator claims a new staff member can count in the teacher-child ratio because she has completed orientation, although the director has not checked educational qualifications. What should happen next?",
       "choices": [
-        "Verify role-specific eligibility and staffing rules before counting the employee toward required supervision.",
+        "Verify role-specific eligibility and staffing rules before counting the employee toward required supervision in that classroom.",
         "Treat the new hire as a teacher during a temporary onboarding period because they completed orientation.",
         "Assign the new hire to a mixed-age group where more experienced staff are present, then reassess after a week.",
         "Ask the licensing analyst whether the new employee can qualify by experience while they begin classroom coverage.",
@@ -1839,7 +1839,7 @@
       "objective": 3,
       "scenario": "During an ER handoff, the caregiver describes an autistic child as “difficult and aggressive.” The clinician needs a reliable symptom history. What should you direct the caregiver to do?",
       "choices": [
-        "Give the clinician a factual timeline, treatment history, allergies and the child’s communication supports.",
+        "Give the clinician a factual timeline, treatment history, allergies and the child’s communication supports, avoiding assumptions.",
         "Summarize the child’s autism support plan and describe the last behavior that staff considered unusual.",
         "Let the parent explain the child’s usual behavior and restrict staff input to what happened during transport.",
         "Explain that the child has been agitated, then ask clinicians to interpret whether the agitation is medical.",
@@ -2207,7 +2207,7 @@
         "Ask the employee’s coworkers to document each late arrival and decide whether formal action is deserved.",
         "Reduce the employee’s opening duties for a month while you observe whether the pattern improves voluntarily.",
         "Begin progressive discipline under policy while asking staff to absorb late arrivals for the rest of the month.",
-        "Review verified attendance privately, provide a clear improvement plan, and secure reliable backup coverage.",
+        "Review verified attendance privately, provide a clear improvement plan, and secure reliable backup coverage for future openings.",
         "Offer a shift exchange if another qualified person agrees and document measurable arrival expectations."
       ],
       "answer": "D",
@@ -2340,7 +2340,7 @@
       "scenario": "A preschool child who uses AAC and needs additional supervision is repeatedly excluded from field trips because staff “do not have time for that.”",
       "choices": [
         "Shorten the child’s outing to one stop and require the family to approve the modified schedule.",
-        "Assess individualized risks, AAC access and support staffing, then plan and verify meaningful participation.",
+        "Assess individualized risks, AAC access and support staffing, then plan and verify meaningful participation on the outing.",
         "Request a volunteer aide from the family to accompany the child as a condition of joining this trip.",
         "Offer the child an alternative activity on campus while other children attend the outing.",
         "Assign a trained caregiver and rehearse transitions with the child, then confirm full-group safety procedures."
@@ -3210,7 +3210,7 @@
       "choices": [
         "Ask the caregiver to make the account private and crop the photo later.",
         "Require removal, document the incident, and coach staff on consent checks.",
-        "Remove the post, preserve evidence, notify the family and fix the posting process.",
+        "Remove the post, preserve evidence, notify the family and fix the posting process before further publication.",
         "File a child-abuse report solely because the photograph was posted without consent.",
         "Remove the post quietly and avoid contacting the family unless they discover it."
       ],
