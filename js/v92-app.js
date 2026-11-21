@@ -100,7 +100,7 @@ function work(id){return state.caseWork[id]||(state.caseWork[id]={step:0,chosen:
 function optionFor(stage,id){return stage.options.find(o=>o.id===id);}
 function doneCount(){return allCasesDone()?3:0;}
 function courseProgress(){try{const key="care-with-a-compass-supervisor-v72-72q",raw=localStorage.getItem(key)||sessionStorage.getItem(key);if(!raw)return {done:0,capstone:false};const s=JSON.parse(raw);return {done:Array.isArray(s.done)?s.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=6).length:0,capstone:!!s.capstone?.completed};}catch(e){return {done:0,capstone:false};}}
-function courseReady(){return courseProgress().capstone;}
+function courseReady(){const p=courseProgress();return p.capstone&&p.done===6;}
 function completedLabFromStorage(){
  try{const lab=JSON.parse(localStorage.getItem('cwc-consequence-lab-v10')||'null');return !!(lab&&lab.index===3&&lab.case===null&&Array.isArray(lab.reports)&&lab.reports.length===3&&lab.reports.every(r=>Array.isArray(r.log)&&r.log.length===12));}
  catch(_){return false;}
