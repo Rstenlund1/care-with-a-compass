@@ -3069,20 +3069,20 @@
       "id": "C3Q18",
       "chapter": 3,
       "objective": 2,
-      "scenario": "Nine infants are awake in an infant room with two qualified infant teachers. A cleared preschool aide offers to cover one teacher’s break. Before the break, what must the supervisor establish?",
+      "scenario": "Nine infants are awake in an infant room with only two qualified infant teachers. A cleared preschool aide offers to cover a teacher’s break. What must the director address first?",
       "choices": [
         "Verify infant qualifications and arrange lawful relief before a teacher leaves.",
         "Allow the aide to substitute because two adults are present, regardless of infant qualifications.",
         "Allow one teacher to supervise nine infants for a short break if most are in cribs.",
         "Ask the toddler teacher to observe through an open half-door while supervising toddlers.",
-        "Delay the break and bring in qualified, cleared infant-care coverage while correcting any existing staffing shortfall."
+        "Delay the break and arrange a third qualified infant teacher, then review whether an aide could substitute."
       ],
       "answer": "A",
-      "rationale": "Under 22 CCR § 101416.5(b), one teacher is required per four infants. Aides may substitute only if a fully qualified teacher supervises no more than 12 infants and each aide directly supervises no more than four. Nine awake infants require at least three properly qualified/countable staff in a compliant configuration. The sleeping-infant provision in subsection (d) has separate conditions.",
+      "rationale": "Under 22 CCR § 101416.5(b), nine awake infants require staffing that meets the 1:4 ratio, with at least three countable staff in an allowable configuration. Two infant teachers are already insufficient. First secure compliant supervision; then verify qualifications and the conditions for aide substitution before any break.",
       "feedback": {
         "A": {
           "type": "preferred",
-          "text": "Under 22 CCR § 101416.5(b), one teacher is required per four infants. Aides may substitute only if a fully qualified teacher supervises no more than 12 infants and each aide directly supervises no more than four. Nine awake infants require at least three properly qualified/countable staff in a compliant configuration. The sleeping-infant provision in subsection (d) has separate conditions."
+          "text": "Under 22 CCR § 101416.5(b), nine awake infants require staffing that meets the 1:4 ratio, with at least three countable staff in an allowable configuration. Two infant teachers are already insufficient. First secure compliant supervision; then verify qualifications and the conditions for aide substitution before any break."
         },
         "B": {
           "type": "review",
@@ -3098,12 +3098,12 @@
         },
         "E": {
           "type": "acceptable",
-          "text": "This protects the break transition, but nine awake infants with only two staff require immediate correction before waiting for the break."
+          "text": "This also addresses the immediate staffing shortfall by obtaining qualified coverage; it does not fully assess the separate requirements for aide substitution."
         }
       },
       "family": "c3-o2",
       "acceptable": {
-        "E": "Delaying the break and obtaining compliant coverage is protective; the current nine-infant configuration also requires immediate review."
+        "E": "This also addresses the immediate staffing shortfall by obtaining qualified coverage; it does not fully assess the separate requirements for aide substitution."
       },
       "refs": [
         "infantratio",
