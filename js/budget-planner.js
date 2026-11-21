@@ -10,6 +10,7 @@ const DEFAULTS={
  respiteHours:40,respiteRate:30,otherRevenue:0,
  teachersFte:3,teacherWage:24,aidesFte:1,aideWage:20,weeklyHours:40,payrollBurden:22,
  directorSalary:6500,utilitiesPct:15,insurance:500,foodPerChild:90,overnightSupplies:7,respiteSupplies:2,
+ includeCoverageCost:"yes",coverageDays:22,
  cleaning:300,marketing:150,incidentals:650,profitGoal:3000
 };
 let benchmarks={
@@ -55,10 +56,12 @@ function calculate(){
  /* Extra overnight HOURS represent paid hours not already counted in regular FTEs. */
  const nightPayroll=nval("extraNightHours")*nval("teacherWage")*(1+nval("payrollBurden")/100);
  const director=nval("directorSalary"),utility=rent*nval("utilitiesPct")/100;
+ const practiceCoverage=typeof window.CWC_STAFFING==="function"?window.CWC_STAFFING():null;
+ const practiceCoverageCost=state.values.includeCoverageCost==="yes"&&practiceCoverage?practiceCoverage.cost*nval("coverageDays"):0;
  const dayConsumables=day*nval("foodPerChild");
  const nightConsumables=nights*nval("overnightSupplies");
  const respiteConsumables=nval("respiteHours")*nval("respiteSupplies");
- const fixed=rent+leaseExtras+utility+nval("insurance")+nval("cleaning")+nval("marketing")+nval("incidentals")+teacherPayroll+aidePayroll+nightPayroll+director;
+ const fixed=rent+leaseExtras+utility+nval("insurance")+nval("cleaning")+nval("marketing")+nval("incidentals")+teacherPayroll+aidePayroll+nightPayroll+practiceCoverageCost+director;
  const variable=dayConsumables+nightConsumables+respiteConsumables;
  const expenses=fixed+variable,profit=monthlyRevenue-expenses;
  const otherNet=nightRevenue+respiteRevenue+nval("otherRevenue")-nightConsumables-respiteConsumables;
@@ -67,7 +70,7 @@ function calculate(){
  const breakEven=dayContribution>0?Math.max(0,Math.ceil((fixed-otherNet)/dayContribution)):null;
  const targetSeats=dayContribution>0?Math.max(0,Math.ceil((fixed+nval("profitGoal")-otherNet)/dayContribution)):null;
  const tuitionNeeded=full>0?Math.max(0,(expenses+nval("profitGoal")-partRevenue-nightRevenue-respiteRevenue-nval("otherRevenue"))/full):null;
- return {v,rateInfo,perSf,rent,leaseExtras,full,part,day,nights,nightRevenue,fullRevenue,partRevenue,respiteRevenue,monthlyRevenue,teacherPayroll,aidePayroll,nightPayroll,director,utility,dayConsumables,nightConsumables,respiteConsumables,fixed,variable,expenses,profit,otherNet,breakEven,targetSeats,tuitionNeeded,margin:monthlyRevenue?profit/monthlyRevenue*100:0,preDirectorProfit:profit+director,capacity:nval("capacity")};
+ return {v,rateInfo,perSf,rent,leaseExtras,full,part,day,nights,nightRevenue,fullRevenue,partRevenue,respiteRevenue,monthlyRevenue,teacherPayroll,aidePayroll,nightPayroll,director,utility,dayConsumables,nightConsumables,respiteConsumables,fixed,variable,expenses,profit,otherNet,breakEven,targetSeats,tuitionNeeded,practiceCoverageCost,margin:monthlyRevenue?profit/monthlyRevenue*100:0,preDirectorProfit:profit+director,capacity:nval("capacity")};
 }
 function numeric(key,label,step,help){
  const a=state.values;
@@ -88,17 +91,18 @@ function breakdown(c){
  '<div><dt>Rent, CAM/NNN and utilities</dt><dd>'+cash(c.rent+c.leaseExtras+c.utility)+'</dd></div>'+
  '<div><dt>Teacher wages, taxes and benefits</dt><dd>'+cash(c.teacherPayroll)+'</dd></div>'+
  '<div><dt>Aide wages, taxes and benefits</dt><dd>'+cash(c.aidePayroll)+'</dd></div>'+
- '<div><dt>Extra paid overnight labor</dt><dd>'+cash(c.nightPayroll)+'</dd></div>'+
+ '<div><dt>Extra paid overnight labor</dt><dd>'+cash(c.nightPayroll)+'</dd></div>'+ 
+ '<div><dt>Backup coverage selected above</dt><dd>'+cash(c.practiceCoverageCost)+'</dd></div>'+
  '<div><dt>Director’s desired salary</dt><dd>'+cash(c.director)+'</dd></div>'+
- '<div><dt>Insurance, food and other expenses</dt><dd>'+cash(c.expenses-c.rent-c.leaseExtras-c.utility-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.director)+'</dd></div>'+
+ '<div><dt>Insurance, food and other expenses</dt><dd>'+cash(c.expenses-c.rent-c.leaseExtras-c.utility-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.practiceCoverageCost-c.director)+'</dd></div>'+
  '</dl></details>';
 }
 function overview(c){
  return '<div class="budget-results" aria-live="polite">'+
  card("Total monthly income","b-income",cash(c.monthlyRevenue))+
- card("Employees: teachers and aides","b-payroll",cash(c.teacherPayroll+c.aidePayroll+c.nightPayroll))+
+ card("Employees: teachers and aides","b-payroll",cash(c.teacherPayroll+c.aidePayroll+c.nightPayroll+c.practiceCoverageCost))+
  card("Director's desired salary","b-director",cash(c.director))+
- card("Other operating costs","b-othercost",cash(c.expenses-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.director))+
+ card("Other operating costs","b-othercost",cash(c.expenses-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.practiceCoverageCost-c.director))+
  card("Monthly surplus after director pay","b-profit",cash(c.profit))+
  '</div><div class="budget-verdict" id="b-verdict">'+verdict(c)+'</div><div id="b-breakdown">'+breakdown(c)+'</div>';
 }
@@ -127,10 +131,18 @@ function tuition(c){
  'Needed tuition holds other revenue and current enrollment constant. Break-even enrollment holds the current part-time/full-time mix, rates, fixed staffing and other revenue constant; actual staffing costs can increase as enrollment rises.'+
  '</p>';
 }
+function goalHeader(){
+ return '<section class="panel budget-goal" aria-label="Your income goals">'+
+ '<div class="kicker">Start with your goal</div><h2>What do you want this center to earn?</h2>'+
+ '<p>Set your desired director salary first. Then set how much profit the business should earn <strong>after paying you</strong>. Both goals shape the tuition estimate below.</p>'+
+ '<div class="budget-fields">'+numeric("directorSalary","Director’s desired monthly salary ($)",100,"Your pay as director, separate from staff payroll and business profit.")+
+ numeric("profitGoal","Desired monthly business profit ($)",100,"The surplus you want after all expenses, including director salary.")+
+ '</div></section>';
+}
 function view(){
  const c=calculate(),v=c.v;
  const countyOpts=COUNTIES.map(x=>[x,x+" County"]);
- return '<section class="budget-page" id="cwc-budget"><div class="section-top"><div><div class="kicker">03 · Operating budget and tuition</div><h2>Can your child care business pay its bills?</h2><p>Start with example numbers or use your own. Change any number and see the monthly results. Your entries remain in this browser and are not included in assessment submissions.</p></div></div>'+
+ return '<section class="budget-page" id="cwc-budget"><div class="section-top"><div><div class="kicker">Operating budget and tuition</div><h2>Will the center support your goals?</h2><p>Start with example numbers or use your own. Change any number and see the monthly results. Your entries remain in this browser and are not included in assessment submissions.</p></div></div>'+
  '<div class="budget-top"><div class="budget-steps"><strong>What comes in?</strong><span>What goes out?</span><span>What tuition works?</span></div>'+
  overview(c)+'</div>'+
  '<div class="panel budget-form-panel"><div class="budget-choice">'+
@@ -145,13 +157,14 @@ function view(){
  numeric("respiteHours","Respite hours billed each month",1),numeric("respiteRate","Respite hourly rate ($)",1),
  numeric("otherRevenue","Other center revenue each month ($)",25)
  ],true)+
- fieldset("2. Teachers, aides, and director pay",[
+ fieldset("2. Teachers, aides, and overnight coverage",[
  numeric("teachersFte","Teachers (full-time equivalents)",.25),numeric("teacherWage","Teacher hourly wage ($)",.5),
  numeric("aidesFte","Aides (full-time equivalents)",.25),numeric("aideWage","Aide hourly wage ($)",.5),
  numeric("weeklyHours","Weekly paid hours per full-time position",1),
  numeric("payrollBurden","Benefits and payroll taxes (%)",1),
- numeric("directorSalary","Director’s desired monthly salary ($)",100,"Separate from staff wages and business profit."),
- numeric("extraNightHours","Additional overnight paid staff hours per month",1,"Enter 0 only if qualified, paid overnight supervision is already included in the positions above.")
+ numeric("extraNightHours","Additional overnight paid staff hours per month",1,"Enter 0 only if qualified, paid overnight supervision is already included in the positions above."),
+ select("includeCoverageCost","Include backup staffing selected above in monthly expenses?",[["yes","Yes, these hours are extra"],["no","No, they are already included in payroll"]]),
+ numeric("coverageDays","Days per month this extra coverage runs",1,"Only applies if extra backup coverage is included. Use 22 for an average weekday month.")
  ],true)+
  fieldset("3. Rent and building expenses",[
  select("county","California county",countyOpts),
@@ -171,7 +184,7 @@ function view(){
  ],false)+
  '</div>'+
  '<section class="panel budget-tuition"><h3>5. Tuition planner</h3><p>What would you need to charge to cover your costs, pay the director, and earn a sustainable operating profit?</p>'+
- '<div class="budget-fields">'+numeric("profitGoal","Desired monthly business profit after paying director ($)",100)+'</div>'+
+ 
  tuition(c)+
  '<p class="budget-help"><strong>Director pay is not the same as profit.</strong> The director’s salary is included in monthly expenses before the business-profit target is calculated.</p><p class="budget-help">Overnight care may add revenue without additional payroll <em>only if the required qualified, paid staff are already scheduled and counted in the budget</em>. Sleeping children do not eliminate California supervision obligations. Check your license type, overnight approval, and staffing plan. <a href="https://www.law.cornell.edu/regulations/california/22-CCR-102426" target="_blank" rel="noopener noreferrer">Family child care home overnight rules</a> · <a href="https://www.law.cornell.edu/regulations/california/22-CCR-101230" target="_blank" rel="noopener noreferrer">Child care center napping rules</a>.</p>'+
  '<p class="budget-help">Illustrative planning only. Tuition affordability, subsidized/reimbursement rates, debt service, depreciation, taxes, staffing thresholds, occupancy and local rent vary. No figure here establishes regulatory compliance or a guaranteed profit.</p>'+
@@ -180,8 +193,8 @@ function view(){
 function update(){
  const root=document.getElementById("cwc-budget");if(!root)return;
  const c=calculate();
- const vals={"b-income":cash(c.monthlyRevenue),"b-payroll":cash(c.teacherPayroll+c.aidePayroll+c.nightPayroll),
- "b-director":cash(c.director),"b-othercost":cash(c.expenses-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.director),
+ const vals={"b-income":cash(c.monthlyRevenue),"b-payroll":cash(c.teacherPayroll+c.aidePayroll+c.nightPayroll+c.practiceCoverageCost),
+ "b-director":cash(c.director),"b-othercost":cash(c.expenses-c.teacherPayroll-c.aidePayroll-c.nightPayroll-c.practiceCoverageCost-c.director),
  "b-profit":cash(c.profit),"b-tuition":c.tuitionNeeded==null?"Add at least one full-time child":cash(c.tuitionNeeded)+" / full-time child / month",
  "b-break":c.breakEven==null?"Not calculable":c.breakEven+" daytime children",
  "b-target":c.targetSeats==null?"Not calculable":c.targetSeats+" daytime children"};
@@ -220,6 +233,6 @@ function loadBenchmarks(){
  if(data&&data.statewide&&Number(data.statewide.monthlyRate)>0&&Array.isArray(data.regions)){benchmarks=data;update();}
  }).catch(()=>{});
 }
-window.CWC_BUDGET={view,calculate,update,touched:()=>state.touched,reset,loadBenchmarks,countyRate};
+window.CWC_BUDGET={view,goalHeader,calculate,update,touched:()=>state.touched,reset,loadBenchmarks,countyRate};
 loadBenchmarks();
 })();
