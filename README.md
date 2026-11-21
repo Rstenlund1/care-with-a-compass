@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.11
+
+**Live optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.11&page=staff
+
+**Home-based care rent clarification:** The rent field now reads "Commercial facility rent ($/month)" and explains that home-based providers should enter $0 instead of their household rent or mortgage. This does not change any calculations, stored values, or existing zero-dollar rent default. The simplified model intentionally excludes household housing costs, so it is not a comprehensive accounting or tax expense model.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.10
 
 **Optional calculator:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.10&page=staff
