@@ -465,7 +465,6 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")hideDefinitions();})
  save();render();
 });
 document.addEventListener("cwc-budget-changed",()=>{
- state.sequence.staffTouched=true;save();
  const progress=overallProgress(),bar=document.querySelector(".course-progress-track"),fill=bar?.querySelector("span"),label=document.getElementById("cwc-progress-text");
  if(bar)bar.setAttribute("aria-valuenow",String(progress.percent));
  if(fill)fill.style.width=progress.percent+"%";
