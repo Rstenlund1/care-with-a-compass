@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.8
+
+**Optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.8&page=staff
+
+**County tuition estimates added:** Reintroduced a compact dropdown covering all 58 California counties above the full-time/part-time enrollment controls. Selecting a county prefills monthly full-time tuition from that county's estimated 2026 median preschool center rate; prices are from PayByTown, https://paybytown.com/childcare/california/, which adjusts U.S. Department of Labor 2022 county median preschool center weekly prices by 23.3% to 2026. Monthly values are rounded weekly ×52/12. Unavailable counties use a California statewide median center-preschool reference of $1,202/month, derived from $225/week in 2022 and the same publisher's 23.3% estimate adjustment, https://scrillischool.net/guides/preschool-and-daycare-cost/. These values are estimated medians, not observed 2026 provider quotes or all-age averages. Selected county tuition remains editable; manually edited tuition is preserved across page visits, but selecting a new county resets the suggested full-time rate. Linked part-time tuition remains 75% until manually overridden. Existing edited values from v10.7.7 remain saved. Financial controls stay compact; no rent/insurance defaults are reintroduced.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.7
 
 **Optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.7&page=staff
