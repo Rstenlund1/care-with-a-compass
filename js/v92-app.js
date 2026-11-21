@@ -7,10 +7,10 @@ const R=window.CWC_V96_REFERENCES||{sources:{},stages:{},lab:{}};
 if(!D){document.body.innerHTML="<p>The scenario data could not be loaded.</p>";return;}
 const KEY="cwc-v92-directors-day-state";
 let facilitatorDemoUnlocked=false; // Display-only reviewer workflow. This is not identity verification.
-const pages=["overview","chapters","cases","staff","evidence","assessment","facilitator"];
+const pages=["overview","chapters","cases","evidence","assessment","facilitator","staff"];
 const navLabels={overview:"Program overview",chapters:"Learning chapters",cases:"Applied simulations",staff:"Staffing & Tuition Planner",evidence:"Evidence Journal",assessment:"Competency assessment",facilitator:"Facilitator review"};
 const navIcons={overview:"⌂",chapters:"◫",cases:"◈",staff:"♟",evidence:"▤",assessment:"◉",facilitator:"▣"};
-function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"break",wage:23,attendance:12,qualifiedTeachers:1,window:"during",support:"routine",activeTab:"coverage"},simulationMode:"random",completedSimulations:{guided:false,random:false},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false},orderSeed:Math.floor(Math.random()*2147483647)};}
+function initial(){return {page:"overview",caseId:"pickup",variants:{pickup:"afternoon",hospital:"midday",staff:"open"},caseWork:{},evidence:{},evidenceReviewed:false,staffing:{plan:"minimum",disruption:"none",wage:23,attendance:1,qualifiedTeachers:1,window:"during",support:"routine",activeTab:"coverage"},simulationMode:"random",completedSimulations:{guided:false,random:false},assessment:{diagnostic:{},capstone:{},transfer:"",name:"",submitted:false,facilitatorScore:null,facilitatorNote:"",reviewer:""},menu:false,introSeen:{},sequence:{staffCompleted:false,staffTouched:false},orderSeed:Math.floor(Math.random()*2147483647)};}
 function restore(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return initial();const z=initial();return {...z,...raw,variants:{...z.variants,...raw.variants},caseWork:raw.caseWork||{},completedSimulations:{...z.completedSimulations,...raw.completedSimulations},orderSeed:Number.isFinite(raw.orderSeed)?raw.orderSeed:z.orderSeed,introSeen:raw.introSeen||{},sequence:{...z.sequence,...raw.sequence},evidence:raw.evidence||{},staffing:{...z.staffing,...raw.staffing},assessment:{...z.assessment,...raw.assessment,diagnostic:raw.assessment?.diagnostic||{},capstone:raw.assessment?.capstone||{}}};}catch(e){return initial();}}
 let state=restore();
 let pendingChapterJump=null; // Navigation-only preview, never grants completion credit.
@@ -34,19 +34,19 @@ function moduleKey(){if(state.page==="cases")return "case:"+state.caseId;return 
 function continueJourney(){
  if(state.page==="cases"){
   if(!allCasesDone())return go("cases");
-  return go("staff");
+  return go("evidence");
  }
- if(state.page==="staff"){if(!state.sequence.staffTouched||!window.CWC_BUDGET?.touched())return;state.sequence.staffCompleted=true;save();return go("evidence");}
+ if(state.page==="staff")return go("evidence");
  if(state.page==="evidence"){if(!state.evidenceReviewed)return;return go("assessment");}
  if(state.page==="assessment")return go("facilitator");
  return go("chapters");
 }
 function journeyButton(){
  if(state.page==="cases"){
-  const text=allCasesDone()?"Continue to the Staffing Lab →":"Continue Applied Simulations →";
+  const text=allCasesDone()?"Continue to Evidence Journal →":"Continue Applied Simulations →";
   return hButton("journey-next",text,"primary");
  }
- if(state.page==="staff")return hButton("journey-next","Continue to Evidence Journal →","primary",window.CWC_BUDGET?.touched()&&state.sequence.staffTouched?"":"disabled");
+ if(state.page==="staff")return hButton("go-evidence","Go to Evidence Journal →","secondary");
  if(state.page==="evidence")return hButton("journey-next","Continue to the competency assessment →","primary");
  return "";
 }
@@ -107,12 +107,9 @@ function completedLabFromStorage(){
  catch(_){return false;}
 }
 function allCasesDone(){if(completedLabFromStorage()&&!state.completedSimulations.random){state.completedSimulations.random=true;save();}return !!(state.completedSimulations.guided||state.completedSimulations.random);}
-function staffReady(){return allCasesDone();}
-function staffingDone(){return !!state.sequence?.staffCompleted||state.evidenceReviewed||state.assessment.submitted;}
 function nextRequired(){
  if(!courseReady())return {page:"chapters"};
  if(!allCasesDone())return {page:"cases"};
- if(!staffingDone())return {page:"staff"};
  if(!state.evidenceReviewed)return {page:"evidence"};
  if(!state.assessment.submitted)return {page:"assessment"};
  return {page:"facilitator"};
@@ -134,21 +131,22 @@ function hButton(action,label,kind="secondary",extra=""){return `<button type="b
 function label(title,body){return `<div class="kicker">${esc(title)}</div>${body}`;}
 function overallProgress(){
  const p=courseProgress();
- const percent=Math.min(100,p.done*6+(p.capstone?9:0)+(allCasesDone()?20:0)+(state.sequence?.staffTouched?5:0)+(window.CWC_BUDGET?.touched()?5:0)+(state.evidenceReviewed?10:0)+(state.assessment.submitted?15:0));
+ const percent=Math.min(100,p.done*7+(p.capstone?8:0)+(allCasesDone()?25:0)+(state.evidenceReviewed?10:0)+(state.assessment.submitted?15:0));
  return {percent,chapters:p.done};
 }
-function nav(){return pages.map(p=>`<button data-action="nav" data-page="${p}" class="navbtn ${state.page===p?"active":""}" aria-current="${state.page===p?"page":"false"}" ${!window.CWC_LEARNER?.ready()&&p!=="overview"&&p!=="chapters"?'disabled title="Enter your name on the opening page to begin training"':""}><span class="navicon" aria-hidden="true">${navIcons[p]}</span><span>${esc(navLabels[p])}</span></button>`).join("");}
+function nav(){return pages.filter(p=>p!=="staff").map(p=>`<button data-action="nav" data-page="${p}" class="navbtn ${state.page===p?"active":""}" aria-current="${state.page===p?"page":"false"}" ${!window.CWC_LEARNER?.ready()&&p!=="overview"&&p!=="chapters"?'disabled title="Enter your name on the opening page to begin training"':""}><span class="navicon" aria-hidden="true">${navIcons[p]}</span><span>${esc(navLabels[p])}</span></button>`).join("");}
+function optionalToolNav(){return `<div class="sidebar-optional-label">OPTIONAL · BONUS TOOL</div><button type="button" data-action="nav" data-page="staff" class="navbtn optional-navbtn ${state.page==="staff"?"active":""}" aria-current="${state.page==="staff"?"page":"false"}"><span class="navicon" aria-hidden="true">${navIcons.staff}</span><span>${esc(navLabels.staff)}</span></button>`;}
 function iconCard(value,name,small=""){return `<div class="metric"><strong>${esc(value)}</strong><span>${esc(name)}</span>${small?`<small>${esc(small)}</small>`:""}</div>`;}
 function overview(){
  const chapters=courseProgress();
- return `<section class="hero ${window.CWC_LEARNER?.ready()?"":"hero-enrollment"}"><div class="hero-copy"><span class="eyebrow light">Version 10.7.4 · One leadership program with applied simulations</span><h2>One facility. One ordinary day.<br><em>A dozen consequences.</em></h2><p>One leadership program combines six foundational chapters, consequential simulations, staffing and evidence labs, and a facilitator-reviewed competency assessment for aspiring supervisors and directors.</p><p class="hero-author">Created and developed by <strong>Richard Lawrence Stenlund</strong></p>${window.CWC_LEARNER?.ready()?`<div class="hero-welcome"><p>Welcome back, <strong>${esc(window.CWC_LEARNER.profile().name)}</strong>.</p><div class="hero-actions">${hButton("start-training",courseReady()||chapters.done>0?"Continue Training →":"Start Training →","primary-light")}</div></div>`:window.CWC_LEARNER?.enrollHero()||""}</div><div class="hero-mark" aria-hidden="true"><span>10</span><small>director<br>edition</small></div></section>
- <div class="program-roadmap"><div class="roadmap-step"><span class="roadmap-no">01</span><div><h3>Learn the leadership foundations</h3><p>Six chapters, 84 applied questions, 44 follow-ups, and the original four-stage capstone. ${chapters.done} of 6 chapters completed.</p><span class="roadmap-desc">Part of the guided learning journey</span></div></div><div class="roadmap-step"><span class="roadmap-no">02</span><div><h3>Manage real consequences</h3><p>Practice three evolving leadership scenarios, then explore staffing resilience and evidence evaluation.</p><span class="roadmap-desc">Applied cases follow the foundation lessons</span></div></div><div class="roadmap-step"><span class="roadmap-no">03</span><div><h3>Demonstrate the learning</h3><p>Complete diagnostics, a new cascading capstone, and a facilitator-reviewed workplace plan.</p><span class="roadmap-desc">Human-scored pilot assessment and feedback</span></div></div></div><section class="training-rationale" aria-labelledby="training-rationale-title"><div class="rationale-eyebrow">Why supervisory preparation matters · EDACE 830</div><h2 id="training-rationale-title">Experience is not the same as preparation.</h2><p>California's Child Development Permit pathways recognize education and professional experience, and some require administration or adult-supervision coursework. Those qualifications are important, but they do not automatically demonstrate the judgment needed when child safety, staff supervision, family concerns, and licensing obligations collide.</p><p>Drawing on Katz's (1974) technical, human, and conceptual leadership skills, and on adult learning through application and reflection, <em>Care with a Compass</em> moves beyond knowing what a leader should do. Learners evaluate evidence, make consequential choices, confront unexpected developments, and consider how to transfer those lessons to their own programs.</p><p class="rationale-bottom"><strong>The goal is not simply to find the right answer. It is to make a responsible decision, then know how to lead when the next problem begins.</strong></p></section>
+ return `<section class="hero ${window.CWC_LEARNER?.ready()?"":"hero-enrollment"}"><div class="hero-copy"><span class="eyebrow light">Version 10.7.5 · One leadership program with applied simulations</span><h2>One facility. One ordinary day.<br><em>A dozen consequences.</em></h2><p>One leadership program combines six foundational chapters, consequential simulations, an evidence journal, and a facilitator-reviewed competency assessment. An optional Staffing & Tuition Planner offers additional practice.</p><p class="hero-author">Created and developed by <strong>Richard Lawrence Stenlund</strong></p>${window.CWC_LEARNER?.ready()?`<div class="hero-welcome"><p>Welcome back, <strong>${esc(window.CWC_LEARNER.profile().name)}</strong>.</p><div class="hero-actions">${hButton("start-training",courseReady()||chapters.done>0?"Continue Training →":"Start Training →","primary-light")}</div></div>`:window.CWC_LEARNER?.enrollHero()||""}</div><div class="hero-mark" aria-hidden="true"><span>10</span><small>director<br>edition</small></div></section>
+ <div class="program-roadmap"><div class="roadmap-step"><span class="roadmap-no">01</span><div><h3>Learn the leadership foundations</h3><p>Six chapters, 84 applied questions, 44 follow-ups, and the original four-stage capstone. ${chapters.done} of 6 chapters completed.</p><span class="roadmap-desc">Part of the guided learning journey</span></div></div><div class="roadmap-step"><span class="roadmap-no">02</span><div><h3>Manage real consequences</h3><p>Practice three evolving leadership scenarios, then evaluate evidence and the consequences of your decisions.</p><span class="roadmap-desc">Applied cases follow the foundation lessons</span></div></div><div class="roadmap-step"><span class="roadmap-no">03</span><div><h3>Demonstrate the learning</h3><p>Complete diagnostics, a new cascading capstone, and a facilitator-reviewed workplace plan.</p><span class="roadmap-desc">Human-scored pilot assessment and feedback</span></div></div></div><section class="training-rationale" aria-labelledby="training-rationale-title"><div class="rationale-eyebrow">Why supervisory preparation matters · EDACE 830</div><h2 id="training-rationale-title">Experience is not the same as preparation.</h2><p>California's Child Development Permit pathways recognize education and professional experience, and some require administration or adult-supervision coursework. Those qualifications are important, but they do not automatically demonstrate the judgment needed when child safety, staff supervision, family concerns, and licensing obligations collide.</p><p>Drawing on Katz's (1974) technical, human, and conceptual leadership skills, and on adult learning through application and reflection, <em>Care with a Compass</em> moves beyond knowing what a leader should do. Learners evaluate evidence, make consequential choices, confront unexpected developments, and consider how to transfer those lessons to their own programs.</p><p class="rationale-bottom"><strong>The goal is not simply to find the right answer. It is to make a responsible decision, then know how to lead when the next problem begins.</strong></p></section>
  <div class="note"><strong>How to explore.</strong> Use the sidebar to preview any section in any order. The single Start/Continue Training button still follows the intended learning sequence, and browsing ahead does not automatically complete earlier activities. This remains a prototype, not a state licensing or validated certification course.</div><div class="actions">${window.CWC_LEARNER?.certificateAction(state,courseReady(),allCasesDone())||""}</div>`;
 }
 function chaptersView(){
  const p=courseProgress();
  return `<div class="section-top"><div><div class="kicker">01 · Learning chapters</div><h2>Six chapters. One leadership foundation.</h2><p>Learn to lead staff, support families, protect children, and make difficult decisions through realistic practice and reflection.</p></div><span class="pill neutral" id="chapterCompletedCount" aria-live="polite">${p.done}/6 completed</span></div>
- <div class="note"><strong>Your earlier progress is preserved.</strong> Continue where you last stopped.</div>\n <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.7.4&build=aligned-84-equity${pendingChapterJump?"&chapter="+pendingChapterJump:""}" loading="eager" title="Six learning chapters for new supervisors and directors"></iframe></div>`;
+ <div class="note"><strong>Your earlier progress is preserved.</strong> Continue where you last stopped.</div>\n <div class="chapter-embed-wrap"><iframe id="chaptersFrame" class="chapter-frame" src="chapters.html?embedded=1&v=10.7.5&build=aligned-84-equity${pendingChapterJump?"&chapter="+pendingChapterJump:""}" loading="eager" title="Six learning chapters for new supervisors and directors"></iframe></div>`;
 }
 function caseConditions(c,w){
  const out={safety:"Under review",coverage:"Under review",family:"Under review",evidence:"Not yet reviewed",finance:"Not reviewed"};
@@ -168,8 +166,8 @@ function caseStage(c,index){
 }
 function casesView(){
  return `<section class="panel" aria-label="Applied leadership simulations">
- <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.7.4&embedded=1" title="Applied leadership simulations" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
- <div class="actions"><a href="consequence-lab.html?v=10.7.4" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
+ <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.7.5&embedded=1" title="Applied leadership simulations" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
+ <div class="actions"><a href="consequence-lab.html?v=10.7.5" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
 }
 function guidedCasesView(){
  const c=getCase(state.caseId),w=work(c.id),finished=w.step>=c.stages.length,variant=selectedVariant(c);
@@ -192,13 +190,13 @@ function guidedCasesView(){
 }
 function staffModel(){
  const s=state.staffing;
- const attendance=Math.max(1,Math.min(36,Math.round(Number(s.attendance)||12)));
+ const attendance=Math.max(1,Math.min(36,Math.round(Number(s.attendance)||1)));
  const scheduled=Math.max(1,Math.min(4,Math.round(Number(s.qualifiedTeachers)||1)));
  const floor=Math.ceil(attendance/12);
  const extra={minimum:0,overlap:1,relief:1,combined:2}[s.plan]??0;
  const overlapActive=s.window!=="outside";
  const backup=extra-(overlapActive?0:((s.plan==="overlap"||s.plan==="combined")?1:0));
- const lost={break:1,sick:1,double:2,emergency:2}[s.disruption]??1;
+ const lost={none:0,break:1,sick:1,double:2,emergency:2}[s.disruption]??0;
  const available=Math.max(0,scheduled+backup-lost);
  const gap=Math.max(0,floor-available);
  const hours={minimum:0,overlap:3,relief:6,combined:9}[s.plan]??0;
@@ -228,6 +226,11 @@ function refreshStaffBudgetPreview(){
   if(el)el.textContent=val;
  }
 }
+function staffingContextHtml(){
+ const info=L.modules?.staff;
+ if(!info)return "";
+ return `<details class="operations-context"><summary>${esc(info.title||"Staffing that holds up when plans change")}</summary><div class="operations-context-body">${(info.paragraphs||[]).map(p=>`<p>${termHtml(p)}</p>`).join("")}<p class="operations-context-question"><strong>Consider:</strong> ${termHtml(info.question||"How would your program handle a restroom break and an emergency at the same moment?")}</p></div></details>`;
+}
 function staffView(){
  const m=staffModel(),s=state.staffing;
 
@@ -238,16 +241,16 @@ function staffView(){
   relief:"One qualified floating teacher works six paid hours and can temporarily cover another teacher. This example assumes the incident occurs while that backup teacher is on shift.",
   combined:"You schedule both extra teachers: one for a three-hour busy period and a second for six-hour backup coverage. Two extras are available during the busy period; one remains available outside it in this simplified example."
  };
- const shocks=[["break","Routine restroom break (1 unavailable)"],["sick","Unexpected sick call (1 unavailable)"],["double","Two competing interruptions (2 unavailable)"],["emergency","Emergency transport plus absence (2 unavailable)"]];
- return `<div class="operations-unified">${window.CWC_BUDGET?.goalHeader()||""}<div class="section-top"><div><div class="kicker">Coverage and sustainability</div><h2>Can your staffing plan handle interruptions?</h2><p>Explore how attendance, real employee presence, funding, and predictable interruptions affect supervisory decisions.</p></div></div>
- <div class="actions lesson-revisit">${hButton("review-lesson","Review the staffing lesson","outline")}</div>
+ const shocks=[["none","No interruption (0 unavailable)"],["break","Routine restroom break (1 unavailable)"],["sick","Unexpected sick call (1 unavailable)"],["double","Two competing interruptions (2 unavailable)"],["emergency","Emergency transport plus absence (2 unavailable)"]];
+ return `<div class="operations-unified">${window.CWC_BUDGET?.goalHeader()||""}<div class="section-top"><div><div class="kicker">Optional bonus · Coverage and sustainability</div><h2>Can your staffing plan handle interruptions?</h2><p>Explore how attendance, qualified staff availability, and financial decisions affect daily operations. This optional tool does not affect training progress or certificate eligibility.</p></div></div>
+ ${staffingContextHtml()}
  <div class="layout-main">
  <section class="panel staff-panel">
  <div class="kicker">Applied operations laboratory</div><h3>Build a coverage plan, then stress-test it.</h3>
  <p class="muted">The worked example assumes a licensed California preschool center using a simplified 1:12 teacher-child floor. Other age groups, Title 5 arrangements, room configurations, and individualized support needs require separate analysis. This model does not certify compliance.</p>
  <div class="staff-section"><h4>1. Who is actually present?</h4>
  <div class="staff-controls">
- <div><label for="staffAttendance">Children attending: <strong>${m.attendance}</strong></label><input id="staffAttendance" type="range" min="6" max="36" step="1" value="${m.attendance}" data-change="staff-attendance"></div>
+ <div><label for="staffAttendance">Children attending: <strong>${m.attendance}</strong></label><input id="staffAttendance" type="range" min="1" max="36" step="1" value="${m.attendance}" data-change="staff-attendance"></div>
  <div><label for="staffTeachers">Qualified teachers scheduled onsite: <strong>${m.scheduled}</strong></label><input id="staffTeachers" type="range" min="1" max="4" step="1" value="${m.scheduled}" data-change="staff-teachers"></div>
  </div><div class="staff-summary"><strong>Illustrative teacher floor: ${m.floor}</strong><span>Based only on ${m.attendance} preschool children ÷ 12, rounded up. Each person counted must be eligible, physically available, and supervising appropriately.</span></div></div>
  <div class="staff-section"><h4>2. How will you handle interruptions?</h4>
@@ -360,12 +363,12 @@ function sectionVisual(key,matchLessonWidth=false){
  return '<figure class="section-photo-banner'+(matchLessonWidth?' section-photo-banner--lesson':'')+'"><img src="'+esc(src)+'" alt="An illustrative photograph from the early childhood learning program" loading="lazy" decoding="async"><figcaption><span>'+esc(kicker)+'</span><strong>'+esc(caption)+'</strong></figcaption></figure>';
 }
 function render(){
- const app=$("#app");if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready()&&state.page!=="chapters")state.page="overview";const views={overview,chapters:chaptersView,cases:casesView,staff:staffView,evidence:evidenceView,assessment:assessmentView,facilitator:facilitatorView};
+ const app=$("#app");if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready()&&state.page!=="chapters"&&state.page!=="staff")state.page="overview";const views={overview,chapters:chaptersView,cases:casesView,staff:staffView,evidence:evidenceView,assessment:assessmentView,facilitator:facilitatorView};
  const progress=overallProgress();
- const key=moduleKey(),content=state.page!=="cases"&&L.modules?.[key]&&!state.introSeen[key]?introductoryLesson(key):views[state.page]();
+ const key=moduleKey(),content=state.page!=="cases"&&state.page!=="staff"&&L.modules?.[key]&&!state.introSeen[key]?introductoryLesson(key):views[state.page]();
  const showingReadingLesson=content.includes('class="panel module-lesson"');
- app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v10.7.4</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom"><p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button><button type="button" class="utility-button" data-action="switch-learner" aria-label="Switch learner and clear this browser's training data"><span aria-hidden="true">⇄</span> Switch Learner</button></div></div></header><div class="course-progress" aria-label="Training progress"><div class="course-progress-label"><strong>Overall training progress</strong><span id="cwc-progress-text">${progress.percent}% complete · ${progress.chapters} of 6 chapters</span></div><div class="course-progress-track" role="progressbar" aria-label="Overall training completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percent}"><span style="width:${progress.percent}%"></span></div></div><main id="main" tabindex="-1">${sectionVisual(key,showingReadingLesson)}${content}</main>${window.CWC_LEARNER?.notice()||""}<footer><span>Care with a Compass · Supervisor Leadership Program · v10.7.4</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
- document.title="Care with a Compass | Supervisor Leadership Program v10.7.4";
+ app.innerHTML=`<div class="layout"><aside class="sidebar"><a class="brand" href="index.html"><span class="brand-emblem">✦</span><span>CARE WITH<br><strong>A COMPASS</strong></span></a><div class="sidebar-sub">Supervisor and Director Leadership</div><span class="version">COMPLETE PROGRAM · v10.7.5</span><nav aria-label="Unified program navigation">${nav()}</nav><div class="sidebar-bottom">${optionalToolNav()}<p>Leadership is what happens after the first correct answer.</p><span class="sidebar-current">Browse any section, or use Continue Training for the guided sequence. Progress stays saved in this browser.</span><small id="storageNote">Progress saves only in this browser.</small></div></aside><div class="workspace"><header class="topbar"><div><span class="top-eyebrow">KANSAS STATE UNIVERSITY · EDACE 830</span><h1>${esc(navLabels[state.page])}</h1></div><div class="topbar-right"><div class="utility-actions" role="group" aria-label="Training controls"><button type="button" class="utility-button" data-action="home" aria-label="Home, retain my training progress"><span aria-hidden="true">⌂</span> Home</button><button type="button" class="utility-button utility-reset" data-action="start-over" aria-label="Start Over, reset all training progress after confirmation"><span aria-hidden="true">↻</span> Start Over</button><button type="button" class="utility-button" data-action="switch-learner" aria-label="Switch learner and clear this browser's training data"><span aria-hidden="true">⇄</span> Switch Learner</button></div></div></header><div class="course-progress" aria-label="Training progress"><div class="course-progress-label"><strong>Overall training progress</strong><span id="cwc-progress-text">${progress.percent}% complete · ${progress.chapters} of 6 chapters</span></div><div class="course-progress-track" role="progressbar" aria-label="Overall training completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percent}"><span style="width:${progress.percent}%"></span></div></div><main id="main" tabindex="-1">${sectionVisual(key,showingReadingLesson)}${content}</main>${window.CWC_LEARNER?.notice()||""}<footer><span>Care with a Compass · Supervisor Leadership Program · v10.7.5</span><span>Fictional instructional composites · Specialist review required before pilot use</span></footer></div></div>`;
+ document.title="Care with a Compass | Supervisor Leadership Program v10.7.5";
 }
 function returnHome(){go("overview");}
 function startOverTraining(){
@@ -385,11 +388,11 @@ function startOverTraining(){
  render();
  window.scrollTo({top:0,behavior:"auto"});
 }
-function go(page){if(!canOpen(page))return;if(page==="chapters")pendingChapterJump=null;if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready()&&page!=="chapters")page="overview";if(page==="cases"&&!canOpenCase(state.caseId))state.caseId=D.cases[0].id;state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
+function go(page){if(!canOpen(page))return;if(page==="chapters")pendingChapterJump=null;if(window.CWC_LEARNER&&!window.CWC_LEARNER.ready()&&page!=="chapters"&&page!=="staff")page="overview";if(page==="cases"&&!canOpenCase(state.caseId))state.caseId=D.cases[0].id;state.page=page;save();render();window.scrollTo({top:0,behavior:"auto"});}
 function download(name,body,type){const blob=new Blob([body],{type}),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function report(){
  const a=state.assessment,r=assessScores();
- return {application:"Care with a Compass",version:"10.7.4",generatedAt:new Date().toISOString(),participant:a.name||"Anonymous local participant",scores:{diagnostic:r.partA,capstone:r.partB,transfer:r.manual,total:r.manual===null?null:r.total},mastery:{objective1:r.skillCorrect,objective4:r.causeCorrect,criticalSafetyErrors:r.critical,provisionalStatus:r.manual===null?"facilitator review pending":r.pass?"all pilot gates met":"remediation required"},responses:{diagnostic:a.diagnostic,capstone:a.capstone,transferPlan:a.transfer},facilitator:{reviewer:a.reviewer,notes:a.facilitatorNote,reviewMode:"Unverified local scoring simulation"},warning:"This browser cannot authenticate the scorer, verify first attempts, or issue an accredited/verified competency credential."};
+ return {application:"Care with a Compass",version:"10.7.5",generatedAt:new Date().toISOString(),participant:a.name||"Anonymous local participant",scores:{diagnostic:r.partA,capstone:r.partB,transfer:r.manual,total:r.manual===null?null:r.total},mastery:{objective1:r.skillCorrect,objective4:r.causeCorrect,criticalSafetyErrors:r.critical,provisionalStatus:r.manual===null?"facilitator review pending":r.pass?"all pilot gates met":"remediation required"},responses:{diagnostic:a.diagnostic,capstone:a.capstone,transferPlan:a.transfer},facilitator:{reviewer:a.reviewer,notes:a.facilitatorNote,reviewMode:"Unverified local scoring simulation"},warning:"This browser cannot authenticate the scorer, verify first attempts, or issue an accredited/verified competency credential."};
 }
 function csv(x){return '"'+String(x??"").replace(/"/g,'""')+'"';}
 document.addEventListener("submit",e=>{if(e.target?.id!=="cwc-learner-form")return;e.preventDefault();if(window.CWC_LEARNER?.enroll()){state.assessment.name=window.CWC_LEARNER.profile().name;save();resumeLinear();}});
@@ -445,7 +448,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")hideDefinitions();})
  else if(type==="staff-plan"){state.staffing.plan=el.value;state.sequence.staffTouched=true;}
  else if(type==="staff-shock"){state.staffing.disruption=el.value;state.sequence.staffTouched=true;}
  else if(type==="staff-wage"){state.staffing.wage=Math.max(18,Math.min(45,Number(el.value)||23));state.sequence.staffTouched=true;}
- else if(type==="staff-attendance"){state.staffing.attendance=Math.max(6,Math.min(36,Number(el.value)||12));state.sequence.staffTouched=true;}
+ else if(type==="staff-attendance"){state.staffing.attendance=Math.max(1,Math.min(36,Number(el.value)||1));state.sequence.staffTouched=true;}
  else if(type==="staff-teachers"){state.staffing.qualifiedTeachers=Math.max(1,Math.min(4,Number(el.value)||1));state.sequence.staffTouched=true;}
  else if(type==="staff-window"){state.staffing.window=el.value;state.sequence.staffTouched=true;}
  else if(type==="staff-support"){state.staffing.support=el.value;state.sequence.staffTouched=true;}
@@ -469,7 +472,7 @@ document.addEventListener("cwc-budget-changed",()=>{
  if(fill)fill.style.width=progress.percent+"%";
  if(label)label.textContent=progress.percent+"% complete · "+progress.chapters+" of 6 chapters";
  const next=document.querySelector('button[data-action="journey-next"]');
- if(next&&state.page==="staff")next.disabled=!state.sequence.staffTouched;
+ // The optional planner never gates progress or completion.
 });
 document.addEventListener("input",e=>{
  if(e.target?.dataset?.change==="staff-wage"){
