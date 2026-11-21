@@ -122,10 +122,10 @@ function helpTip(key,label){
  return '<details class="budget-info"><summary title="'+esc(explanation)+'" aria-label="Help: '+esc(label)+'"><span aria-hidden="true">i</span></summary><span class="budget-info-popup">'+esc(explanation)+'</span></details>';
 }
 function helpHeading(key,label){
- return '<span class="budget-field-heading"><label for="budget-'+esc(key)+'">'+esc(label)+'</label>'+helpTip(key,label)+'</span>';
+ return '<div class="budget-field-heading"><label for="budget-'+esc(key)+'">'+esc(label)+'</label>'+helpTip(key,label)+'</div>';
 }
 function resultHeading(key,label){
- return '<span class="budget-result-heading"><span>'+esc(label)+'</span>'+helpTip(key,label)+'</span>';
+ return '<div class="budget-result-heading"><span>'+esc(label)+'</span>'+helpTip(key,label)+'</div>';
 }
 function unavailabilityControl(){
  const options=[["none","No one unavailable (0)"],["restroom","Restroom break (1)"],["sick","Sick call (1)"],["emergency","Emergency assistance (1)"],["two","Two staff unavailable (2)"]];
@@ -157,8 +157,8 @@ function view(){
  '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div>'+
  '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county,state.tuitionManual)+'</p>'+
  '<div class="budget-enrollment-pair">'+
- '<div class="budget-enrollment-group"><h4>Full-time '+helpTip("fulltime","Full-time enrollment")+'</h4>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
- '<div class="budget-enrollment-group"><h4>Part-time '+helpTip("parttime","Part-time enrollment")+'</h4>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
+ '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Full-time</h4>'+helpTip("fulltime","Full-time enrollment")+'</div>'+field("students","Children")+field("tuition","Monthly tuition ($)",25)+'</div>'+
+ '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4>Part-time</h4>'+helpTip("parttime","Part-time enrollment")+'</div>'+field("partStudents","Children")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
  '<div class="budget-director-first">'+field("directorSalary","Director monthly salary ($)",100)+'</div>'+
  '<div class="budget-compact-fields">'+
  field("staffCount","Additional classroom staff (FTE, excluding director)",.25)+
@@ -180,7 +180,7 @@ function view(){
  '<div>'+resultHeading("expenses","Expenses including director pay")+'<strong id="b-expenses">'+cash(c.expenses)+'</strong></div>'+
  '<div class="budget-surplus">'+resultHeading("surplus","Surplus / shortfall")+'<strong id="b-profit">'+cash(c.surplus)+'</strong></div>'+
  '<div class="budget-goal-result">'+resultHeading("tuitionRequired","Break-even full-time tuition")+'<strong id="b-tuition">'+(c.tuitionRequired==null?"Add full-time children":cash(c.tuitionRequired)+"/child")+'</strong></div></div>'+
- '<div class="budget-availability-block"><span class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</span><p id="b-staff-availability" class="budget-staff-availability'+(c.availablePeople===0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p></div>'+
+ '<div class="budget-availability-block"><div class="budget-result-heading"><span>Staff availability</span>'+helpTip("available","Staff availability")+'</div><p id="b-staff-availability" class="budget-staff-availability'+(c.availablePeople===0?' budget-staff-alert':'')+'" role="status">'+availabilityText(c)+'</p></div>'+
  '<div id="b-verdict" class="budget-compact-verdict">'+(c.surplus<0?"Current numbers show an operating shortfall.":"Current numbers show an operating surplus.")+'</div>'+
  '<div id="b-breakdown">'+breakdown(c)+'</div>'+
  '<p class="budget-smallprint">Break-even tuition includes director salary but no extra profit target. Staff availability is a simplified headcount scenario, not a staffing-ratio determination; partial FTEs are excluded from its headcount. Payroll taxes, benefits, meals, and unlisted costs are not modeled.</p>'+
