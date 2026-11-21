@@ -1,3 +1,15 @@
+# Care with a Compass — The Director's Desk · v10.0
+
+**Advanced Consequence Lab (new, optional formative practice):** https://rstenlund1.github.io/care-with-a-compass/consequence-lab.html
+
+The v10 lab preserves the existing v9.9.1 guided course and the 20/70/10 competency model. It adds a separate browser-local practice environment that randomly selects **three cases from eight**, with **twelve decisions per selected case** (36 decisions per practice). It randomizes case order, factual cause, family response, interruption, option order, and some adverse developments. All choices advance to the next decision, including unsafe choices. Scoring evaluates defensible decision process instead of treating external medical outcomes or complaints as proof that the learner made an error. Includes a simplified California preschool/toddler/school-age classroom staffing model and stage-linked first-aid, reporting, supervision and Head Start references.
+
+**Design boundaries:** The new lab is **not included in the existing 100-point mastery score or completion certificate** and does not transmit learner data or depend on Formspree. The eight cases are original fictional adaptations of common supervisory situations; Head Start case themes are used as references, not copied. Independent clinical, legal, accessibility and formative learner review remain necessary before use in real training. The current main program does have an instructor-owned Formspree endpoint configured in `index.html`; its actual delivery and quota require separate operational verification before any pilot. A configured endpoint does not imply that the instructor has purchased a Formspree tier.
+
+**Preserved baseline:** backup/v9.9.1-before-consequence-lab-20261120
+
+---
+
 # Care with a Compass — The Director's Desk · v9.9.1
 
 An interactive, consequential leadership-development **academic prototype** created for EDACE 830 at Kansas State University.
