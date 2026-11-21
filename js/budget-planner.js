@@ -237,10 +237,9 @@ function view(){
  '<div class="budget-program-county-row">'+programControl()+
  '<div class="budget-compact-field budget-county-selector">'+helpHeading("county","California county")+'<select id="budget-county" data-budget-key="county">'+COUNTIES.map(name=>'<option value="'+esc(name)+'"'+(name===county?' selected':'')+'>'+esc(name)+' County</option>').join("")+'</select></div></div>'+
  '<p id="budget-county-source" class="budget-county-source">'+countyRateNote(county)+'</p>'+
- '<div class="budget-group-label"><strong>Children (over age 2)</strong></div>'+
  '<div class="budget-enrollment-pair">'+
- '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4 id="budget-child-full-heading">Full-time children</h4>'+helpTip("fulltime","Full-time children")+'</div>'+infantCountField("students","budget-child-full-heading")+field("tuition","Monthly tuition ($)",25)+'</div>'+
- '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4 id="budget-child-part-heading">Part-time children</h4>'+helpTip("parttime","Part-time children")+'</div>'+infantCountField("partStudents","budget-child-part-heading")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
+ '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4 id="budget-child-full-heading">Full-time Children (over age 2)</h4>'+helpTip("fulltime","Full-time children")+'</div>'+infantCountField("students","budget-child-full-heading")+field("tuition","Monthly tuition ($)",25)+'</div>'+
+ '<div class="budget-enrollment-group"><div class="budget-enrollment-heading"><h4 id="budget-child-part-heading">Part-time Children (over age 2)</h4>'+helpTip("parttime","Part-time children")+'</div>'+infantCountField("partStudents","budget-child-part-heading")+field("partTuition","Monthly tuition ($)",25)+'</div></div>'+
  '<div class="budget-group-label"><strong>Infants (under age 2)</strong></div>'+
  '<div class="budget-enrollment-pair budget-infants-pair">'+
  '<div class="budget-enrollment-group"><h4 id="budget-infant-full-heading">Full-time infants</h4>'+infantCountField("infantFull","budget-infant-full-heading")+field("infantTuition","Monthly infant tuition ($)",25)+'</div>'+
