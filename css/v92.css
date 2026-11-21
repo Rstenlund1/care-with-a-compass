@@ -514,3 +514,12 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 .budget-enrollment-group h4{font:750 13px/1.4 system-ui,sans-serif;color:#3f2f50;margin:0}
 .budget-enrollment-group small{color:#71667b;font-size:10.5px;line-height:1.4}
 @media(max-width:350px){.budget-enrollment-pair{grid-template-columns:1fr}}
+
+/* v10.7.8: small county tuition baseline selector above paired enrollment inputs. */
+.budget-county-selector{display:block;margin:0 0 8px;max-width:380px}
+.budget-county-selector select{width:100%;min-height:40px;max-width:100%;padding:8px 10px;background:#fff;border:1px solid #c7bbd1;border-radius:7px;font:600 13px system-ui,sans-serif;color:#30233e}
+.budget-county-selector select:focus-visible{outline:2px solid #8662a6;outline-offset:2px}
+.budget-county-source{margin:0 0 13px;border-left:2px solid #b69ec9;background:#f6f1f9;padding:9px 12px;font-size:12px;line-height:1.5;color:#473850}
+.budget-county-method{display:block;color:#71647d;font-size:11px;line-height:1.5;margin-top:4px}
+.budget-county-source a{color:#573b79;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:500px){.budget-county-selector{max-width:100%}.budget-county-source{padding:9px}}
