@@ -1,3 +1,15 @@
+# Care with a Compass — The Director’s Desk · v10.7.14
+
+**Live optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.14&page=staff
+
+**Infant and licensed-program financial modeling:** Added Small Family Child Care Home, Large Family Child Care Home, and Preschool Center as selectable program types. Full-time and part-time infants are now separate enrollment categories with their own editable monthly tuition rates, alongside full-time and part-time non-infant children. The appropriate county's 2026 modeled median family-home or center rates for infants and preschool-age children automatically prefill tuition; part-time rates start at 75%. Rates are PayByTown's October 2026 DOL-2022-based BLS-adjusted medians, not actual quotes or a legal reimbursement schedule.
+
+**Staffing behavior:** The director remains the first staff member in the simplified budget. A conservative staffing estimate auto-populates additional staff FTE and 40 paid hours/week when enrollment or program type changes; the learner may override it. Small family home: six normally, special requirements for seven–eight and family-home infant composition rules (including four infants only, or up to six with no more than three infants). Large family home: standard twelve with a qualified assistant, conditional thirteen–fourteen and reduced infant maximum. Preschool center: illustrative one teacher per twelve preschool-age children and one separate qualified infant-care person per four infants; the director is counted once, only when suitably qualified and supervising that group. Two-year-old toddler groups may have different rules. The app warns about the selected license's infant/capacity constraints even if additional staff have been budgeted. As with the earlier tool, these are educational budget and planning assumptions, not proof of legal compliance. Infants are counted separately from older children to avoid double counting. The optional planner continues to have no effect on course completion or certificates.
+
+**QA:** JS syntax and 18 unit-style model/interaction scenarios passed, including 8-child assistant auto-budget, 4 infants alone vs. mixed with another child, home 12/14 thresholds, center separate infant+preschool staffing groups, county pricing and 75%-linked infant part-time rates. Interactive graphical browser QA remains necessary.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.13
 
 **Optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.13&page=staff
