@@ -67,13 +67,15 @@ const DEFAULTS={
  overnightNights:0,overnightFee:95,staffUnavailable:"none"
 };
 const KEYS=Object.keys(DEFAULTS);
+const ENROLLMENT_KEYS=["students","partStudents","infantFull","infantPart","overnightNights"];
+function whole(v){return Math.round(clamp(v));}
 function clamp(v,min=0,max=1000000){const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):min;}
 function rate75(full){return Math.round(clamp(full)*.75);}
 function migrate(v){
  if(!v||typeof v!=="object")return {...DEFAULTS};
  if(Object.prototype.hasOwnProperty.call(v,"students")){
   const result={...DEFAULTS};
-  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=(key==="county"||key==="staffUnavailable"||key==="programType")?String(v[key]):clamp(v[key]);
+  for(const key of KEYS)if(Object.prototype.hasOwnProperty.call(v,key))result[key]=(key==="county"||key==="staffUnavailable"||key==="programType")?String(v[key]):ENROLLMENT_KEYS.includes(key)?whole(v[key]):clamp(v[key]);
   return result;
  }
  const teachers=Math.max(0,Number(v.teachersFte)||0),aides=Math.max(0,Number(v.aidesFte)||0),count=teachers+aides;
@@ -81,14 +83,14 @@ function migrate(v){
  const rentBase=v.rentMode==="actual"?Number(v.rentActual):Number(v.sqft)*(Number(v.rateOverride)>0?Number(v.rateOverride):1.77);
  const rentExtra=v.rentMode==="actual"?Number(v.leaseExtras)||0:(Number(v.sqft)||0)*(Number(v.nnnSqft)||0);
  const result={...DEFAULTS,
-  students:clamp(v.fullChildren??DEFAULTS.students),tuition:clamp(v.fullTuition??DEFAULTS.tuition),county:"San Bernardino",
-  partStudents:clamp(v.partChildren??0),partTuition:clamp(v.partTuition??DEFAULTS.partTuition),programType:"small",
+  students:whole(v.fullChildren??DEFAULTS.students),tuition:clamp(v.fullTuition??DEFAULTS.tuition),county:"San Bernardino",
+  partStudents:whole(v.partChildren??0),partTuition:clamp(v.partTuition??DEFAULTS.partTuition),programType:"small",
   staffCount:count||DEFAULTS.staffCount,staffHourly:avgWage||DEFAULTS.staffHourly,
   staffWeeklyHours:clamp(v.weeklyHours??40),rent:Math.max(0,(rentBase||0)+rentExtra),
   insurance:clamp(v.insurance??0),
   utilities:Math.max(0,(rentBase||0)*(Number(v.utilitiesPct)||0)/100),
   directorSalary:clamp(v.directorSalary??DEFAULTS.directorSalary),
-  overnightNights:Math.max(0,(Number(v.nightChildren)||0)*(Number(v.nightsPerChild)||0)),
+  overnightNights:whole(Math.max(0,(Number(v.nightChildren)||0)*(Number(v.nightsPerChild)||0))),
   overnightFee:clamp(v.nightPrice??95)
  };
  return result;
@@ -98,14 +100,17 @@ function load(){
   const saved=JSON.parse(localStorage.getItem(KEY)||"null");
   if(saved&&typeof saved==="object"){
    // Never convert a previously untouched example into a real user expense assumption.
-   if(!saved.touched)return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};
+   if(!saved.touched)return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false,staffManual:false};
    const values=migrate(saved.values),old=saved.values||{};
    const partLinked=typeof saved.partLinked==="boolean"?saved.partLinked:(Number(old.partStudents??old.partChildren??0)===0 && Number(old.partTuition??1000)===1000);
    if(partLinked)values.partTuition=rate75(values.tuition);
-   return {values,touched:true,partLinked,tuitionManual:typeof saved.tuitionManual==="boolean"?saved.tuitionManual:true,infantPartLinked:saved.infantPartLinked!==false,infantManual:!!saved.infantManual};
+   const infantPartLinked=saved.infantPartLinked!==false;
+   if(infantPartLinked)values.infantPartTuition=rate75(values.infantTuition);
+   const staffManual=typeof saved.staffManual==="boolean"?saved.staffManual:Math.abs(values.staffCount-automaticStaffCount(values))>0.001;
+   return {values,touched:true,partLinked,tuitionManual:typeof saved.tuitionManual==="boolean"?saved.tuitionManual:true,infantPartLinked,infantManual:!!saved.infantManual,staffManual};
   }
  }catch(_){}
- return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};
+ return {values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false,staffManual:false};
 }
 let state=load();
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){}}
@@ -119,13 +124,12 @@ function automaticStaffCount(v=state.values){
  return r.additional;
 }
 function setSuggestedStaff(){
+ if(state.staffManual)return;
  state.values.staffCount=automaticStaffCount();
- state.values.staffWeeklyHours=40;
  const n=document.querySelector?.('[data-budget-key="staffCount"]');if(n)n.value=state.values.staffCount;
- const h=document.querySelector?.('[data-budget-key="staffWeeklyHours"]');if(h)h.value=40;
 }
 function calculate(){
- const full=val("students"),part=val("partStudents"),infantFull=val("infantFull"),infantPart=val("infantPart"),night=val("overnightNights");
+ const full=whole(val("students")),part=whole(val("partStudents")),infantFull=whole(val("infantFull")),infantPart=whole(val("infantPart")),night=whole(val("overnightNights"));
  const fullIncome=full*val("tuition"),partIncome=part*val("partTuition");
  const infantIncome=infantFull*val("infantTuition")+infantPart*val("infantPartTuition"),nightIncome=night*val("overnightFee");
  const revenue=fullIncome+partIncome+infantIncome+nightIncome;
@@ -315,8 +319,10 @@ function updateField(input){
  }else if(key==="staffUnavailable"){
   state.values.staffUnavailable=String(input.value);
  }else{
-  state.values[key]=clamp(input.value);
+  state.values[key]=ENROLLMENT_KEYS.includes(key)?whole(input.value):clamp(input.value);
+  if(ENROLLMENT_KEYS.includes(key))input.value=state.values[key];
  }
+ if(key==="staffCount")state.staffManual=true;
  if(key==="tuition")state.tuitionManual=true;
  if(key==="infantTuition")state.infantManual=true;
  if(key==="partTuition")state.partLinked=false;
@@ -347,12 +353,12 @@ document.addEventListener("change",e=>{
 document.addEventListener("click",e=>{
  const reset=e.target.closest("[data-budget-reset]");
  if(!reset)return;
- state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};persist();
+ state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false,staffManual:false};persist();
  const node=document.getElementById("cwc-budget");
  if(node)node.outerHTML=view();
  document.dispatchEvent(new Event("cwc-budget-changed"));
 });
-function reset(){state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false};persist();}
+function reset(){state={values:{...DEFAULTS},touched:false,partLinked:true,tuitionManual:false,infantPartLinked:true,infantManual:false,staffManual:false};persist();}
 function goalHeader(){return "";} // Old callers can safely omit this preamble.
 function loadBenchmarks(){return undefined;}
 function countyRate(){return countyRateFor(state.values.county);}
