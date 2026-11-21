@@ -432,3 +432,7 @@ input[type="range"]{width:100%;accent-color:var(--purple);cursor:pointer}
 @media(max-width:1150px){.sidebar-chapter-shortcuts{margin-left:10px}}
 @media(max-width:680px){.chapter-jump-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.chapter-jump-panel{padding:15px}}
 @media(max-width:380px){.chapter-jump-grid{grid-template-columns:1fr}}
+
+/* Keep main navigation usable on narrow devices and shorter monitors. */
+.sidebar-chapter-grid{max-height:220px;overflow-y:auto;scrollbar-width:thin}
+@media(max-width:870px){.sidebar-chapter-shortcuts{display:none}}
