@@ -46,14 +46,14 @@ function programRule(type,older,infants){
  const n=older+infants,small=type==="small",large=type==="large";
  if(small){
   const onlyInfants=older===0&&infants<=4;
-  const beyond6=n>6;
+  const beyond6=n>6; // Qualifying age mix and parent notices are assumed for 7–8 in this planning model.
   const tooMany=n>8||(n>6&&infants>2)||(n<=6&&infants>3&&!onlyInfants);
-  return {required:n?1:0,additional:beyond6?1:0,limit:8,needsSpecial:beyond6&&n<=8,invalid:tooMany,infantLimit:onlyInfants?4:n>6?2:3,rule:"Small family home: up to 6 children with age-mix limits, or 4 infants only. Seven or eight require a child attending kindergarten or elementary school, another child age 6 or older, no more than 2 infants, parent notification and written property-owner consent if renting. Adding staff does not waive licensing capacity limits."};
+  return {required:n?1:0,additional:0,limit:8,needsSpecial:beyond6&&n<=8,invalid:tooMany,infantLimit:onlyInfants?4:n>6?2:3,rule:"Small family home: up to 6 children with age-mix limits, or 4 infants only. Seven or eight require a child attending kindergarten or elementary school, another child age 6 or older, no more than 2 infants, parent notification and written property-owner consent if renting. Adding staff does not waive licensing capacity limits."};
  }
  if(large){
-  const assistantNeeded=n>6||(infants>3&&older>0);
+  const assistantNeeded=n>8||(n>6&&infants>2)||(infants>3&&older>0);
   const invalid=n>14||(n>12&&infants>3)||(n<=12&&infants>4);
-  return {required:n?(assistantNeeded?2:1):0,additional:assistantNeeded?1:0,limit:14,needsSpecial:n>12&&n<=14,invalid,infantLimit:n>12?3:4,rule:"Large family home: up to 12 with an assistant and no more than 4 infants, or 13–14 only with qualifying school-age children and no more than 3 infants. Without an assistant, small-home limits apply."};
+  return {required:n?(assistantNeeded?2:1):0,additional:assistantNeeded?1:0,limit:14,needsSpecial:(n>6&&n<=8&&!assistantNeeded)||(n>12&&n<=14),invalid,infantLimit:n>12?3:4,rule:"Large family home: without an assistant, follow small-home limits (up to 6 normally or 7–8 with qualifying school-age mix and no more than 2 infants); 9–12 require an assistant with no more than 4 infants, and 13–14 require an assistant, qualifying school-age children and no more than 3 infants."};
  }
  const infantNeeded=Math.ceil(infants/4),olderNeeded=Math.ceil(older/12),required=infantNeeded+olderNeeded;
  return {required,additional:Math.max(0,required-1),limit:null,needsSpecial:infants>0,invalid:false,infantLimit:null,rule:"Preschool center: one qualified teacher per 12 preschool-age children; infant groups require one qualified infant-care teacher per 4 infants and an authorized infant-care component. Two-year-old toddler groups may have different requirements. The director counts in only one group when properly qualified and working directly with those children."};
@@ -152,7 +152,7 @@ function countyRateNote(county){
 }
 const BUDGET_HELP={
  "county": "Select the county for estimated 2026 full-time tuition prices. Family homes and preschool centers use different medians, and infants have their own rate. You can edit the rates.",
- "programType": "Small family home: six usual or up to eight conditionally. Large family home: twelve usual or up to fourteen conditionally, with assistant. Preschool center: one qualified teacher per 12 preschool-age children and one qualified infant-care teacher per four infants in a separately authorized component; toddler groups have different rules. Staff and infant limits apply.",
+ "programType": "The model assumes school-age mix and notification conditions for expanded family-home capacity. Small family home: six usual or up to eight conditionally without a helper. Large family home: up to eight under small-home conditions without a helper, or twelve usual and fourteen conditionally with an assistant. Preschool center: one qualified teacher per 12 preschool-age children and one qualified infant-care teacher per four infants in a separately authorized component; toddler groups have different rules. Staff and infant limits apply.",
  "infantFull": "Full-time infants under 24 months. These are in addition to the older children entered above; do not count an infant twice.",
  "infantPart": "Part-time infants under 24 months, counted separately from older children and full-time infants. The staffing check conservatively assumes all groups could attend together.",
  "infantTuition": "Editable full-time infant monthly tuition. Defaults to the county's estimated median infant fee for the selected home or center type.",
@@ -214,8 +214,8 @@ function availabilityText(c){
  return msg;
 }
 function programNote(c){
- if(c.type==="small"&&c.rule.needsSpecial)return "7–8 children are permitted only with the required school-age mix, infant limits and parent notifications. The calculator cannot verify these conditions.";
- if(c.type==="large"&&c.rule.needsSpecial)return "13–14 children require a qualifying school-age mix, infant limits and required notices. Verify these conditions before enrolling.";
+ if(c.type==="small"&&c.rule.needsSpecial)return "Planning assumption: the qualifying school-age mix and required parent notifications for 7–8 children are satisfied. Actual eligibility and records must still be verified before care.";
+ if(c.type==="large"&&c.rule.needsSpecial)return c.daytimeChildren<=8?"Planning assumption: qualifying 7–8-child school-age mix and parent notifications are satisfied, so a qualified assistant is not automatically added. Verify real eligibility before care.":"Planning assumption: the qualifying 13–14-child school-age mix and parent notifications are satisfied; a qualified assistant remains necessary. Verify real eligibility before care.";
  if(c.type==="preschool"&&c.rule.needsSpecial)return "Infant care requires an authorized infant-care component and appropriately qualified staff.";
  return "";
 }
