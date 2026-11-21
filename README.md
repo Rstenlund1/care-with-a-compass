@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.2
+
+**Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.2
+
+**Navigation and Chapter 6 fixes:** The main program and embedded course now expose direct links to all six chapters for testing; choosing a chapter does not mark it complete. Fixed the sixth chapter's undefined lesson symbol, removed an empty Director's field-guide card, and added an existing classroom photograph showing two children playing. Improved the awkward learning-chapters introduction, corrected the main displayed version and chapter-progress/report limits from five to six, and refreshed asset cache versions. Source syntax and navigation wiring were checked; live graphical/browser testing remains outstanding.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.0
 
 **Live preview:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.0
