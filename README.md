@@ -1,3 +1,11 @@
+# Care with a Compass — The Director’s Desk · v10.7.7
+
+**Optional planner:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.7&page=staff
+
+**Budget simplification:** Full-time and part-time enrollment/tuition inputs are adjacent. Part-time tuition defaults to 75% of the full-time rate and follows it until manually overridden. Overnight stays default to zero, and rent, utilities, and insurance default to $0 in a fresh/untouched planner. Removed the profit-goal field, respite settings, payroll taxes/benefits setting, overnight staffing-hours input, backup coverage-days input and its checkbox. Break-even tuition now covers the explicitly listed expenses plus director salary, without an added profit goal. Previously edited planner amounts remain saved unless reset. Financial assumptions exclude food, meals, payroll taxes and benefits, and unmodeled overnight labor. Source arithmetic/syntax tested; live graphic layout should still be inspected.
+
+---
+
 # Care with a Compass — The Director’s Desk · v10.7.6
 
 **Live version:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.6&page=staff
