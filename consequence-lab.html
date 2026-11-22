@@ -311,39 +311,23 @@ if(s.id==='parent'){
  src=s.id==='nose'?'hiv':'record';
 }}
 else if(st===7){
-if(s.id==='parent'){
- title='The pickup disagreement escalates';
- body=s.pickupVerified?'Staff verified the second adult’s identity and confirmed authorization, but the first adult objects loudly to the release. The second adult asks staff to hurry. Children can hear the confrontation. How do you manage the handoff safely?':'The second adult still has not completed identity verification. The adult becomes frustrated and insists that a phone call or the child’s recognition should be enough. The first adult remains upset. How do you respond?';
- opts=s.pickupVerified?[
- def('Keep children supervised, move the disagreement away from them, confirm there is no new legal or safety restriction, and complete a documented handoff under the pickup policy.',3,'Verification supports release only when the current records and any applicable restrictions permit it; conflict should be managed without sacrificing supervision.',{covered:true,recorded:true,childrenDelta:-1}),
- def('Pause the handoff briefly in a supervised area to review conflicting instructions and any applicable restrictions with the director.',3,'A short, purposeful check is appropriate when competing adults raise a concrete authorization concern.',{covered:true,recorded:true}),
- def('Let the adults settle their dispute alone in the classroom while teachers continue other tasks.',0,'An adult confrontation around children requires active management and supervision.',{covered:false}),
- def('Release the child without recording the handoff because the adult was already identified.',1,'Identity checks do not eliminate the need for accurate sign-out and documented release.',{childrenDelta:-1,recorded:false}),
- def('Share the family’s private circumstances with other waiting parents so they understand the delay.',0,'A tense pickup does not justify disclosure of confidential family information.',{recorded:false})
- ]:[
- def('Keep the child with qualified staff, calmly explain the verification requirement, and use the facility’s authorized escalation procedure to confirm identity before release.',3,'Pressure from adults does not change the identity verification requirement.',{covered:true,parentInformed:true}),
- def('Contact the director and the approved contacts while a teacher maintains child supervision; document the unresolved identity check.',3,'An orderly alternative verification process protects the child when identification is unavailable.',{covered:true,recorded:true}),
- def('Release the child after hearing the parent’s voice on a phone call, without confirming who the pickup adult is.',0,'A voice on a phone does not prove the in-person adult’s identity.',{covered:false}),
- def('Ask the child to choose which adult to leave with.',0,'A child cannot carry the responsibility for deciding adult authorization.',{covered:false}),
- def('Leave the group unsupervised to accompany the adult outside and settle the argument.',0,'Resolving the dispute must not create another child-safety or supervision failure.',{covered:false})
- ];
- src='parent';
-}else{
- const nos=s.id==='nose';
- const incident={
- arm:['The injured hand needs another assessment','The child continues to report altered sensation. Medical responders have been contacted; the other children still need supervision.','Keep the injured arm supported, update responders on the new symptoms and verify group coverage.','Send the child back to play because a parent has been called.'],
- fight:['The children must remain safely separated','One child tries to approach the other again. The first separation was not enough to prevent renewed conflict.','Reassign qualified supervision to maintain separation, reassess injuries and follow individual support plans.','Require the children to resolve the conflict alone while adults complete reports.'],
- ill:['The child’s condition changes','The child’s symptoms must be reassessed. An unreachable family contact does not suspend the duty to respond to emergency signs.','Reassess breathing, responsiveness and other warning signs; summon emergency help if indicated.','Wait for family permission despite worsening emergency symptoms.'],
- bruise:['The safeguarding concern develops','A colleague suggests asking the child the same questions repeatedly to establish which explanation is true.','Protect the child, preserve spontaneous statements and make a mandated report when reasonable suspicion is present.','Interrogate the child until the story is consistent.']
- }[s.id];
- if(nos){
- title='The child’s condition changes';
- body=`${s.care==='pressure'?'The bleeding has been managed with pressure.':'First aid has been inconsistent.'} ${urgent?'The child is pale or weak and needs urgent medical assessment.':'The child remains alert and needs observation.'}`;
- opts=[def('Reassess the bleeding and warning signs, escalating medical care when indicated.',3,'Follow the observed condition rather than assuming a routine outcome.',{care:'pressure'}),def('Continue pressure, observation and appropriate first aid while obtaining guidance.',urgent?1:3,'This does not replace emergency escalation when serious symptoms occur.',{care:'pressure'}),def('Assume correct initial first aid guarantees no further risk.',0,'Conditions can change despite an appropriate first response.',{}),def('Delay emergency action until the family arrives.',0,'Do not delay urgent care.',{care:'delay'}),def('Return the child to unsupervised play.',0,'Continued observation is needed.',{covered:false})];src='aap';
- }else{
- title=incident[0];body=incident[1]+` New information: ${s.reveal}`;
- opts=[def(incident[2],3,'Respond to the case-specific risk and maintain qualified group supervision.',{covered:true,contained:true}),def('Document the changed facts while an assigned qualified adult continues the necessary protective response.',2,'Documentation is useful only alongside immediate protection.',{recorded:true,covered:true}),def('Assume that the first decision resolved the concern permanently.',0,'New information requires reassessment.',{}),def(incident[3],0,'This abandons the current safety responsibility.',{covered:false}),def('Publicly share the child’s confidential details to obtain other families’ opinions.',0,'Confidentiality still applies during an unresolved incident.',{})];src=s.id==='bruise'?'mandated':'supervision';
- }
+ const sceneByCase={
+ nose:['The child’s condition changes','The nosebleed requires another check. Assess ongoing bleeding, weakness and the need for medical escalation.','Continue appropriate first aid and escalate for warning signs.','Return the child to play without checking whether the bleeding has stopped.'],
+ arm:['The injured hand needs reassessment','The child continues to report altered sensation after the playground fall. Medical help must remain the priority.','Maintain support of the injured arm, update responders and verify group coverage.','Send the child back to play because a parent has been called.'],
+ fight:['Prevent a renewed altercation','One child approaches the other again. The original separation did not fully contain the risk.','Restore safe separation and reassess injuries with assigned qualified supervision.','Leave the children to settle the conflict while adults complete reports.'],
+ ill:['Reassess the child’s symptoms','The child still needs observation. Family contact does not replace urgent care when warning signs develop.','Reassess the symptoms and seek emergency help if indicated.','Wait for a family response despite serious new symptoms.'],
+ bruise:['Protect the child and the evidence','A staff member proposes asking the child repeated questions until the explanation becomes consistent.','Protect the child, preserve spontaneous statements and report reasonable suspicion as required.','Repeatedly interrogate the child to obtain a consistent explanation.'],
+ parent:['The pickup disagreement escalates','A second adult listed for pickup is present. The first adult objects to the handoff and the children can hear the argument. Identity verification remains essential.','Keep the child supervised, verify the alternate adult’s identity and authorization, and follow a safe documented handoff procedure.','Let the adults resolve the confrontation in the classroom while teachers leave.']
+ };
+ const q=sceneByCase[s.id];
+ title=q[0];body=q[1]+(s.id==='parent'?(s.pickupVerified?' Identity was verified in the preceding decision.':' Identity has not yet been verified.'):' New information: '+s.reveal);
+ opts=[
+ def(q[2],3,'The action responds to the current incident without abandoning qualified supervision.',{covered:true,recorded:true}),
+ def('Maintain qualified child supervision while the director verifies new information and follows the applicable escalation procedure.',2,'A defensible coordinated response, provided urgent action is not delayed.',{covered:true}),
+ def('Assume the original response was sufficient without reassessing the new information.',0,'Earlier decisions cannot guarantee the current risk has ended.',{}),
+ def(q[3],0,'The action abandons a current safety responsibility.',{covered:false}),
+ def('Share the child’s or family’s confidential details with unrelated parents.',0,'Confidentiality remains essential.',{})
+ ];src=s.id==='parent'?'parent':s.id==='bruise'?'mandated':s.id==='nose'?'aap':'supervision';
 }
 else if(st===8){title='The written record and camera footage';body=`The incident must now be documented. A camera may contain relevant footage, and staff remember the time differently. Protect the original record without making assumptions about what the footage will show. ${s.id==='bus'?'A transportation roster may also be relevant.':'A parent asks for a copy of everything immediately.'}`;
 opts=[def('Keep the original footage and document a factual timeline, including discrepancies.',3,'A reliable record preserves sequence and distinguishes facts from inferences.',{recorded:true,secured:true}),def('Restrict video access and assign a factual, timely report with a traceable record.',3,'Protect evidence while making a prompt, factual report.',{recorded:true,secured:true}),def('Keep only the most relevant footage clip rather than preserving the whole recording.',0,'A selective clip may omit material context; preserve the original complete recording.',{secured:false,recorded:false}),def('Prepare a joint witness summary and discard the separate rough notes.',0,'A synthesis can help but original independent observations and disagreements must remain.',{recorded:false}),def('Send the entire video to the parent group to show transparency.',0,'Disclosing other children’s information is not appropriate.',{secured:false})];src='record';}
