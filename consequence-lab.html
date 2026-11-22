@@ -329,10 +329,29 @@ else if(st===7){
  def('Share the child’s or family’s confidential details with unrelated parents.',0,'Confidentiality remains essential.',{})
  ];src=s.id==='parent'?'parent':s.id==='bruise'?'mandated':s.id==='nose'?'aap':'supervision';
 }
-else if(st===8){title='The written record and camera footage';body=`The incident must now be documented. A camera may contain relevant footage, and staff remember the time differently. Protect the original record without making assumptions about what the footage will show. ${s.id==='bus'?'A transportation roster may also be relevant.':'A parent asks for a copy of everything immediately.'}`;
-opts=[def('Keep the original footage and document a factual timeline, including discrepancies.',3,'A reliable record preserves sequence and distinguishes facts from inferences.',{recorded:true,secured:true}),def('Restrict video access and assign a factual, timely report with a traceable record.',3,'Protect evidence while making a prompt, factual report.',{recorded:true,secured:true}),def('Keep only the most relevant footage clip rather than preserving the whole recording.',0,'A selective clip may omit material context; preserve the original complete recording.',{secured:false,recorded:false}),def('Prepare a joint witness summary and discard the separate rough notes.',0,'A synthesis can help but original independent observations and disagreements must remain.',{recorded:false}),def('Send the entire video to the parent group to show transparency.',0,'Disclosing other children’s information is not appropriate.',{secured:false})];src='record';}
-else if(st===9){s.complaintPending=s.unfortunate||s.parent==='upset'||(s.unsafe>2&&s.complicationRoll<.6);title=s.complaintPending?'The parent contacts licensing':'The parent questions the response';body=s.complaintPending?'A family says it has contacted licensing about your response. There is no finding yet.':'A family asks for a factual explanation and says it may contact licensing. There is no finding yet.';
-opts=[def('Keep the evidence secure and respond to inquiries with verified, confidential facts.',3,'A complaint is not proof of wrongdoing; good records protect a proper response.',{secured:true}),def('Arrange a private meeting while retaining the original documents and recording.',3,'A calm follow-up can coexist with a regulatory review.',{secured:true}),def('Treat the family’s complaint as a factor in the next enrollment review.',0,'Linking continued enrollment to a safety complaint creates a retaliation concern.',{secured:false}),def('Replace working incident notes with a clean final version and discard the drafts.',0,'A final report can clarify the record but should not destroy contemporaneous evidence.',{secured:false}),def('Provide a factual written response but give every staff member the video without access controls.',1,'Transparency must still protect privacy and evidence integrity.',{recorded:true,secured:false})];src='incident';}
+else if(st===8){
+ title='Preserve the record without rewriting history';
+ const records={
+ nose:'The first-aid timeline, blood-exposure response and family notifications need factual documentation.',
+ arm:'The fall, observed deformity, emergency response and staff handoffs need a reliable timeline.',
+ fight:'The children’s accounts, witness observations, injuries and supervision actions may differ.',
+ ill:'Record the symptoms, observation times, attempted contacts and medical response.',
+ bruise:'Preserve the child’s spontaneous words and each witness’s original observations. Do not conduct a substitute investigation.',
+ parent:'Record observable signs of impairment, what was said, who supervised the child and any verified pickup handoff.',
+ bus:'Preserve the transportation roster, direct vehicle-search record and classroom attendance discrepancies.',
+ monitor:'Preserve the monitor qualification check, staffing decision and actual route departure status.'
+ };
+ body=records[s.id]+' Any relevant camera footage should be preserved in its original form, with restricted access.';
+ opts=[def('Preserve original records and any relevant footage; document facts and discrepancies without speculation.',3,'A complete record distinguishes observations from conclusions.',{recorded:true,secured:true}),def('Assign a factual incident report and restrict access to confidential records.',3,'Evidence protection and privacy must be maintained.',{recorded:true,secured:true}),def('Delete earlier witness notes after producing a single agreed account.',0,'Original accounts must not be overwritten to eliminate inconsistencies.',{recorded:false}),def('Keep only an edited video excerpt and discard the source recording.',0,'Preserve original evidence where it exists.',{secured:false}),def('Send incident records to unrelated families to demonstrate transparency.',0,'This risks unauthorized disclosure.',{secured:false})];src='record';
+}
+else if(st===9){
+ const complaint=s.unfortunate||s.parent==='upset'||(s.unsafe>2&&s.complicationRoll<.6);
+ s.complaintPending=complaint;
+ title=complaint?'A family raises a formal concern':'A family asks for an explanation';
+ const topic={nose:'first aid and the blood spill',arm:'the injury response',fight:'how the conflict was supervised',ill:'the emergency response',bruise:'the safeguarding response',parent:'the pickup disagreement',bus:'the transportation headcount',monitor:'the transportation staffing decision'}[s.id];
+ body=complaint?'A family reports that it has raised a concern about '+topic+'. No regulatory finding has been made.':'A family asks for a factual explanation of '+topic+' and may seek external review. No regulatory finding has been made.';
+ opts=[def('Preserve the evidence and respond through appropriate confidential channels with verified facts.',3,'A complaint is not a finding; records and privacy remain important.',{secured:true}),def('Offer a private meeting and preserve the original notes and recordings.',3,'Communication can occur alongside any formal inquiry.',{secured:true}),def('Threaten to end care because the family questioned the response.',0,'Retaliation is inappropriate.',{}),def('Discard drafts and replace conflicting observations with a single favorable narrative.',0,'Do not destroy contemporaneous evidence.',{secured:false}),def('Give every employee unrestricted access to incident footage.',0,'Access must be limited to those with a legitimate need.',{secured:false})];src='incident';
+}
 else if(st===10){
  title='What must actually be reported?';
  const topics={
