@@ -167,8 +167,8 @@ function caseStage(c,index){
 }
 function casesView(){
  return `<section class="panel" aria-label="Applied leadership simulations">
- <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.9.1&embedded=1" title="Applied leadership simulations" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
- <div class="actions"><a href="consequence-lab.html?v=10.9.1" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
+ <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.9.1&build=case-laws-20261122&embedded=1" title="Applied leadership simulations" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
+ <div class="actions"><a href="consequence-lab.html?v=10.9.1&build=case-laws-20261122" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
 }
 function guidedCasesView(){
  const c=getCase(state.caseId),w=work(c.id),finished=w.step>=c.stages.length,variant=selectedVariant(c);
