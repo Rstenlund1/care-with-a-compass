@@ -87,7 +87,7 @@
         "prompt": "What is the director’s first corrective sequence?",
         "options": [
           {
-            "text": "Restore qualified classroom coverage immediately, stop early sign-out entries, preserve existing records, then investigate both employees’ instructions without prejudging the teacher.",
+            "text": "Restore qualified coverage, stop false early sign-outs, preserve the original records, and investigate both employees' instructions fairly.",
             "why": "Stabilizes child supervision first and then addresses records and personnel fairness.",
             "level": 2
           },
@@ -143,7 +143,7 @@
         "prompt": "How should a director respond after doing the right thing produces a new conflict?",
         "options": [
           {
-            "text": "Maintain appropriate interim safeguards, preserve the communications and agency correspondence, respond to any licensing inquiry factually, and protect personnel and child confidentiality.",
+            "text": "Maintain interim safeguards, preserve records, respond to licensing factually, and protect staff and child confidentiality.",
             "why": "The original report remains appropriate if supported by reasonable suspicion; a new complaint calls for verified facts, not retaliation.",
             "level": 2
           },
@@ -307,7 +307,7 @@
         "prompt": "How do you regain a safe and defensible staffing arrangement?",
         "options": [
           {
-            "text": "Put a qualified, cleared employee or qualified director physically in the room, keep the volunteer from unsupervised child contact, review the staffing lapse, and secure a backup plan.",
+            "text": "Place a cleared, qualified employee in the room, stop unsupervised volunteer contact, and investigate the staffing lapse.",
             "why": "Restores required supervision without assuming an outside credential replaces center clearance and qualifications.",
             "level": 2
           },
@@ -417,7 +417,7 @@
         "prompt": "How do you correct the record without dismissing possible safety concerns?",
         "options": [
           {
-            "text": "Correct the inaccurate characterization with hospital staff, document the parent’s actual statements, involve social work, verify a safe discharge arrangement, and assess any separate safety facts.",
+            "text": "Correct the hospital's record, document the parent's words, coordinate a safe discharge, and assess any separate safety concern.",
             "why": "Avoids an unsupported neglect label while preserving appropriate child-protection assessment.",
             "level": 2
           },
@@ -527,7 +527,7 @@
         "prompt": "What response rebuilds a reliable early-warning system?",
         "options": [
           {
-            "text": "Repair and verify the gate, protect immediate supervision, invite factual reporting without blanket retaliation, investigate individual accountability fairly, and monitor near-miss disclosures.",
+            "text": "Repair and verify the gate, protect supervision, investigate fairly, and invite near-miss reports without blanket retaliation.",
             "why": "Addresses the hazard and restores the information flow needed to learn from failures.",
             "level": 2
           },
@@ -561,7 +561,7 @@
             "why": "A defensible record preserves sources, recognizes uncertainty and gives families an accurate explanation."
           },
           {
-            "text": "Hold a joint staff meeting to choose one account and issue a single corrected summary.",
+            "text": "Hold a joint staff meeting to negotiate a unified incident account, then replace the originals after both educators approve the wording.",
             "level": 1,
             "why": "Collaborative fact-finding can help but risks creating an artificial consensus and losing independent accounts."
           },
@@ -588,7 +588,7 @@
             "why": "A transparent correction protects record integrity and makes the adult-learning response measurable."
           },
           {
-            "text": "Create a revised report and attach it to the child's file without contacting the family.",
+            "text": "Create a revised report and attach it to the child's file, but postpone informing the family until the next scheduled conference.",
             "level": 1,
             "why": "Improves documentation but leaves a negative unsupported impression with the family."
           },
@@ -615,7 +615,7 @@
             "why": "Corrects the child's record while safeguarding a fair inquiry and staff's ability to report genuine concerns."
           },
           {
-            "text": "Apologize to the employee and postpone addressing the family's report until the next month.",
+            "text": "Apologize to the employee and begin a personnel consultation, but postpone addressing the family's incident-report concern until next month.",
             "level": 1,
             "why": "May rebuild staff trust but leaves the child and family with a known documentation problem."
           },
@@ -642,7 +642,7 @@
             "why": "An exclusion is not validated by a file full of prior labels. Immediate supervision and individualized legal obligations still apply."
           },
           {
-            "text": "Offer a two-day suspension while staff complete a neutral incident review.",
+            "text": "Offer a short suspension while staff review the records, even though the specific program rules and individualized supports have not been checked.",
             "level": 1,
             "why": "A temporary removal may itself be restricted and cannot simply substitute for an individualized inquiry."
           },
@@ -750,7 +750,7 @@
         "question": "What is your strongest recovery action?",
         "choices": [
           [
-            "Reconstruct objective observations and times without inventing facts, designate a liaison, and coordinate authorized family and hospital social-work follow-up.",
+            "Reconstruct observed times without inventing details, assign a hospital liaison, and coordinate authorized family and social-work follow-up.",
             "A transparent gap in the timeline is safer than a fabricated one, and discharge coordination must continue.",
             2
           ],
@@ -806,7 +806,7 @@
         "question": "How will you handle both live problems without delaying mandatory child-protection action?",
         "choices": [
           [
-            "Assign hospital discharge coordination, protect children, preserve original footage and make timely, independent reports as required.",
+            "Coordinate hospital discharge, protect children, preserve original footage, and make independent reports when required.",
             "Parallel ownership prevents either child’s safety from depending on completion of the other task.",
             2
           ],
@@ -860,7 +860,7 @@
         "question": "How do you prevent an authority gap from causing a second reporting failure?",
         "choices": [
           [
-            "Clarify lawful hospital decision-makers through social work and the parent, assign a liaison, protect children, preserve footage, and report reasonable suspicion promptly.",
+            "Verify lawful discharge authority, assign a liaison, protect children, preserve footage, and report reasonable suspicion.",
             "Maintains two distinct safety tracks with explicit owners and reporting pathways.",
             2
           ],
@@ -970,7 +970,7 @@
         "question": "How should the director begin repair now?",
         "choices": [
           [
-            "Make the mandated report without further delay, document the true chronology, preserve remaining evidence, maintain interim child safeguards, and cooperate with licensing separately.",
+            "Make the mandated report, record the true timeline, preserve remaining evidence, protect children, and address licensing duties separately.",
             "Late corrective action does not erase the delay, but further concealment would create more harm.",
             2
           ],
