@@ -12,7 +12,7 @@
 
 ## Regulatory boundaries for review
 1. California clearance/exemption, required facility association or approved transfer, role qualifications, and training must be verified before assigning or counting substitute personnel. A school substitute or Facebook recommendation is not automatically eligible. CDSS: https://www.cdss.ca.gov/inforesources/community-care/caregiver-background-check/background-check-process
-2. Resource-and-referral agencies, including Pathways LA, may offer contacts or referrals but are not represented as guaranteed substitute staffing providers. https://childcare.lacounty.gov/wp-content/uploads/2025/10/Navigating-Universal-Pre-K-in-LA-Guidebook-FINAL_10.21.25_online.pdf
+2. Local child care resource-and-referral agencies may offer possible substitute leads, but a referral does not guarantee a qualified, available person on site. The program must independently verify eligibility, required clearances and actual arrival before relying on a substitute.
 3. A nearby center cannot simply accept children or loan counted adults without licensing, authorization, staffing, and site-specific checks.
 4. Two approved emergency contacts are a recommended provider policy, not claimed as a universal legal minimum. Unreachable parents never justify delaying emergency care. Contract termination/disenrollment must consider subsidy agreements, notice, disability accommodations, and civil-rights obligations; no automatic removal for one missed call.
 5. Head Start bus-monitor requirements should not be presented as universal requirements for all California child care transportation programs.
