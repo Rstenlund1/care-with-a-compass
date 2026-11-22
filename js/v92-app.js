@@ -103,10 +103,10 @@ function doneCount(){return allCasesDone()?3:0;}
 function courseProgress(){try{const key="care-with-a-compass-supervisor-v72-72q",raw=localStorage.getItem(key)||sessionStorage.getItem(key);if(!raw)return {done:0,capstone:false};const s=JSON.parse(raw);return {done:Array.isArray(s.done)?s.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=6).length:0,capstone:!!s.capstone?.completed};}catch(e){return {done:0,capstone:false};}}
 function courseReady(){const p=courseProgress();return p.capstone&&p.done===6;}
 function completedLabFromStorage(){
- try{const lab=JSON.parse(localStorage.getItem('cwc-consequence-lab-v10.7.21')||localStorage.getItem('cwc-consequence-lab-v10.7.19')||localStorage.getItem('cwc-consequence-lab-v10')||'null');return !!(lab&&lab.index===3&&lab.case===null&&Array.isArray(lab.reports)&&lab.reports.length===3&&lab.reports.every(r=>!r.failed&&Array.isArray(r.log)&&r.log.length===12));}
+ try{const lab=JSON.parse(localStorage.getItem('cwc-consequence-lab-v10.9.1')||'null');return !!(lab&&lab.index===3&&lab.case===null&&Array.isArray(lab.reports)&&lab.reports.length===3&&lab.reports.every(r=>!r.failed&&Array.isArray(r.log)&&r.log.length===6));}
  catch(_){return false;}
 }
-function allCasesDone(){if(completedLabFromStorage()&&!state.completedSimulations.random){state.completedSimulations.random=true;save();}return !!(state.completedSimulations.guided||state.completedSimulations.random);}
+function allCasesDone(){const current=completedLabFromStorage();if(state.completedSimulations.random!==current){state.completedSimulations.random=current;save();}return !!(state.completedSimulations.guided||current);}
 function nextRequired(){
  if(!courseReady())return {page:"chapters"};
  if(!allCasesDone())return {page:"cases"};
@@ -167,8 +167,8 @@ function caseStage(c,index){
 }
 function casesView(){
  return `<section class="panel" aria-label="Applied leadership simulations">
- <iframe id="consequenceLabFrame" src="consequence-lab-v10.7.21.html?v=10.7.22&build=infant-limits&embedded=1" title="Applied leadership simulations" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
- <div class="actions"><a href="consequence-lab-v10.7.21.html?v=10.7.22&build=infant-limits" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
+ <iframe id="consequenceLabFrame" src="consequence-lab.html?v=10.9.1&embedded=1" title="Applied leadership simulations" loading="eager" style="width:100%;height:1000px;border:0;background:#f2f0f5;border-radius:12px"></iframe>
+ <div class="actions"><a href="consequence-lab.html?v=10.9.1" target="_blank" rel="noopener noreferrer">Open simulator in a larger window</a></div></section>`;
 }
 function guidedCasesView(){
  const c=getCase(state.caseId),w=work(c.id),finished=w.step>=c.stages.length,variant=selectedVariant(c);
@@ -281,7 +281,7 @@ function startOverTraining(){
    store.removeItem("care-with-a-compass-supervisor-v72-72q");
    store.removeItem("cwc-consequence-lab-v10");
    store.removeItem("cwc-consequence-lab-v10.7.19");
-   store.removeItem("cwc-consequence-lab-v10.7.21");
+   store.removeItem("cwc-consequence-lab-v10.9.1");
    store.removeItem("cwc-consequence-lab-completed");
    store.removeItem("cwc-consequence-lab-guided-v10");
   }
@@ -378,7 +378,7 @@ document.addEventListener("input",e=>{
   const button=$('button[data-action="submit-assessment"]');if(button)button.disabled=!assessmentReady();
  }
 });
-window.addEventListener('storage',e=>{if(['cwc-consequence-lab-v10','cwc-consequence-lab-v10.7.19','cwc-consequence-lab-v10.7.21'].includes(e.key)&&completedLabFromStorage()&&!state.completedSimulations.random){state.completedSimulations.random=true;save();render();}});
+window.addEventListener('storage',e=>{if(['cwc-consequence-lab-v10.9.1'].includes(e.key)&&completedLabFromStorage()&&!state.completedSimulations.random){state.completedSimulations.random=true;save();render();}});
 window.addEventListener("message",e=>{const frame=document.getElementById("consequenceLabFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin||e.data?.app!=="cwc-consequence-lab")return;if(e.data.kind==="lab-completed"){if(e.data.completed===true&&e.data.mode==="unified"){state.completedSimulations.random=true;save();}return;}if(e.data.kind!=="lab-height")return;const h=Number(e.data.height);if(Number.isFinite(h)&&h>200)frame.style.height=Math.min(30000,Math.ceil(h+20))+"px";});
  window.addEventListener("message",e=>{const frame=document.getElementById("chaptersFrame");if(!frame||e.source!==frame.contentWindow||e.origin!==window.location.origin)return;const data=e.data;if(data?.app!=="care-with-a-compass")return;if(data.kind==="chapter-progress"){const numbers=Array.isArray(data.done)?[...new Set(data.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=6))]:[];const badge=document.getElementById("chapterCompletedCount");if(badge)badge.textContent=numbers.length+"/6 completed";return;}
 if(data.kind==="chapter-submit-request"){

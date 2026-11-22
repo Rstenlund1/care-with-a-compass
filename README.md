@@ -1,3 +1,5 @@
+> **Current Consequence Lab release: v10.9.1 (November 22, 2026).** Twelve six-decision scenarios, corrected critical-failure rules, live-course iframe integration, printable substitute-readiness checklist, and six-decision completion accounting. See [SCENARIO_AUDIT_v10.9.1.md](SCENARIO_AUDIT_v10.9.1.md), [SCENARIO_ANSWER_ATLAS_v10.9.1.csv](SCENARIO_ANSWER_ATLAS_v10.9.1.csv) and `tests/six-decision-regression.cjs`. Older release notes below are archival. Release deployed to GitHub Pages.
+
 # Care with a Compass — The Director's Desk · v10.7.19
 
 **Live program:** https://rstenlund1.github.io/care-with-a-compass/?v=10.7.19
